@@ -3,7 +3,7 @@ import {useHistory, NavLink} from "react-router-dom";
 import {useFormik} from "formik";
 import queryString from "query-string";
 import { useDispatch, useSelector } from 'react-redux';
-import { EditUser, RegisterUser, SaveUpdate } from '../actions/userActions';
+import { RegisterUser, SaveUpdate } from '../actions/userActions';
 
 const Register = () => {
     //navigate the page
@@ -12,7 +12,7 @@ const Register = () => {
     const [editedObject,setEditedObject] = useState([]);
     //get edited user id
     const {id} = queryString.parse(window.location.search);
-
+    console.log("id from register: ", id)
     //dispatch the api request
     const ApiDispatch = useDispatch();
     //get response of the api request
@@ -20,7 +20,7 @@ const Register = () => {
     const formik = useFormik({
         //initialValues form input field
         initialValues: {
-            fname:"",  lname:"", email:"", phone:"", profession:"", salary:"", password:"" , cpassword:"", 
+            fname:"",  lname:"", email:"", phone:"", company:"", profession:"", salary:"", password:"" , cpassword:"", 
         },
 
         //when the form submitted
@@ -41,11 +41,8 @@ const Register = () => {
     });
     //for getting the edited user data
     useEffect(() => {
-        if(id) {
-            ApiDispatch(EditUser(id))
-            //setvalues to useState
-            setEditedObject(user);    
-        }
+        const editUser = user.find((ele) => ele._id === id ? ele : null);
+        setEditedObject(editUser);
     },[id]);
 
     //set edited user data values
@@ -75,6 +72,9 @@ const Register = () => {
 
                     <label>Phone Number</label>
                     <input required onChange={formik.handleChange} value={formik.values.phone}  name="phone" type='number' placeholder="Enter Phone Number ..." />
+
+                    <label>Company </label>
+                    <input required onChange={formik.handleChange} value={formik.values.company}  name="company" type='text' placeholder="Enter Company ..." />
 
                     <label>Profession </label>
                     <input required onChange={formik.handleChange} value={formik.values.profession}  name="profession" type='text' placeholder="Enter Profession ..." />

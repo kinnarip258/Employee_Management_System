@@ -57,3 +57,15 @@
     text-align: center;
     margin: 400px 500px 500px 500px ;
 }
+.pagination{
+    display: inline-block;
+    cursor: pointer;
+}
+.pagination a{
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    border: 1px solid blue;
+    
+}

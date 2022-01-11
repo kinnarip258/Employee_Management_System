@@ -1,6 +1,6 @@
 import React from 'react'
 import {Route, Redirect} from 'react-router-dom';
-import {useSelector} from 'react-redux';
+
 //protected route
 //authstate: authenticate state
 //component: componenet connected with route

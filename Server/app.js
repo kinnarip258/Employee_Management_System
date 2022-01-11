@@ -18,7 +18,7 @@ app.use(express.json());
 
 
 //link the router file
-app.use(require('./router/auth'));
+app.use(require('./router/routes'));
 
 
 //port of the server

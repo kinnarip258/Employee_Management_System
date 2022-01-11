@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    company: {
+        type: String,
+        required: true
+    },
     profession: {
         type: String,
         required: true

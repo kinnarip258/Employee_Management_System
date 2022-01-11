@@ -11,21 +11,19 @@ router.get('/getUsers', async (req,res) => {
     try{
         const users = await User.find()
         res.send((users));
-        res.json({msg: "get users"})
     }
     catch(err) {
         console.log("error: ", err);
         res.send("error" + err);
-        res.json({err: "not LoggedIn"})
     }
 });
 
 //register route
 router.post('/signUp', async (req,res) => {
 
-    const {fname, lname, email, phone, profession, salary, password, cpassword} = req.body;
+    const {fname, lname, email, phone,company, profession, salary, password, cpassword} = req.body;
 
-    if(!fname || !lname || !email || !phone || !profession || !salary || !password || !cpassword){
+    if(!fname || !lname || !email || !phone || !company || !profession || !salary || !password || !cpassword){
         return res.status(422 ).send({error: "please fill the field properly"});
     }
     try{
@@ -40,7 +38,7 @@ router.post('/signUp', async (req,res) => {
         } 
         else{
             
-            const user = await new User({fname, lname, email, phone, profession, salary, password, cpassword}).save();
+            const user = await new User({fname, lname, email, phone, company, profession, salary, password, cpassword}).save();
             //sendMail({toUser: user.email, user: user})
             res.status(201).send({ message: "User sucessfully register."});  
         }       
@@ -79,7 +77,6 @@ router.post('/signIn', async (req,res) => {
             }
             else {
                 res.send(userLogin);
-                res.send({message: "user SignIn sucessfully!"});
             }
         }
         else{
@@ -90,19 +87,6 @@ router.post('/signIn', async (req,res) => {
    }
 })
 
-//get user for edit
-router.get('/editUser/:id',async (req,res) => {
-    
-    try{
-        const user = await User.findById(req.params.id)
-        res.send(user)
-    }
-    catch(err) {
-        console.log("error: ", err)
-        res.send("error" + err)
-    };
-});
-
 //update user
 router.put('/updateUser/:id', async (req,res) => {
     try{
@@ -112,6 +96,7 @@ router.put('/updateUser/:id', async (req,res) => {
         user.email= req.body.email;
         user.salary= req.body.salary;
         user.phone= req.body.phone;
+        user.company= req.body.company;
         user.profession= req.body.profession;
         user.password = req.body.password;
         user.cpassword = req.body.cpassword;
@@ -139,11 +124,6 @@ router.delete('/deleteUser/:id',authenticate, async (req,res) => {
     };
 });
 
-//for deshboard authentication
-router.get('/about', authenticate, (req,res) => {
-    res.send(req.authenticateUser);
-});
-
 //for logout
 router.get('/logout',authenticate, async (req,res) => {
     try{
@@ -162,9 +142,50 @@ router.get('/logout',authenticate, async (req,res) => {
     
 });
 
+router.get('/getUsers/page=:page',async (req,res) => {
+    try{
+        let page= req.params.page
+        let size = 10
+        if(!page){
+            page=1
+        }
+        const limit = parseInt(size);
+        const skip = (page-1) * size;
+
+        //const users = await User.find({}, {}, {limit: limit, skip:skip})
+        const users = await User.find().limit(limit).skip(skip);
+        res.send(users)
+    }
+    catch(err) {
+        console.log("error: ", err);
+        res.send("error" + err);
+    }
+})
+
+router.get('/searchUser=:Employee', async (req,res) => {
+    try{
+        const searchUser = req.params.Employee
+
+        await User.find({ fname: searchUser})
+        .then((result) => res.status(200).send(result))
+        .catch(err => console.log(err));
+
+        console.log("searchUser: ", searchUser)
+        console.log("user: ", result)
+    }
+    catch(err){
+        res.status(500).send(err);
+    }
+})
 
 module.exports = router;
-//{
-//     expires: new Date(Date.now() + 60000),
-//     httpOnly: true
-// }
+
+// User.find(
+//     {
+//         $or: [
+//             { "fname": searchUser},
+//             { "company": searchUser},
+//             { "salary": searchUser}
+//         ]
+//     }
+// )

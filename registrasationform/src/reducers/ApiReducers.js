@@ -1,10 +1,11 @@
 
 const initialState = {
     user: [],
-    LoginState: false 
+    LoginState: false,
+    editUser: []
 }
-console.log("token ", initialState.user.Tokens)
-console.log("cookie ", document.cookie)
+
+
 const ApiReducers = (state = initialState, action) => {
     switch (action.type) {
 
@@ -15,47 +16,48 @@ const ApiReducers = (state = initialState, action) => {
             }
 
         case "Save_Update": 
-            
+        console.log("use data from save update reducers", action.payload)
             return {
                 ...state,
-                user: action.payload
+                user: [action.payload]
+                
             }
 
         case "Login_User":
             
             return {
                 ...state,
-                user: action.payload,
-                LoginState: true   
-            }
-
-        case "Edit_User":
-            
-            return {
-                ...state,
-                user: action.payload
+                user: [action.payload],
+                LoginState: true
             }
 
         case "Delete_User":
             
             return  {
-                ...state,   
+                ...state,
+                LoginState: false   
             }
 
         case "getUserDetails_User":
-        
+            console.log("use data from deshboard reducers", action.payload)
             return {
                 ...state,
-                user: action.payload,
+                user: action.payload ,
                 LoginState: true
             }
 
         case "Logout_User":
             
             return {
-                ...state, 
                 LoginState: false
             }
+
+        case "Search_User":
+            console.log("use data from search reducers", action.payload)
+            return {
+                user: action.payload
+            }
+    
 
         default:
             return state;

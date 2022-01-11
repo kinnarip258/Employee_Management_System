@@ -48,21 +48,6 @@ export const LoginUser = (values) => {
     }
 }
 
-//Edit User action
-export const EditUser = (id) => {
-    
-    return (dispatch) => {
-        Axios.get(`/editUser/${id}`)
-        .then(res => {
-            const userData = res.data;
-            dispatch({type: "Edit_User", payload: userData})
-        })
-        .catch(err => {
-            console.log("error: ", err);
-        });
-    }
-}
-
 //Delete User action
 export const DeleteUser = (id) =>{
     return (dispatch) => {
@@ -78,11 +63,12 @@ export const DeleteUser = (id) =>{
 }
 
 //get Login User Detail action 
-export const getUserDetailsUser = () => {
+export const getUserDetailsUser = (page) => {
     
     return (dispatch) => {
-        Axios.get(`/about`) 
+        Axios.get(`/getUsers/page=${page}`) 
         .then(res => {
+            console.log("use data from deshboard action", res.data)
             const userData = res.data;
             dispatch({type: "getUserDetails_User", payload: userData})
         })
@@ -105,3 +91,21 @@ export const LogoutUser = () => {
         });
     }
 }
+
+
+//Search User action
+export const SearchUser = (searchUser) => {
+    return (dispatch) => {
+        Axios.get(`/searchUser=${searchUser}`)
+        .then(res => {
+            const userData = res.data;
+            console.log("search data from actions", userData)
+            dispatch({type: "Search_User", payload: userData})
+        })
+        .catch(err => {
+            console.log("error: ", err);
+        });
+    }
+}
+
+
