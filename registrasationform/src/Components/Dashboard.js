@@ -71,8 +71,8 @@ const Deshboard = () => {
                                             <td>{ele.company}</td>
                                             <td>{ele.profession}</td>
                                             <td>{ele.salary}</td> 
-                                            <NavLink to={`/editUser/:?id=${ele._id}`}><button>Edit</button></NavLink>
-                                            <button onClick={() => handleDelete(ele._id)}>Delete</button>     
+                                            <td><NavLink to={`/editUser/:?id=${ele._id}`}><button>Edit</button></NavLink></td>
+                                            <td><button onClick={() => handleDelete(ele._id)}>Delete</button></td>     
                                         </tr>     
                                         
                                     </table>   

@@ -96,7 +96,7 @@ export const LogoutUser = () => {
 //Search User action
 export const SearchUser = (searchUser) => {
     return (dispatch) => {
-        Axios.get(`/searchUser=${searchUser}`)
+        Axios.get(`/searchuser=${searchUser}`)
         .then(res => {
             const userData = res.data;
             console.log("search data from actions", userData)

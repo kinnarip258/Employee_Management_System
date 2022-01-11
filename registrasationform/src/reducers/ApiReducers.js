@@ -1,8 +1,9 @@
+import { SearchUser } from "../actions/userActions"
 
 const initialState = {
     user: [],
+    searchUser: [],
     LoginState: false,
-    editUser: []
 }
 
 
@@ -16,11 +17,10 @@ const ApiReducers = (state = initialState, action) => {
             }
 
         case "Save_Update": 
-        console.log("use data from save update reducers", action.payload)
+        
             return {
                 ...state,
-                user: [action.payload]
-                
+                user: [action.payload]   
             }
 
         case "Login_User":
@@ -39,7 +39,7 @@ const ApiReducers = (state = initialState, action) => {
             }
 
         case "getUserDetails_User":
-            console.log("use data from deshboard reducers", action.payload)
+            
             return {
                 ...state,
                 user: action.payload ,
@@ -53,12 +53,11 @@ const ApiReducers = (state = initialState, action) => {
             }
 
         case "Search_User":
-            console.log("use data from search reducers", action.payload)
+            
             return {
-                user: action.payload
+                searchUser: action.payload,
+                user: state.searchUser
             }
-    
-
         default:
             return state;
     }

@@ -162,16 +162,19 @@ router.get('/getUsers/page=:page',async (req,res) => {
     }
 })
 
-router.get('/searchUser=:Employee', async (req,res) => {
+router.get('/searchuser=:Employee', async (req,res) => {
     try{
-        const searchUser = req.params.Employee
+        const searchUser = new RegExp(req.params.Employee, 'i')
 
-        await User.find({ fname: searchUser})
-        .then((result) => res.status(200).send(result))
-        .catch(err => console.log(err));
-
+        const user = await User.find({
+            $or: [
+                { fname: searchUser},
+                { company: searchUser},
+            ]
+        })
         console.log("searchUser: ", searchUser)
-        console.log("user: ", result)
+        console.log("user: ", user)
+        res.status(200).send(user);
     }
     catch(err){
         res.status(500).send(err);
@@ -180,12 +183,11 @@ router.get('/searchUser=:Employee', async (req,res) => {
 
 module.exports = router;
 
-// User.find(
-//     {
-//         $or: [
-//             { "fname": searchUser},
-//             { "company": searchUser},
-//             { "salary": searchUser}
-//         ]
-//     }
-// )
+
+//{
+//     $toInt: [
+//         { "salary": searchUser}
+//     ]
+// }
+
+//{ salary: NumberInt(searchUser)}
