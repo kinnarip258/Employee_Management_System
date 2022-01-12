@@ -12,9 +12,12 @@ const ProtectedRoute = ({authStatus, component: Component, ...rest}) => {
         <>  
             <Route {...rest} render= {(props) => {
                 //authState is true then show the component
-                if(authStatus) return <Component {...props}/>;
-                //or else redirect 
-                if(!authStatus) return <Redirect to= {{path:'/', state: {from: props.location}}} />;
+                if(authStatus) {
+                    return <Component {...props}/>;
+                }
+                else{
+                    return <Redirect to='/Dashboard' />;
+                }
             }}/> 
         </>
     )   

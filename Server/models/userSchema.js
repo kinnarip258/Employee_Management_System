@@ -27,7 +27,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    salary: {
+    salary1: {
+        type: Number,
+        required: true
+    },
+    salary2: {
+        type: Number,
+        required: true
+    },
+    salary3: {
         type: Number,
         required: true
     },

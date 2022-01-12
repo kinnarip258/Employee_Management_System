@@ -6,24 +6,13 @@ const sendMail = require("../mail/nodemailer")
 require('../db/conn');
 const User = require('../models/userSchema');
 
-//get users
-router.get('/getUsers', async (req,res) => {
-    try{
-        const users = await User.find()
-        res.send((users));
-    }
-    catch(err) {
-        console.log("error: ", err);
-        res.send("error" + err);
-    }
-});
 
 //register route
 router.post('/signUp', async (req,res) => {
 
-    const {fname, lname, email, phone,company, profession, salary, password, cpassword} = req.body;
+    const {fname, lname, email, phone,company, profession, salary1, salary2, salary3, password, cpassword} = req.body;
 
-    if(!fname || !lname || !email || !phone || !company || !profession || !salary || !password || !cpassword){
+    if(!fname || !lname || !email || !phone || !company || !profession || !salary1 || !salary2 || !salary3  || !password || !cpassword){
         return res.status(422 ).send({error: "please fill the field properly"});
     }
     try{
@@ -38,7 +27,7 @@ router.post('/signUp', async (req,res) => {
         } 
         else{
             
-            const user = await new User({fname, lname, email, phone, company, profession, salary, password, cpassword}).save();
+            const user = await new User({fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword}).save();
             //sendMail({toUser: user.email, user: user})
             res.status(201).send({ message: "User sucessfully register."});  
         }       
@@ -64,18 +53,18 @@ router.post('/signIn', async (req,res) => {
         if(userLogin){
             const isMatch = await bcrypt.compare(password, userLogin.password);
 
-            token = await userLogin.generateAuthToken();
-
-            //store the token in cookie
-            res.cookie("jwtLogin", token , {
-                expires: new Date(Date.now() + 3600000),
-                httpOnly: true
-            });
-
             if(!isMatch){
                 res.status(400).send({ error: "Invalid Credientials!"});
             }
             else {
+                token = await userLogin.generateAuthToken();
+
+                //store the token in cookie
+                res.cookie("jwt", token , {
+                    expires: new Date(Date.now() + 3600000),
+                    httpOnly: true
+                });
+
                 res.send(userLogin);
             }
         }
@@ -94,7 +83,9 @@ router.put('/updateUser/:id', async (req,res) => {
         user.fname = req.body.fname;
         user.lname = req.body.lname;
         user.email= req.body.email;
-        user.salary= req.body.salary;
+        user.salary1= req.body.salary1;
+        user.salary2= req.body.salary2;
+        user.salary3= req.body.salary3;
         user.phone= req.body.phone;
         user.company= req.body.company;
         user.profession= req.body.profession;
@@ -114,9 +105,9 @@ router.put('/updateUser/:id', async (req,res) => {
 router.delete('/deleteUser/:id',authenticate, async (req,res) => {
     
     try{
-        res.clearCookie("jwtLogin");
-        const user = await User.findById(req.params.id).remove();
-        res.send(user)
+        res.clearCookie("jwt");
+        await User.findById(req.params.id).remove();
+        res.send({msg: "User Deleted!"})
     }
     catch(err) {
         console.log("error: ", err)
@@ -127,12 +118,13 @@ router.delete('/deleteUser/:id',authenticate, async (req,res) => {
 //for logout
 router.get('/logout',authenticate, async (req,res) => {
     try{
+        console.log("jwt cookie: ", req.cookies.jwt)
         //remove token from database
         req.authenticateUser.Tokens = req.authenticateUser.Tokens.filter((ele) => {
             return ele.token !== req.token
         })
         //clear cookie
-        res.clearCookie("jwtLogin");
+        res.clearCookie("jwt");
         await req.authenticateUser.save();
         res.status(200).send("User Logout");
     }
@@ -142,7 +134,8 @@ router.get('/logout',authenticate, async (req,res) => {
     
 });
 
-router.get('/getUsers/page=:page',async (req,res) => {
+//for pagination
+router.get('/getUsers/page=:page', authenticate , async (req,res) => {
     try{
         let page= req.params.page
         let size = 10
@@ -162,6 +155,7 @@ router.get('/getUsers/page=:page',async (req,res) => {
     }
 })
 
+//for searchEmployee
 router.get('/searchuser=:Employee', async (req,res) => {
     try{
         const searchUser = new RegExp(req.params.Employee, 'i')
@@ -172,8 +166,6 @@ router.get('/searchuser=:Employee', async (req,res) => {
                 { company: searchUser},
             ]
         })
-        console.log("searchUser: ", searchUser)
-        console.log("user: ", user)
         res.status(200).send(user);
     }
     catch(err){
@@ -181,13 +173,29 @@ router.get('/searchuser=:Employee', async (req,res) => {
     }
 })
 
+//for sorting in  ascending
+router.get('/ascending', async (req,res) => {
+    try{
+        const asc = {fname: 1}
+        const user = await User.find().sort(asc)
+        res.send(user);
+    }
+    catch(err){
+        res.status(500).send(err); 
+    }
+})
+
+//for sorting in descending
+router.get('/descending', async (req,res) => {
+    try{
+    
+        const asc = {fname: -1}
+        const user = await User.find().sort(asc)
+        res.send(user);
+    }
+    catch(err){
+        res.status(500).send(err); 
+    }
+})
+
 module.exports = router;
-
-
-//{
-//     $toInt: [
-//         { "salary": searchUser}
-//     ]
-// }
-
-//{ salary: NumberInt(searchUser)}

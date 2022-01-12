@@ -14,6 +14,7 @@ export const RegisterUser = (values) => {
             console.log("error: ", err);
             alert("Invalid Credentials!");
         });
+        
     }
 }
 
@@ -68,7 +69,6 @@ export const getUserDetailsUser = (page) => {
     return (dispatch) => {
         Axios.get(`/getUsers/page=${page}`) 
         .then(res => {
-            console.log("use data from deshboard action", res.data)
             const userData = res.data;
             dispatch({type: "getUserDetails_User", payload: userData})
         })
@@ -99,8 +99,7 @@ export const SearchUser = (searchUser) => {
         Axios.get(`/searchuser=${searchUser}`)
         .then(res => {
             const userData = res.data;
-            console.log("search data from actions", userData)
-            dispatch({type: "Search_User", payload: userData})
+            dispatch({type: "Search_User", payload: userData}) 
         })
         .catch(err => {
             console.log("error: ", err);
@@ -108,4 +107,30 @@ export const SearchUser = (searchUser) => {
     }
 }
 
+//Ascending User action
+export const AscendingName = () => {
+    return (dispatch) => {
+        Axios.get(`/ascending`)
+        .then(res => {
+            const userData = res.data;
+            dispatch({type: "Ascending_Name", payload: userData})
+        })
+        .catch(err => {
+            console.log("error: ", err);
+        });
+    }
+}
 
+//Descending User action
+export const DescendingName = () => {
+    return (dispatch) => {
+        Axios.get(`/descending`)
+        .then(res => {
+            const userData = res.data;
+            dispatch({type: "Descending_Name", payload: userData})
+        })
+        .catch(err => {
+            console.log("error: ", err);
+        });
+    }
+}

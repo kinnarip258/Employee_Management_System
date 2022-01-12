@@ -1,9 +1,7 @@
-import { SearchUser } from "../actions/userActions"
-
 const initialState = {
     user: [],
     searchUser: [],
-    LoginState: false,
+    LoginState: true
 }
 
 
@@ -20,7 +18,7 @@ const ApiReducers = (state = initialState, action) => {
         
             return {
                 ...state,
-                user: [action.payload]   
+                user: action.payload   
             }
 
         case "Login_User":
@@ -28,7 +26,7 @@ const ApiReducers = (state = initialState, action) => {
             return {
                 ...state,
                 user: [action.payload],
-                LoginState: true
+                LoginState: false
             }
 
         case "Delete_User":
@@ -43,7 +41,6 @@ const ApiReducers = (state = initialState, action) => {
             return {
                 ...state,
                 user: action.payload ,
-                LoginState: true
             }
 
         case "Logout_User":
@@ -55,9 +52,20 @@ const ApiReducers = (state = initialState, action) => {
         case "Search_User":
             
             return {
-                searchUser: action.payload,
-                user: state.searchUser
+                user: action.payload 
             }
+
+        case "Ascending_Name":
+            
+            return {
+                user: action.payload 
+            }
+
+        case "Descending_Name":
+            return {
+                user: action.payload
+            }
+
         default:
             return state;
     }

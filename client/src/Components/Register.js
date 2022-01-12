@@ -12,7 +12,7 @@ const Register = () => {
     const [editedObject,setEditedObject] = useState([]);
     //get edited user id
     const {id} = queryString.parse(window.location.search);
-    console.log("id from register: ", id)
+    
     //dispatch the api request
     const ApiDispatch = useDispatch();
     //get response of the api request
@@ -20,7 +20,7 @@ const Register = () => {
     const formik = useFormik({
         //initialValues form input field
         initialValues: {
-            fname:"",  lname:"", email:"", phone:"", company:"", profession:"", salary:"", password:"" , cpassword:"", 
+            fname:"",  lname:"", email:"", phone:"", company:"", profession:"", salary1:"", salary2:"", salary3:"", password:"" , cpassword:"", 
         },
 
         //when the form submitted
@@ -29,7 +29,7 @@ const Register = () => {
             if(id){ 
                 ApiDispatch(SaveUpdate(id,values))
                 //navigate to about component
-                history.push('/About')
+                history.push('/Dashboard')
             }
             //add new user
             else{
@@ -79,8 +79,14 @@ const Register = () => {
                     <label>Profession </label>
                     <input required onChange={formik.handleChange} value={formik.values.profession}  name="profession" type='text' placeholder="Enter Profession ..." />
 
-                    <label>Salary</label>
-                    <input required onChange={formik.handleChange} value={formik.values.salary}  name="salary" type='number' placeholder="Enter Salary ..." />
+                    <label>Salary (1st Month)</label>
+                    <input required onChange={formik.handleChange} value={formik.values.salary1}  name="salary1" type='number' placeholder="Enter 1st Month Salary ..." />
+
+                    <label>Salary (2nd Month)</label>
+                    <input required onChange={formik.handleChange} value={formik.values.salary2}  name="salary2" type='number' placeholder="Enter 2nd Month Salary ..." />
+
+                    <label>Salary (3rd Month)</label>
+                    <input required onChange={formik.handleChange} value={formik.values.salary3}  name="salary3" type='number' placeholder="Enter 3rd Month Salary ..." />
 
                     <label>Password </label>
                     <input required onChange={formik.handleChange} value={formik.values.password}  name="password" type='Password' placeholder="Enter Password ..." />

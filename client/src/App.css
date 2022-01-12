@@ -57,6 +57,7 @@
     text-align: center;
     margin: 400px 500px 500px 500px ;
 }
+
 .pagination{
     display: inline-block;
     cursor: pointer;
@@ -68,4 +69,11 @@
     text-decoration: none;
     border: 1px solid blue;
     
+}
+
+td {
+    text-align: center;
+}
+th {
+    text-align: center;
 }
