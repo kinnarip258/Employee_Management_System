@@ -26,7 +26,6 @@ router.post('/signUp', async (req,res) => {
             return res.status(422).send({ error: "password are not matching!"});
         } 
         else{
-            
             const user = await new User({fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword}).save();
             //sendMail({toUser: user.email, user: user})
             res.status(201).send({ message: "User sucessfully register."});  
@@ -102,9 +101,10 @@ router.put('/updateUser/:id', async (req,res) => {
 });
 
 //delete user
-router.delete('/deleteUser/:id',authenticate, async (req,res) => {
+router.delete('/deleteUser/:id', authenticate, async (req,res) => {
     
     try{
+        //clear cookie
         res.clearCookie("jwt");
         await User.findById(req.params.id).remove();
         res.send({msg: "User Deleted!"})
@@ -116,7 +116,7 @@ router.delete('/deleteUser/:id',authenticate, async (req,res) => {
 });
 
 //for logout
-router.get('/logout',authenticate, async (req,res) => {
+router.get('/logout', authenticate, async (req,res) => {
     try{
         console.log("jwt cookie: ", req.cookies.jwt)
         //remove token from database
@@ -134,68 +134,65 @@ router.get('/logout',authenticate, async (req,res) => {
     
 });
 
-//for pagination
-router.get('/getUsers/page=:page', authenticate , async (req,res) => {
+//get users
+//authenticate,
+router.get('/getUser/page=:page/:Request',authenticate, async (req,res) => {
     try{
-        let page= req.params.page
-        let size = 10
-        if(!page){
-            page=1
+        let page = req.params.page;
+        let skip = (page-1) * 10;
+
+        //total pages
+        const total = await User.countDocuments({});
+        let totalPage = Math.ceil(total/10);
+
+        let aggregateQuery = [];
+        console.log("url: ", req.params.Request)
+
+        //sort in ascending order
+        if(req.params.Request === "ascending"){
+           aggregateQuery.push(
+               {$sort: { fname: 1 }}
+           ) 
         }
-        const limit = parseInt(size);
-        const skip = (page-1) * size;
+        //sort in descending order
+        else if(req.params.Request === "descending"){
+            aggregateQuery.push(
+                {$sort: { fname: -1 }}
+            ) 
+        }
+        //search Employees
+        else if(req.params.Request !== "Employees" ){
+            const searchUser = req.params.Request;
+            aggregateQuery.push(
+                {
+                    $match: {
+                        $or: [
+                            { fname: new RegExp(searchUser, 'i')},
+                            { company: new RegExp(searchUser, 'i')},
+                            {salary1: parseInt(searchUser)},
+                            {salary2: parseInt(searchUser)},
+                            {salary3: parseInt(searchUser)}
+                        ]
+                    }
+                },
+                                       
+            )
+        }
 
-        //const users = await User.find({}, {}, {limit: limit, skip:skip})
-        const users = await User.find().limit(limit).skip(skip);
-        res.send(users)
-    }
-    catch(err) {
-        console.log("error: ", err);
-        res.send("error" + err);
-    }
-})
-
-//for searchEmployee
-router.get('/searchuser=:Employee', async (req,res) => {
-    try{
-        const searchUser = new RegExp(req.params.Employee, 'i')
-
-        const user = await User.find({
-            $or: [
-                { fname: searchUser},
-                { company: searchUser},
-            ]
-        })
-        res.status(200).send(user);
+        aggregateQuery.push(
+            {
+                $skip: skip
+            },
+            {
+                $limit: 10  
+            }
+        )
+        const users = await User.aggregate([aggregateQuery])
+        res.send({users, totalPage})
+        
     }
     catch(err){
-        res.status(500).send(err);
+        res.status(500).send(err);  
     }
 })
-
-//for sorting in  ascending
-router.get('/ascending', async (req,res) => {
-    try{
-        const asc = {fname: 1}
-        const user = await User.find().sort(asc)
-        res.send(user);
-    }
-    catch(err){
-        res.status(500).send(err); 
-    }
-})
-
-//for sorting in descending
-router.get('/descending', async (req,res) => {
-    try{
-    
-        const asc = {fname: -1}
-        const user = await User.find().sort(asc)
-        res.send(user);
-    }
-    catch(err){
-        res.status(500).send(err); 
-    }
-})
-
 module.exports = router;

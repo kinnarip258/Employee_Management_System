@@ -1,6 +1,6 @@
 const initialState = {
     user: [],
-    searchUser: [],
+    page: [],
     LoginState: true
 }
 
@@ -18,7 +18,7 @@ const ApiReducers = (state = initialState, action) => {
         
             return {
                 ...state,
-                user: action.payload   
+                user: [action.payload]  
             }
 
         case "Login_User":
@@ -33,37 +33,42 @@ const ApiReducers = (state = initialState, action) => {
             
             return  {
                 ...state,
-                LoginState: false   
+                LoginState: true   
             }
 
         case "getUserDetails_User":
-            
+            console.log("action.payload:all ", action.payload)
             return {
                 ...state,
-                user: action.payload ,
+                user: action.payload.users,
+                page: action.payload.totalPage
             }
 
         case "Logout_User":
             
             return {
-                LoginState: false
+                LoginState: true
             }
 
         case "Search_User":
-            
+            console.log("action.payload:search ", action.payload)
             return {
-                user: action.payload 
+                user: action.payload.users,
+                page: action.payload.totalPage
             }
 
         case "Ascending_Name":
-            
+            console.log("action.payload: asc", action.payload)
             return {
-                user: action.payload 
+                user: action.payload.users,
+                page: action.payload.totalPage
             }
 
         case "Descending_Name":
+            console.log("action.payload:desc ", action.payload)
             return {
-                user: action.payload
+                user: action.payload.users,
+                page: action.payload.totalPage
             }
 
         default:

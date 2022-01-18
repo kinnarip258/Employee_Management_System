@@ -63,11 +63,11 @@ export const DeleteUser = (id) =>{
     }  
 }
 
-//get Login User Detail action 
+//get Users Detail action 
 export const getUserDetailsUser = (page) => {
     
     return (dispatch) => {
-        Axios.get(`/getUsers/page=${page}`) 
+        Axios.get(`/getUser/page=${page}/Employees`) 
         .then(res => {
             const userData = res.data;
             dispatch({type: "getUserDetails_User", payload: userData})
@@ -94,9 +94,9 @@ export const LogoutUser = () => {
 
 
 //Search User action
-export const SearchUser = (searchUser) => {
+export const SearchUser = (searchUser,page) => {
     return (dispatch) => {
-        Axios.get(`/searchuser=${searchUser}`)
+        Axios.get(`/getUser/page=${page}/${searchUser}`)
         .then(res => {
             const userData = res.data;
             dispatch({type: "Search_User", payload: userData}) 
@@ -108,9 +108,9 @@ export const SearchUser = (searchUser) => {
 }
 
 //Ascending User action
-export const AscendingName = () => {
+export const AscendingName = (page) => {
     return (dispatch) => {
-        Axios.get(`/ascending`)
+        Axios.get(`/getUser/page=${page}/ascending`)
         .then(res => {
             const userData = res.data;
             dispatch({type: "Ascending_Name", payload: userData})
@@ -122,9 +122,9 @@ export const AscendingName = () => {
 }
 
 //Descending User action
-export const DescendingName = () => {
+export const DescendingName = (page) => {
     return (dispatch) => {
-        Axios.get(`/descending`)
+        Axios.get(`/getUser/page=${page}/descending`)
         .then(res => {
             const userData = res.data;
             dispatch({type: "Descending_Name", payload: userData})

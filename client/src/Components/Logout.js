@@ -4,10 +4,11 @@ import {LogoutUser} from "../actions/userActions"
 import {useHistory} from 'react-router-dom'
 
 const Logout = () => {
-    
+
     //dispatch the api request
     const ApiDispatch = useDispatch();
     const history = useHistory();
+    
     useEffect(() => {
         //dispatch logout request
         ApiDispatch(LogoutUser());

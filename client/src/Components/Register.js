@@ -12,11 +12,11 @@ const Register = () => {
     const [editedObject,setEditedObject] = useState([]);
     //get edited user id
     const {id} = queryString.parse(window.location.search);
-    
+     //get response of the api request
+     const user = useSelector(state => state.user)
     //dispatch the api request
     const ApiDispatch = useDispatch();
-    //get response of the api request
-    const user = useSelector(state => state.user)
+   
     const formik = useFormik({
         //initialValues form input field
         initialValues: {
@@ -41,6 +41,7 @@ const Register = () => {
     });
     //for getting the edited user data
     useEffect(() => {
+        
         const editUser = user.find((ele) => ele._id === id ? ele : null);
         setEditedObject(editUser);
     },[id]);

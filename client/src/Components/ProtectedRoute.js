@@ -16,11 +16,12 @@ const ProtectedRoute = ({authStatus, component: Component, ...rest}) => {
                     return <Component {...props}/>;
                 }
                 else{
-                    return <Redirect to='/Dashboard' />;
+                    return <Redirect to='/' />;
                 }
             }}/> 
         </>
     )   
+    
 }
 
 export default ProtectedRoute;

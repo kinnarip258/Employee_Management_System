@@ -8,7 +8,7 @@ import Logout from '../Components/Logout';
 import ProtectedRoute from '../Components/ProtectedRoute';
 import { Switch,Route, Redirect} from "react-router-dom";
 import {useSelector} from "react-redux";
-import ProtectedRouteDashboard from '../Components/ProtectedRouteDashboard';
+
 
 const AppRoutes = () => {
 
@@ -20,18 +20,16 @@ const AppRoutes = () => {
                     <Switch>
                         <Route exact path = '/' component={Home} />
                         <Route exact path = '/Registration' component={Register} />
-                        <Route exact path = '/editUser/:id' component={Register} />               
-                        <ProtectedRoute exact path = '/Login' component={Login} authStatus= {LoginState}/>
-                        <ProtectedRouteDashboard exact path= '/Dashboard' component={Dashboard} authStatus={!LoginState}/>
+                        <Route exact path = '/editUser/:id' component={Register} />
+                        <ProtectedRoute exact path = '/Logout' component={Logout} authStatus={!LoginState}/>
+                        <ProtectedRoute exact path= '/Dashboard' component={Dashboard} authStatus={!LoginState}/>
                         {
-                            !LoginState ? (
+                            LoginState ? (
                                 <> 
-                                    <Route exact path = '/Logout' component={Logout} />
+                                    <Route exact path = '/Login' component={Login} />
                                 </>
-                            ) : <Redirect to= "/Login"/>
+                            ) : <Redirect to= "/Dashboard"/>
                         }
-
-                        
                         <Route component={Error404} />    
                     </Switch>   
             </div>

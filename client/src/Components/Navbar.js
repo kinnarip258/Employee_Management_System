@@ -1,6 +1,5 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Switch,Route, Redirect} from "react-router-dom";
 import {useSelector} from "react-redux";
 const Navbar = () => {
 
