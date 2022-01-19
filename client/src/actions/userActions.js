@@ -1,6 +1,10 @@
+//========================== Import Modules Start ===========================
 import Axios from 'axios';
+//========================== Import Modules End =============================
 
-//Register User action
+//============================= Actions =============================
+
+//============================= Register User Action Start =============================
 export const RegisterUser = (values) => {
     return (dispatch) => {
         Axios.post(`/signUp`, values)
@@ -17,8 +21,9 @@ export const RegisterUser = (values) => {
         
     }
 }
+//============================= End =============================
 
-//Save Update action
+//============================= Save Updated Detils Of Employee Action Start =============================
 export const SaveUpdate = (id,values) => {
     return (dispatch) => {
         Axios.put(`/updateUser/${id}`, values) 
@@ -31,8 +36,9 @@ export const SaveUpdate = (id,values) => {
         });
     }     
 }
+//============================= End =============================
 
-//Login User action
+//============================= Login User Action Start =============================
 export const LoginUser = (values) => {
     
     return (dispatch) => {
@@ -48,8 +54,9 @@ export const LoginUser = (values) => {
         });
     }
 }
+//============================= End =============================
 
-//Delete User action
+//============================= Delete Employee Action Start =============================
 export const DeleteUser = (id) =>{
     return (dispatch) => {
         Axios.delete(`/deleteUser/${id}`)
@@ -62,12 +69,13 @@ export const DeleteUser = (id) =>{
         });
     }  
 }
+//============================= End =============================
 
-//get Users Detail action 
-export const getUserDetailsUser = (page) => {
+//============================= Get Employees Details Action Start =============================
+export const getUserDetailsUser = (page, Request) => {
     
     return (dispatch) => {
-        Axios.get(`/getUser/page=${page}/Employees`) 
+        Axios.get(`/getUser/page=${page}/${Request}`) 
         .then(res => {
             const userData = res.data;
             dispatch({type: "getUserDetails_User", payload: userData})
@@ -77,9 +85,11 @@ export const getUserDetailsUser = (page) => {
         });
     }
 }
+//============================= End =============================
 
-//Logout User action
+//============================= Logout User Action Start =============================
 export const LogoutUser = () => {
+
     return (dispatch) => {
         Axios.get(`/logout`)
         .then(res => {
@@ -91,46 +101,4 @@ export const LogoutUser = () => {
         });
     }
 }
-
-
-//Search User action
-export const SearchUser = (searchUser,page) => {
-    return (dispatch) => {
-        Axios.get(`/getUser/page=${page}/${searchUser}`)
-        .then(res => {
-            const userData = res.data;
-            dispatch({type: "Search_User", payload: userData}) 
-        })
-        .catch(err => {
-            console.log("error: ", err);
-        });
-    }
-}
-
-//Ascending User action
-export const AscendingName = (page) => {
-    return (dispatch) => {
-        Axios.get(`/getUser/page=${page}/ascending`)
-        .then(res => {
-            const userData = res.data;
-            dispatch({type: "Ascending_Name", payload: userData})
-        })
-        .catch(err => {
-            console.log("error: ", err);
-        });
-    }
-}
-
-//Descending User action
-export const DescendingName = (page) => {
-    return (dispatch) => {
-        Axios.get(`/getUser/page=${page}/descending`)
-        .then(res => {
-            const userData = res.data;
-            dispatch({type: "Descending_Name", payload: userData})
-        })
-        .catch(err => {
-            console.log("error: ", err);
-        });
-    }
-}
+//============================= End =============================

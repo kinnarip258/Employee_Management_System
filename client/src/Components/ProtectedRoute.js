@@ -1,5 +1,11 @@
+//========================== Import Modules Start ===========================
+
 import React from 'react'
 import {Route, Redirect} from 'react-router-dom';
+
+//========================== Import Modules End =============================
+
+//============================= Protected Route Component Start =============================
 
 //protected route
 //authstate: authenticate state
@@ -24,4 +30,10 @@ const ProtectedRoute = ({authStatus, component: Component, ...rest}) => {
     
 }
 
+//============================= Protected Route Component End =============================
+
+//============================= Export Default Start =============================
+
 export default ProtectedRoute;
+
+//============================= Export Default End =============================

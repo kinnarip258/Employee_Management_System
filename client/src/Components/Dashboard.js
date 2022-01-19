@@ -1,9 +1,15 @@
+//========================== Import Modules Start ===========================
+
 import React, { useEffect, useState} from "react";
 import { NavLink } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {getUserDetailsUser, DeleteUser, SearchUser, AscendingName, DescendingName} from "../actions/userActions";
-import Pagination from "./Pagination";
+import {getUserDetailsUser, DeleteUser} from "../actions/userActions";
+import Pagination from '@mui/material/Pagination';
+
+//========================== Import Modules End =============================
+
+//============================= Dashboard Component Start =============================
 
 const Deshboard = () => {
     
@@ -14,20 +20,19 @@ const Deshboard = () => {
     //navigate the page
     const history = useHistory();
 
-    useEffect(() => {
-        //dispatch getuserdetails request 
-        ApiDispatch(getUserDetailsUser(1))
-    }, [])
+    //searchUser state
+    const [searchUser, setSearchUser] = useState("");
     
+    //pagination
+    const page = useSelector(state => state.page);
+    const [request, setRequest] = useState("Employees");
+    const [pageNumber, setPageNumber] = useState(1);
+
     useEffect(() => {
-        
-        if(user.length === 0){
-            alert("No Employees...");
-            setToggle("all");
-            setSearchUser("");
-            ApiDispatch(getUserDetailsUser(1))
-        }
-    }, [user])
+        //dispatch getUsers request 
+        ApiDispatch(getUserDetailsUser(pageNumber, request))
+    }, [pageNumber, request])
+    
 
     //delete the user
     const handleDelete = (id) => {
@@ -35,23 +40,21 @@ const Deshboard = () => {
         ApiDispatch(DeleteUser(id));
         history.push("/Registration")
     }
-
-    //searchUser state
-    const [searchUser, setSearchUser] = useState("");
-    const [toggle, setToggle] = useState("all")
+   
     return(
         <>
             <div className='main_div'>
-                <div className='col-md-12 my-5 text-center'>
+                <div className='col-md-12 my-3 text-center'>
                     <h1>Employee Data</h1>
                 </div>
                 <div className='col-md-12 my-5 text-center'>
                     <input onChange={(e) => setSearchUser(e.target.value)} value={searchUser} placeholder="search Employee..."/>
-                    <button onClick={() => ApiDispatch(SearchUser(searchUser, 1), setToggle("search"))}> Search </button>
+                    <button onClick={() => ApiDispatch(getUserDetailsUser(pageNumber, setRequest(searchUser)))}> Search </button>
                 </div>
+                    
                 <div className='col-md-12 mx-auto'>
-                    <button onClick={() => ApiDispatch(AscendingName(1), setToggle("asc"))} >Ascending</button>
-                    <button onClick={() => ApiDispatch(DescendingName(1), setToggle("desc"))}>Descending</button>
+                    <button onClick={() => ApiDispatch(getUserDetailsUser(pageNumber, setRequest("ascending")))} >Ascending</button>
+                    <button onClick={() => ApiDispatch(getUserDetailsUser(pageNumber, setRequest("descending")))}>Descending</button>
                     <table className='table table-hover'>
                         <thead className='text-black text-center'>
                             <tr>
@@ -94,22 +97,20 @@ const Deshboard = () => {
                     </table>
                 </div>
 
-                {
-                    toggle === "all" ? <Pagination toggle = "all"/> : null
-                }
-                {
-                    toggle === "asc" ? <Pagination toggle = "asc"/> : null
-                }
-                {
-                    toggle === "desc" ? <Pagination toggle = "desc"/> : null
-                }
-                {
-                    toggle === "search" ? <Pagination searchUser = {searchUser} toggle = "search"/> : null
-                }
+                <Pagination count={page} variant="outlined" onChange={(e, value) =>  {
+                    setPageNumber(value)  
+                }}/>
+                
                     
             </div>     
         </>
     )
 };
 
+//============================= Dashboard Component End =============================
+
+//============================= Export Default Start =============================
+
 export default Deshboard;
+
+//============================= Export Default End =============================

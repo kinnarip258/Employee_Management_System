@@ -1,9 +1,15 @@
+//========================== Load Modules Start ===========================
+
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import App from './App';
 import store from './store';
+
+//========================== Load Modules End =============================
+
+//============================= Index Start =============================
 
 ReactDOM.render(
     <>  
@@ -13,3 +19,5 @@ ReactDOM.render(
             </Provider>   
         </BrowserRouter>
     </>, document.getElementById("root"));
+
+//============================= Index End =============================

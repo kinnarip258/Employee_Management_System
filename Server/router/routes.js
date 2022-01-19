@@ -1,3 +1,7 @@
+//========================== Load Modules Start ===========================
+
+//========================== Load internal Module =========================
+
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
@@ -6,8 +10,10 @@ const sendMail = require("../mail/nodemailer")
 require('../db/conn');
 const User = require('../models/userSchema');
 
+//========================== Load Modules End =============================
 
-//register route
+//============================= Register =============================
+
 router.post('/signUp', async (req,res) => {
 
     const {fname, lname, email, phone,company, profession, salary1, salary2, salary3, password, cpassword} = req.body;
@@ -16,7 +22,6 @@ router.post('/signUp', async (req,res) => {
         return res.status(422 ).send({error: "please fill the field properly"});
     }
     try{
-
         const userExist = await User.findOne({email: email});
 
         if(userExist) {
@@ -25,19 +30,26 @@ router.post('/signUp', async (req,res) => {
         else if(password !== cpassword){
             return res.status(422).send({ error: "password are not matching!"});
         } 
+        
         else{
+    
             const user = await new User({fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword}).save();
+            //============================= Send Email To Register User =============================
             //sendMail({toUser: user.email, user: user})
+    
             res.status(201).send({ message: "User sucessfully register."});  
         }       
     } 
     catch (err) {
+        //============================= Error Message =============================
+        res.send(err)
         console.log(err);
     }
     
 })
 
-//login route
+//============================= Login =============================
+
 router.post('/signIn', async (req,res) => {
    try{
         let token ;
@@ -56,14 +68,15 @@ router.post('/signIn', async (req,res) => {
                 res.status(400).send({ error: "Invalid Credientials!"});
             }
             else {
+                //============================= Generate Token =============================
                 token = await userLogin.generateAuthToken();
 
-                //store the token in cookie
+                //============================= Store Token In Cookie =============================
                 res.cookie("jwt", token , {
                     expires: new Date(Date.now() + 3600000),
                     httpOnly: true
                 });
-
+                //============================= Send Login User =============================
                 res.send(userLogin);
             }
         }
@@ -71,11 +84,13 @@ router.post('/signIn', async (req,res) => {
             res.status(400).send({ error: "Invalid Credientials!"});
         }      
    } catch (err) {
+    res.send(err)
     console.log(err);
    }
 })
 
-//update user
+//============================= Update Employee Details =============================
+
 router.put('/updateUser/:id', async (req,res) => {
     try{
         const user = await User.findById(req.params.id);
@@ -90,23 +105,27 @@ router.put('/updateUser/:id', async (req,res) => {
         user.profession= req.body.profession;
         user.password = req.body.password;
         user.cpassword = req.body.cpassword;
-        
+
+        //============================= Save Update Details =============================
         const e1 = await user.save();
         res.send((e1));
     }
     catch(err) {
-        console.log("error: ", err)
-        res.send("error" + err)
+        console.log(err)
+        res.send(err)
     };
 });
 
-//delete user
+//============================= Delete Employee =============================
+
 router.delete('/deleteUser/:id', authenticate, async (req,res) => {
     
     try{
-        //clear cookie
+        //============================= Clear Cookie =============================
         res.clearCookie("jwt");
+        //============================= Delete Employee =============================
         await User.findById(req.params.id).remove();
+        //============================= Send Response =============================
         res.send({msg: "User Deleted!"})
     }
     catch(err) {
@@ -115,54 +134,53 @@ router.delete('/deleteUser/:id', authenticate, async (req,res) => {
     };
 });
 
-//for logout
+//============================= Logout =============================
+
 router.get('/logout', authenticate, async (req,res) => {
     try{
         console.log("jwt cookie: ", req.cookies.jwt)
-        //remove token from database
+        //============================= Remove Token From Database =============================
         req.authenticateUser.Tokens = req.authenticateUser.Tokens.filter((ele) => {
             return ele.token !== req.token
         })
-        //clear cookie
+        //============================= Clear Cookie =============================
         res.clearCookie("jwt");
+        //============================= Save Authenticate User =============================
         await req.authenticateUser.save();
+        //============================= Send Response =============================
         res.status(200).send("User Logout");
     }
     catch(err){
+        //============================= Send Error Message =============================
         res.status(500).send(err);
     }
     
 });
 
-//get users
-//authenticate,
+//============================= Get Employees =============================
+
 router.get('/getUser/page=:page/:Request',authenticate, async (req,res) => {
     try{
-        let page = req.params.page;
+        let {page, Request} = req.params;
         let skip = (page-1) * 10;
 
-        //total pages
+        //============================= Count Total Documents =============================
         const total = await User.countDocuments({});
+        //============================= Count Total Pages =============================
         let totalPage = Math.ceil(total/10);
 
+        //============================= Create Array =============================
         let aggregateQuery = [];
-        console.log("url: ", req.params.Request)
-
-        //sort in ascending order
-        if(req.params.Request === "ascending"){
+       
+        //============================= Sort In Ascending Order =============================
+        if(Request === "ascending" || Request === "descending"){
            aggregateQuery.push(
-               {$sort: { fname: 1 }}
+               {$sort: { fname : Request === "ascending" ? 1 : -1}}
            ) 
         }
-        //sort in descending order
-        else if(req.params.Request === "descending"){
-            aggregateQuery.push(
-                {$sort: { fname: -1 }}
-            ) 
-        }
-        //search Employees
-        else if(req.params.Request !== "Employees" ){
-            const searchUser = req.params.Request;
+        //============================= Search Employee =============================
+        else if(Request !== "Employees" ){
+            const searchUser = Request;
             aggregateQuery.push(
                 {
                     $match: {
@@ -178,7 +196,7 @@ router.get('/getUser/page=:page/:Request',authenticate, async (req,res) => {
                                        
             )
         }
-
+        //============================= Pagination =============================
         aggregateQuery.push(
             {
                 $skip: skip
@@ -187,12 +205,20 @@ router.get('/getUser/page=:page/:Request',authenticate, async (req,res) => {
                 $limit: 10  
             }
         )
+        //============================= Apply AggreagteQuery In User Collection =============================
         const users = await User.aggregate([aggregateQuery])
+        //============================= Send Response =============================
         res.send({users, totalPage})
         
     }
     catch(err){
+        //============================= Send Error Massage =============================
         res.status(500).send(err);  
     }
-})
+});
+
+//========================== Export Module Start ===========================
+
 module.exports = router;
+
+//========================== Export module end ==================================

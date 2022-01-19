@@ -1,21 +1,30 @@
+//========================== Load Modules Start ===========================
+
+//========================== Load internal Module =========================
+
 const nodemailer = require('nodemailer');
 
+//========================== Load Modules End =============================
+
+//============================= SendMail To User Start =============================
 
 const sendMail = ({toUser, user}) => {
 
-    //createTransport for mail
+    //============================= Create Transport Start =============================
     const transport = nodemailer.createTransport(
         {
+            //============================= Services For Email =============================
             service: 'Gmail',
-            //authenticate user and password
+            //============================= Authenticate UserName And Password =============================
             auth: {
                 user: process.env.USER,
                 pass: process.env.PASSWORD
             }
         }
     );
+    //============================= Create Transport End =============================
 
-    //email message
+    //============================= Message Send With Email Start =============================
     const Message = {
         from: process.env.USER,
         to: toUser,
@@ -29,17 +38,29 @@ const sendMail = ({toUser, user}) => {
             <p>Salary: ${user.salary}</p>
         `
     };
+    //============================= Message Send With Email End =============================
     
-    //send the email
+    //============================= Send Email Start =============================
     transport.sendMail(Message, (error, info) => {
         if(error){
+            //============================= Error Message =============================
             console.log(error);
+            
         }
         else{
+            //============================= Successfull Email Send Message  =============================
             console.log("Email Send: " + info.response);
+            
         }
     });
+    //============================= Send Email End =============================
 
 }
 
+//============================= SendMail To User End =============================
+
+//========================== Export Module Start ===========================
+
 module.exports = sendMail;
+
+//========================== Export module end ==================================

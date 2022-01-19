@@ -1,7 +1,13 @@
-import React, {useEffect} from 'react'
-import {useDispatch} from 'react-redux'
-import {LogoutUser} from "../actions/userActions"
-import {useHistory} from 'react-router-dom'
+//========================== Import Modules Start ===========================
+
+import React, {useEffect} from 'react';
+import {useDispatch} from 'react-redux';
+import {LogoutUser} from "../actions/userActions";
+import {useHistory} from 'react-router-dom';
+
+//========================== Import Modules End =============================
+
+//============================= Logout Component Start =============================
 
 const Logout = () => {
 
@@ -12,13 +18,19 @@ const Logout = () => {
     useEffect(() => {
         //dispatch logout request
         ApiDispatch(LogoutUser());
-        history.push('/')
-    }, [])
+        history.push('/Login');
+    }, []);
 
     return(
         <>
         </>
     )
-}
+};
+
+//============================= Logout Component End =============================
+
+//============================= Export Default Start =============================
 
 export default Logout;
+
+//============================= Export Default End =============================

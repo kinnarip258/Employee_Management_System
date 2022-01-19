@@ -1,9 +1,16 @@
+//========================== Load Modules Start ===========================
+
+//========================== Load internal Module =========================
 const mongoose = require('mongoose');
 
-//get the connection request from config.env
+//========================== Load Modules End =============================
+
+//========================== MongoDB Connection =============================
+
+//============================= Coonection Request =============================
 const DB = process.env.DATABASECOMPASS;
 
-//connection with database
+//============================= Coonection With Database =============================
 mongoose.connect(DB)
  .then(() => console.log('db connected'))
  .catch(err => console.log(err));

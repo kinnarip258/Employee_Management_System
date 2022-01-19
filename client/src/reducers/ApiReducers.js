@@ -1,9 +1,19 @@
+//========================== Import Modules Start ===========================
+
+//========================== Import Modules End =============================
+
+//========================== InitialState Start ===========================
+
 const initialState = {
     user: [],
-    page: [],
+    page: [],    
     LoginState: true
 }
 
+//========================== InitialState End =============================
+
+
+//============================= Reducers Start =============================
 
 const ApiReducers = (state = initialState, action) => {
     switch (action.type) {
@@ -37,7 +47,7 @@ const ApiReducers = (state = initialState, action) => {
             }
 
         case "getUserDetails_User":
-            console.log("action.payload:all ", action.payload)
+            
             return {
                 ...state,
                 user: action.payload.users,
@@ -50,30 +60,15 @@ const ApiReducers = (state = initialState, action) => {
                 LoginState: true
             }
 
-        case "Search_User":
-            console.log("action.payload:search ", action.payload)
-            return {
-                user: action.payload.users,
-                page: action.payload.totalPage
-            }
-
-        case "Ascending_Name":
-            console.log("action.payload: asc", action.payload)
-            return {
-                user: action.payload.users,
-                page: action.payload.totalPage
-            }
-
-        case "Descending_Name":
-            console.log("action.payload:desc ", action.payload)
-            return {
-                user: action.payload.users,
-                page: action.payload.totalPage
-            }
-
         default:
             return state;
     }
 }
 
+//============================= Reducers End =============================
+
+//============================= Export Default Start =============================
+
 export default ApiReducers;
+
+//============================= Export Default End =============================

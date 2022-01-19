@@ -1,4 +1,6 @@
-import React from 'react'
+//========================== Import Modules Start ===========================
+
+import React from 'react';
 import Home from "../Components/Home";
 import Login from '../Components/Login';
 import Dashboard from '../Components/Dashboard';
@@ -9,6 +11,9 @@ import ProtectedRoute from '../Components/ProtectedRoute';
 import { Switch,Route, Redirect} from "react-router-dom";
 import {useSelector} from "react-redux";
 
+//========================== Import Modules End =============================
+
+//============================= Routes Component Start =============================
 
 const AppRoutes = () => {
 
@@ -37,4 +42,10 @@ const AppRoutes = () => {
     
 }
 
-export default AppRoutes
+//============================= Routes Component End =============================
+
+//============================= Export Default Start =============================
+
+export default AppRoutes;
+
+//============================= Export Default End =============================

@@ -1,6 +1,14 @@
+//========================== Load Modules Start ===========================
+
+//========================== Load internal Module =========================
+
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
+//========================== Load Modules End =============================
+
+//============================= Model Schema Of User =============================
 
 const userSchema = new mongoose.Schema({
     fname: {
@@ -57,7 +65,7 @@ const userSchema = new mongoose.Schema({
     ]
 });
 
-//hasing the password
+//============================= Hashing Password =============================
 userSchema.pre('save', async function(next) {
     if(this.isModified('password')) {
         this.password = await bcrypt.hash(this.password, 12);
@@ -66,24 +74,28 @@ userSchema.pre('save', async function(next) {
     next();
 });
 
-//generating token
+//============================= Generate Token =============================
 userSchema.methods.generateAuthToken = async function() {
     try{
-        //generate the token
+        //============================= Generate Token =============================
         let token = jwt.sign({_id: this._id}, process.env.SECRET_KEY);
-        //concat the token with Tokens
+        //============================= Concat Token With Tokens =============================
         this.Tokens = this.Tokens.concat({token});
-        //save the token  
+        //============================= Save Token =============================  
         await this.save();
         return token;
     }
     catch (err) {
+        //============================= Error Response =============================
         console.log(err);
     }
 }
 
-//model for users collection
+//============================= User Model =============================
 const User = mongoose.model('User', userSchema);
+
+//========================== Export Module Start ===========================
 
 module.exports = User;
 
+//========================== Export module end ==================================

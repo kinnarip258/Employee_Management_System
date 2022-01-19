@@ -1,9 +1,15 @@
+//========================== Import Modules Start ===========================
+
 import React, {useState, useEffect} from 'react'
 import {useHistory, NavLink} from "react-router-dom";
 import {useFormik} from "formik";
 import queryString from "query-string";
 import { useDispatch, useSelector } from 'react-redux';
 import { RegisterUser, SaveUpdate } from '../actions/userActions';
+
+//========================== Import Modules End =============================
+
+//============================= Register Component Start =============================
 
 const Register = () => {
     //navigate the page
@@ -106,4 +112,10 @@ const Register = () => {
     )
 }
 
+//============================= Register Component Start =============================
+
+//============================= Export Default Start =============================
+
 export default Register;
+
+//============================= Export Default End =============================

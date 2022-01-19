@@ -1,18 +1,34 @@
+//========================== Load Modules Start ===========================
+
+//========================== Load internal Module =========================
+
 const jwt = require('jsonwebtoken');
 const User = require('../models/userSchema');
 
+//========================== Load Modules End =============================
+
+//============================= Authenticate User =============================
+
 const Authenticate = async (req,res, next) => {
     try{
-        //get cookie
+        //============================= Get Cookie =============================
+
         const token = req.cookies.jwt;
-        //verify token 
+
+        //============================= Verify Token =============================
+
         const verifyToken = jwt.verify(token, process.env.SECRET_KEY)
-        //find the authenticateuser
+
+        //============================= Find Authenticate User =============================
+
         const authenticateUser = await User.findOne({_id: verifyToken._id, "Tokens.token": token})
-        //if user is not authenticate
+
+        //============================= Not Authenticate User =============================
+
         if(!authenticateUser){
             throw new Error('User not found')
         }
+
         req.token = token;
         req.authenticateUser = authenticateUser;
         req.userId = authenticateUser._id;
@@ -20,10 +36,18 @@ const Authenticate = async (req,res, next) => {
         next();
     }
     catch(err) {
+        //============================= Error Message Start =============================
+
         res.status(401).send('Unauthorized: No token Provided');
         console.log(err)
+
+        //============================= Error Message End =============================
     }
 
 }
 
+//========================== Export Module Start ===========================
+
 module.exports = Authenticate;
+
+//========================== Export module end ==================================
