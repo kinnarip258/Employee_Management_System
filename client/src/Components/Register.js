@@ -21,7 +21,7 @@ const Register = () => {
      //get response of the api request
      const user = useSelector(state => state.user)
     //dispatch the api request
-    const ApiDispatch = useDispatch();
+    const dispatch = useDispatch();
    
     const formik = useFormik({
         //initialValues form input field
@@ -33,13 +33,13 @@ const Register = () => {
         onSubmit: (values) =>  {
             //update the user data
             if(id){ 
-                ApiDispatch(SaveUpdate(id,values))
+                dispatch(SaveUpdate(id,values))
                 //navigate to about component
                 history.push('/Dashboard')
             }
             //add new user
             else{
-                ApiDispatch(RegisterUser(values))
+                dispatch(RegisterUser(values))
                 //resetform fields
                 formik.resetForm();
             }

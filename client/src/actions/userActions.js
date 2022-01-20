@@ -75,7 +75,7 @@ export const DeleteUser = (id) =>{
 export const getUserDetailsUser = (page, Request) => {
     
     return (dispatch) => {
-        Axios.get(`/getUser/page=${page}/${Request}`) 
+        Axios.get(`/getUser/${page}/${Request}`) 
         .then(res => {
             const userData = res.data;
             dispatch({type: "getUserDetails_User", payload: userData})
@@ -95,6 +95,22 @@ export const LogoutUser = () => {
         .then(res => {
             const userData = res.data;
             dispatch({type: "Logout_User", payload: userData})
+        })
+        .catch(err => {
+            console.log("error: ", err);
+        });
+    }
+}
+//============================= End =============================
+
+//============================= Logout User Action Start =============================
+export const AddEvent = (id, note, date) => {
+
+    return (dispatch) => {
+        Axios.post(`/addEvent/:${id}`, note, date)
+        .then(res => {
+            const userData = res.data;
+            dispatch({type: "Add_Event", payload: userData})
         })
         .catch(err => {
             console.log("error: ", err);

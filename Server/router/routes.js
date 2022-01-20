@@ -58,7 +58,6 @@ router.post('/signIn', async (req,res) => {
         if(!email || !password) {
             return res.status(400).send({ error: "please filled the data field!"});
         }
-
         const userLogin = await User.findOne({ email: email});
 
         if(userLogin){
@@ -93,38 +92,42 @@ router.post('/signIn', async (req,res) => {
 
 router.put('/updateUser/:id', async (req,res) => {
     try{
-        const user = await User.findById(req.params.id);
-        user.fname = req.body.fname;
-        user.lname = req.body.lname;
-        user.email= req.body.email;
-        user.salary1= req.body.salary1;
-        user.salary2= req.body.salary2;
-        user.salary3= req.body.salary3;
-        user.phone= req.body.phone;
-        user.company= req.body.company;
-        user.profession= req.body.profession;
-        user.password = req.body.password;
-        user.cpassword = req.body.cpassword;
-
-        //============================= Save Update Details =============================
-        const e1 = await user.save();
-        res.send((e1));
+        const {fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword} = req.body;
+        const user = await User.findByIdAndUpdate(req.params.id,
+            {
+                fname : fname,
+                lname : lname,
+                email: email,
+                salary1: salary1,
+                salary2: salary2,
+                salary3: salary3,
+                phone: phone,
+                company: company,
+                profession: profession,
+                password : password,
+                cpassword : cpassword,
+            },
+            {
+                new: false
+            },
+        );
+        res.json({msg: "Employee Updated Sucessfully!"})
     }
     catch(err) {
-        console.log(err)
-        res.send(err)
+        console.log(err);
+        res.send(err);
     };
 });
 
 //============================= Delete Employee =============================
 
-router.delete('/deleteUser/:id', authenticate, async (req,res) => {
+router.delete('/deleteUser/:id', authenticate,async (req,res) => {
     
     try{
         //============================= Clear Cookie =============================
         res.clearCookie("jwt");
         //============================= Delete Employee =============================
-        await User.findById(req.params.id).remove();
+        await User.findByIdAndRemove(req.params.id);
         //============================= Send Response =============================
         res.send({msg: "User Deleted!"})
     }
@@ -159,7 +162,9 @@ router.get('/logout', authenticate, async (req,res) => {
 
 //============================= Get Employees =============================
 
-router.get('/getUser/page=:page/:Request',authenticate, async (req,res) => {
+
+//authenticate,
+router.get('/getUser/:page/:Request', authenticate,async (req,res) => {
     try{
         let {page, Request} = req.params;
         let skip = (page-1) * 10;
@@ -207,6 +212,7 @@ router.get('/getUser/page=:page/:Request',authenticate, async (req,res) => {
         )
         //============================= Apply AggreagteQuery In User Collection =============================
         const users = await User.aggregate([aggregateQuery])
+
         //============================= Send Response =============================
         res.send({users, totalPage})
         
@@ -216,6 +222,9 @@ router.get('/getUser/page=:page/:Request',authenticate, async (req,res) => {
         res.status(500).send(err);  
     }
 });
+
+// //============================= Add Event =============================
+
 
 //========================== Export Module Start ===========================
 

@@ -12,12 +12,12 @@ import {useHistory} from 'react-router-dom';
 const Logout = () => {
 
     //dispatch the api request
-    const ApiDispatch = useDispatch();
+    const dispatch = useDispatch();
     const history = useHistory();
     
     useEffect(() => {
         //dispatch logout request
-        ApiDispatch(LogoutUser());
+        dispatch(LogoutUser());
         history.push('/Login');
     }, []);
 

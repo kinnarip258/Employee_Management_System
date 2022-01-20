@@ -60,6 +60,13 @@ const ApiReducers = (state = initialState, action) => {
                 LoginState: true
             }
 
+        case "Add_Event":
+            console.log("action.payload ", action.payload)
+            return {
+                LoginState: true
+            }
+    
+
         default:
             return state;
     }

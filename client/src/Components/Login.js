@@ -13,7 +13,7 @@ import { LoginUser} from "../actions/userActions";
 const Login = () => {
 
     //dispatch the api request
-    const ApiDispatch = useDispatch();
+    const dispatch = useDispatch();
     const formik = useFormik({
         initialValues: {
             email: "", password: ""
@@ -22,7 +22,7 @@ const Login = () => {
         onSubmit: (values) => {
 
             //login the user
-            ApiDispatch(LoginUser(values))     
+            dispatch(LoginUser(values))     
         }
     })
 

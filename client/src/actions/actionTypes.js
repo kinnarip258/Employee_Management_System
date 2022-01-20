@@ -12,6 +12,7 @@ export const LogoutUser = "Logout_User";
 export const getUserDetailsUser = "getUserDetails_User";
 export const DeleteUser = "Delete_User";
 export const SaveUpdate = "Save_Update";
+export const AddEvent = "Add_Event";
 
 
 //============================= Export Action Types End =============================

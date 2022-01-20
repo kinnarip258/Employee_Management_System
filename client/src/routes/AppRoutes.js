@@ -8,6 +8,7 @@ import Error404 from "../Components/Error";
 import Register from "../Components/Register";
 import Logout from '../Components/Logout';
 import ProtectedRoute from '../Components/ProtectedRoute';
+import CalenderCilent from '../Components/Calender';
 import { Switch,Route, Redirect} from "react-router-dom";
 import {useSelector} from "react-redux";
 
@@ -26,6 +27,7 @@ const AppRoutes = () => {
                         <Route exact path = '/' component={Home} />
                         <Route exact path = '/Registration' component={Register} />
                         <Route exact path = '/editUser/:id' component={Register} />
+                        <Route exact path = '/Calender/:id' component={CalenderCilent}/>
                         <ProtectedRoute exact path = '/Logout' component={Logout} authStatus={!LoginState}/>
                         <ProtectedRoute exact path= '/Dashboard' component={Dashboard} authStatus={!LoginState}/>
                         {
