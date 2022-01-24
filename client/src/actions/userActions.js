@@ -103,11 +103,28 @@ export const LogoutUser = () => {
 }
 //============================= End =============================
 
-//============================= Logout User Action Start =============================
-export const AddEvent = (id, note, date) => {
+//============================= City Action Start =============================
+export const AddCity = (values) => {
 
     return (dispatch) => {
-        Axios.post(`/addEvent/:${id}`, note, date)
+        Axios.post(`/addCity`, values)
+        .then(res => {
+            const userData = res.data;
+            dispatch({type: "Add_City", payload: userData})
+        })
+        .catch(err => {
+            console.log("error: ", err);
+        });
+    }
+}
+//============================= End =============================
+
+
+//============================= Add Event Action Start =============================
+export const AddEvent = (note, date, id) => {
+
+    return (dispatch) => {
+        Axios.post(`/addEvent`, note, date, id)
         .then(res => {
             const userData = res.data;
             dispatch({type: "Add_Event", payload: userData})
@@ -117,4 +134,53 @@ export const AddEvent = (id, note, date) => {
         });
     }
 }
+//============================= End =============================
+
+
+//============================= Get Country, State, City Action Start =============================
+export const getCountry = () => {
+
+    return (dispatch) => {
+        Axios.get(`/getCountry`)
+        .then(res => {
+            const userData = res.data;
+            dispatch({type: "get_Country", payload: userData})
+        })
+        .catch(err => {
+            console.log("error: ", err);
+        });
+    }
+}
+
+export const getState = (ID) => {
+
+    return (dispatch) => {
+        console.log("run from action")
+        Axios.get(`/getState/${ID}`)
+        .then(res => {
+            const userData = res.data;
+            dispatch({type: "get_State", payload: userData})
+        })
+        .catch(err => {
+            console.log("error: ", err);
+        });
+    }
+}
+
+
+export const getCity = (ID) => {
+
+    return (dispatch) => {
+        console.log("run from action")
+        Axios.get(`/getCity/${ID}`)
+        .then(res => {
+            const userData = res.data;
+            dispatch({type: "get_City", payload: userData})
+        })
+        .catch(err => {
+            console.log("error: ", err);
+        });
+    }
+}
+
 //============================= End =============================

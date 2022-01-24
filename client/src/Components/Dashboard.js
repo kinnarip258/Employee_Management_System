@@ -29,15 +29,10 @@ const Deshboard = () => {
     const handleDelete = (id) => {
         dispatch(DeleteUser(id));
     }
-
-    //============================= handle Request =============================
-    const handleRequest = () => {
-        dispatch(getUserDetailsUser(pageNumber, request))
-    }
-
+    
     //============================= handle Search =============================
     const handleSearch = (e) => {
-       handleRequest(setRequest(e.target.value))
+       setRequest(e.target.value)
     }
    
     //============================= Debouncing =============================
@@ -59,22 +54,43 @@ const Deshboard = () => {
 
     //============================= useEffect =============================
     useEffect(() => {
-        handleRequest(request)  
+        dispatch(getUserDetailsUser(pageNumber, request))  
     }, [pageNumber,request])
     
-
     return(
         <>
             <div className='main_div'>
                 <div className='col-md-12 my-3 text-center'>
                     <h1>Employee Data</h1>
                 </div>
-                <div className='col-md-12 my-5 text-center'>
-                    <input className='col-md-3 my-1 text-left' onKeyUp={optimiseVersion} placeholder="Search Employee..."/>
+                <div className='col-md-15 my-3 text-center'>
+                    <input className='col-md-1 my-1 text-left' onKeyUp={optimiseVersion} placeholder="Search Employee..."/>
+                </div>
+
+                <div className="col-md-10 my-1 text-right">
+                    <label className="col-md-2 my-1 text-left">City</label>
+                    <select className="col-md-2 my-1 text-left" placeholder="City"> 
+                        <option>Select City...</option>
+                        <option>Rajkot</option>
+                        <option>Surat</option>
+                    </select>
+                    <label className="col-md-2 my-1 text-left">State</label>
+                    <select className="col-md-2 my-1 text-left" placeholder="State">
+                        <option>Select State...</option>
+                        <option>Gujarat</option>
+                        <option>Delhi</option>
+                    </select>
+    
+                    <label className="col-md-2 my-1 text-left">Country</label>
+                    <select className="col-md-2 my-1 text-left" placeholder="Country">
+                        <option>Select Country...</option> 
+                        <option>India</option>
+                        <option>USA</option>
+                    </select>
                 </div>
                 <div className='col-md-20 mx-auto'>
-                    <button onClick={() => handleRequest(setRequest("ascending"))} >Ascending</button>
-                    <button onClick={() => handleRequest(setRequest("descending"))}>Descending</button>
+                    <button onClick={() => setRequest("ascending")} >Ascending</button>
+                    <button onClick={() => setRequest("descending")}>Descending</button>
                     <table className='table table-hover'>
                         <thead className='text-black text-center'>
                             <tr>
@@ -88,7 +104,6 @@ const Deshboard = () => {
                                 <th>Salary 2nd month</th>
                                 <th>Salary 3rd month</th>
                                 <th>Total Salary</th>
-                                <th>Add Event</th>
                                 <th>Edit</th>
                                 <th>Delete</th>                 
                             </tr>
@@ -108,8 +123,7 @@ const Deshboard = () => {
                                         <td>{ele.salary2}</td>
                                         <td>{ele.salary3}</td>
                                         <td>{ele.salary1 + ele.salary2 + ele.salary3}</td>
-                                        <td><button class="page-link"><NavLink to= {`/Calender/:?id=${ele._id}`}>Add Event</NavLink></button></td>
-                                        <td><button class="page-link"><NavLink to={`/editUser/:?id=${ele._id}`}>Edit</NavLink></button></td>
+                                        <td><button class="page-link"><NavLink to={`/EditUser/:?id=${ele._id}`}>Edit</NavLink></button></td>
                                         <td><button class="page-link" onClick={() => handleDelete(ele._id)}>Delete</button></td>     
                                     </tr>                
                                 )

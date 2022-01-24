@@ -6,8 +6,11 @@
 
 const initialState = {
     user: [],
-    page: [],    
-    LoginState: true
+    page: [],
+    Country: [], 
+    States: [],
+    City: [],  
+    LoginState: false
 }
 
 //========================== InitialState End =============================
@@ -65,7 +68,24 @@ const ApiReducers = (state = initialState, action) => {
             return {
                 LoginState: true
             }
+
+        case "get_Country":
+            console.log("action.payload Country", action.payload)
+            return {
+                Country: action.payload
+            }
+
+        case "get_State":
+            console.log("action.payload State", action.payload)
+            return {
+                States: action.payload
+            }
     
+        case "get_City":
+            console.log("action.payload City", action.payload)
+            return {
+                City: action.payload
+            }
 
         default:
             return state;

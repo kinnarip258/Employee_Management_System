@@ -1,10 +1,12 @@
 //========================== Import Modules Start ===========================
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Calender from "react-calendar"
 import 'react-calendar/dist/Calendar.css';
 import queryString from "query-string";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch} from 'react-redux';
+import { AddEvent } from '../actions/userActions';
+import { useHistory } from 'react-router-dom';
 
 //========================== Import Modules End =============================
 
@@ -13,53 +15,52 @@ import { useDispatch, useSelector } from 'react-redux';
 const CalenderCilent = () => {
 
     //============================= Get Id =============================
+
+    const dispatch = useDispatch();
+
     const {id} = queryString.parse(window.location.search);
 
-    //============================= Get Employee Data =============================
-    const user = useSelector(state => state.user)
+    console.log("id: ", id)
+    // //============================= Set Event =============================
+    // const [addEvent, setAddEvent] = useState(false);
 
-    //============================= Set Event =============================
-    const [addEvent, setAddEvent] = useState(false);
-
+    const history = useHistory();
     //============================= Set Note =============================
     const [note, setNote] = useState("");
 
     //============================= Set Date =============================
     const [eventDate, setEventDate] = useState("")
 
-    //============================= Employee Object =============================
-    const [employeeObject, setEmployeeObject] = useState([]);
-
     //============================= Handle Date Change =============================
     const handleDateChange = (date) => {
         setEventDate(date);
-        setAddEvent(true);
+        // setAddEvent(true);
     }
-
+    console.log("date: ", eventDate)
     //============================= Add Note =============================
     const addNote = () => {
-        setNote("");
-        console.log(id, employeeObject, note, eventDate)
+        // setNote("");
+        console.log(id, note, eventDate)
+        //dispatch(AddEvent(note, eventDate, id))
+        history.push('/Dashboard')
     }
-
-    //============================= UseEffect =============================
-    useEffect(() => {
-        const employee = user.find((ele) => ele._id === id ? ele : null);
-        setEmployeeObject(employee);
-        console.log("employee: ", employee)
-    }, [id]);
     
   return (
       <>
-        <Calender onChange= {handleDateChange} value={new Date()}/>
-        {
+      <form >
+
+      <Calender onChange= {handleDateChange} value={new Date()}/>
+        {/* {
             addEvent ? (
-                <>
-                    <input className='my-5 text-left' onChange={e => setNote(e.target.value)}/>
-                    <button onClick={() => addNote()}>Add Note</button>
-                </>
+                <> */}
+                    <input className='my-5 text-left' name='event' value={note} onChange={(e) => setNote(e.target.value)}/>
+                    <button onSubmit = {addNote}  type="submit">Add Note</button>
+                {/* </>
             ) : null
-        }
+        } */}
+
+      </form>
+        
       </>
   );
 };

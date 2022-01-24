@@ -9,16 +9,18 @@ const authenticate = require("../middleware/authenticate");
 const sendMail = require("../mail/nodemailer")
 require('../db/conn');
 const User = require('../models/userSchema');
-
+const City  = require('../models/citySchema');
+const State = require('../models/stateSchema');
+const Country = require('../models/countrySchema');
 //========================== Load Modules End =============================
 
 //============================= Register =============================
 
 router.post('/signUp', async (req,res) => {
+    
+    const {fname, lname, email, phone,company, profession, salary1, salary2, salary3, password, cpassword, city, state, country} = req.body;
 
-    const {fname, lname, email, phone,company, profession, salary1, salary2, salary3, password, cpassword} = req.body;
-
-    if(!fname || !lname || !email || !phone || !company || !profession || !salary1 || !salary2 || !salary3  || !password || !cpassword){
+    if(!fname || !lname || !email || !phone || !company || !profession || !salary1 || !salary2 || !salary3  || !password || !cpassword || !city || !state || !country){
         return res.status(422 ).send({error: "please fill the field properly"});
     }
     try{
@@ -32,8 +34,9 @@ router.post('/signUp', async (req,res) => {
         } 
         
         else{
-    
-            const user = await new User({fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword}).save();
+            await new User({fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword, city, state, country }).save();
+
+            await new City({city, state, country}).save();
             //============================= Send Email To Register User =============================
             //sendMail({toUser: user.email, user: user})
     
@@ -44,8 +47,7 @@ router.post('/signUp', async (req,res) => {
         //============================= Error Message =============================
         res.send(err)
         console.log(err);
-    }
-    
+    }  
 })
 
 //============================= Login =============================
@@ -93,7 +95,7 @@ router.post('/signIn', async (req,res) => {
 router.put('/updateUser/:id', async (req,res) => {
     try{
         const {fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword} = req.body;
-        const user = await User.findByIdAndUpdate(req.params.id,
+        await User.findByIdAndUpdate(req.params.id,
             {
                 fname : fname,
                 lname : lname,
@@ -164,7 +166,7 @@ router.get('/logout', authenticate, async (req,res) => {
 
 
 //authenticate,
-router.get('/getUser/:page/:Request', authenticate,async (req,res) => {
+router.get('/getUser/:page/:Request', async (req,res) => {
     try{
         let {page, Request} = req.params;
         let skip = (page-1) * 10;
@@ -190,8 +192,8 @@ router.get('/getUser/:page/:Request', authenticate,async (req,res) => {
                 {
                     $match: {
                         $or: [
-                            { fname: new RegExp(searchUser, 'i')},
-                            { company: new RegExp(searchUser, 'i')},
+                            {fname: new RegExp("^" + searchUser, 'i')},
+                            {company: new RegExp("^" + searchUser, 'i')},
                             {salary1: parseInt(searchUser)},
                             {salary2: parseInt(searchUser)},
                             {salary3: parseInt(searchUser)}
@@ -223,7 +225,154 @@ router.get('/getUser/:page/:Request', authenticate,async (req,res) => {
     }
 });
 
-// //============================= Add Event =============================
+//============================= Add Event =============================
+
+
+router.post('/addEvent', async (req,res) => {
+    const {event, date, employeeId} = req.body;
+        console.log(event, date, employeeId)
+        if(!event || !date || !employeeId) {
+            return res.status(422).send({error: "please fill the field properly"})
+        }
+    try{
+        await new Event({event, date, employeeId}).save();
+
+        res.status(201).send({ message: "Event Added Successfully!"});
+    }
+    catch(err){
+        //============================= Send Error Message =============================
+        res.status(500).send(err);
+    }
+    
+});
+
+
+//============================= Add City =============================
+
+
+router.post('/addCity', async (req,res) => {
+    const {CityID, CityName, StateID} = req.body;
+    try{
+        await new City({CityID, CityName, StateID}).save();
+
+        res.status(201).send({ message: "city Added Successfully!"});
+        
+    }
+    catch(err){
+        //============================= Send Error Message =============================
+        console.log(err)
+        res.status(500).send(err);
+    }
+    
+});
+
+
+//============================= Add State =============================
+
+
+router.post('/addState', async (req,res) => {
+    const {StateID, StateName, CountryID} = req.body;
+    try{
+        await new State({StateID, StateName, CountryID}).save();
+
+        res.status(201).send({ message: "state Added Successfully!"});
+        
+    }
+    catch(err){
+        //============================= Send Error Message =============================
+        console.log(err)
+        res.status(500).send(err);
+    }
+    
+});
+
+
+//============================= Add Country =============================
+
+
+router.post('/addCountry', async (req,res) => {
+    const {CountryID, CountryName} = req.body;
+    try{
+        await new Country({CountryID, CountryName}).save();
+
+        res.status(201).send({ message: "country Added Successfully!"});
+        
+    }
+    catch(err){
+        //============================= Send Error Message =============================
+        console.log(err)
+        res.status(500).send(err);
+    }
+    
+});
+
+
+//============================= Get Country, State, List =============================
+
+
+router.get('/getCountry', async (req,res) => {
+    
+    try{
+
+        const countries = await Country.find()
+        res.send(countries)
+        
+    }
+    catch(err){
+        //============================= Send Error Message =============================
+        console.log(err)
+        res.status(500).send(err);
+    }
+    
+});
+
+router.get('/getState/:ID', async (req,res) => {
+    
+    try{
+        const ID = req.params.ID;
+        
+        const states = await State.aggregate([
+            {
+                $match: {
+                    CountryID: parseInt(ID)
+                }
+            }
+        ])
+        res.send(states)
+           
+    }
+    catch(err){
+        //============================= Send Error Message =============================
+        console.log(err)
+        res.status(500).send(err);
+    }
+    
+});
+
+router.get('/getCity/:ID', async (req,res) => {
+    
+    try{
+
+        let ID = req.params.ID;
+
+            const cities = await City.aggregate([
+                {
+                    $match: {
+                        StateID: parseInt(ID)
+                    }
+                }
+            ])
+            res.send(cities) 
+        
+    }
+    catch(err){
+        //============================= Send Error Message =============================
+        console.log(err)
+        res.status(500).send(err);
+    }
+    
+});
+
 
 
 //========================== Export Module Start ===========================

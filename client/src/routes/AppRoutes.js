@@ -26,8 +26,8 @@ const AppRoutes = () => {
                     <Switch>
                         <Route exact path = '/' component={Home} />
                         <Route exact path = '/Registration' component={Register} />
-                        <Route exact path = '/editUser/:id' component={Register} />
-                        <Route exact path = '/Calender/:id' component={CalenderCilent}/>
+                        <Route exact path = '/EditUser/:id' component={Register} />
+                    
                         <ProtectedRoute exact path = '/Logout' component={Logout} authStatus={!LoginState}/>
                         <ProtectedRoute exact path= '/Dashboard' component={Dashboard} authStatus={!LoginState}/>
                         {

@@ -33,7 +33,7 @@ const Login = () => {
                     <h1>Login Form</h1>
                 </div>
                 <div className="form_div">
-                    <form onSubmit={formik.handleSubmit}>
+                    <form type="submit">
                         <label>Username </label> 
                         <input required type='text' name="email" value={formik.values.email}
                          onChange={formik.handleChange} placeholder="Enter Email ID..." />

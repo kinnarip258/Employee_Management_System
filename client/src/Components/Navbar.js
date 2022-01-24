@@ -20,7 +20,6 @@ const Navbar = () => {
                
                 <NavLink to = '/Registration'> Registration </NavLink>
                          
-                
                 {
                     LoginState && (
                         <>
