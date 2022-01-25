@@ -23,7 +23,20 @@ const Deshboard = () => {
     const [pageNumber, setPageNumber] = useState(1);
 
     //============================= For Different Request =============================
+
     const [request, setRequest] = useState("Employees");
+
+    
+    //============================= Get List Of Country, States, City =============================
+    const Country = useSelector(state => state.Country);
+    const States = useSelector(state => state.States);
+    const City = useSelector(state => state.City)
+
+   console.log("Country: ", Country);
+   console.log("States: ", States);
+   console.log("City: ", City);
+
+   const [cityList, setCityList] = useState("")
 
     //============================= Delete Employee =============================
     const handleDelete = (id) => {
@@ -52,11 +65,13 @@ const Deshboard = () => {
     //============================= Optimise Search Employee =============================
     const optimiseVersion = useCallback(debounce(handleSearch), [])
 
-    //============================= useEffect =============================
-    useEffect(() => {
-        dispatch(getUserDetailsUser(pageNumber, request))  
-    }, [pageNumber,request])
     
+    //============================= useEffect =============================
+
+    useEffect(() => {
+        dispatch(getUserDetailsUser(pageNumber, request, cityList));
+    }, [pageNumber,request, cityList])
+
     return(
         <>
             <div className='main_div'>
@@ -64,33 +79,64 @@ const Deshboard = () => {
                     <h1>Employee Data</h1>
                 </div>
                 <div className='col-md-15 my-3 text-center'>
-                    <input className='col-md-1 my-1 text-left' onKeyUp={optimiseVersion} placeholder="Search Employee..."/>
+                    <input className='col-md-2 my-1 text-left' onKeyUp={optimiseVersion} placeholder="Search Employee..."/>
                 </div>
 
                 <div className="col-md-10 my-1 text-right">
-                    <label className="col-md-2 my-1 text-left">City</label>
-                    <select className="col-md-2 my-1 text-left" placeholder="City"> 
-                        <option>Select City...</option>
-                        <option>Rajkot</option>
-                        <option>Surat</option>
-                    </select>
-                    <label className="col-md-2 my-1 text-left">State</label>
-                    <select className="col-md-2 my-1 text-left" placeholder="State">
-                        <option>Select State...</option>
-                        <option>Gujarat</option>
-                        <option>Delhi</option>
-                    </select>
-    
-                    <label className="col-md-2 my-1 text-left">Country</label>
-                    <select className="col-md-2 my-1 text-left" placeholder="Country">
+                    
+                    <label>Country</label> &nbsp;  &nbsp; &nbsp;
+                    <select className="col-md-2 my-1 text-left" onChange={(e) => setCityList(e.target.value)}>
                         <option>Select Country...</option> 
-                        <option>India</option>
-                        <option>USA</option>
+                        { Country ?
+                            Country.map((ele) => { 
+                                return(
+                                    <>
+                                        <option value= {ele.CountryName}>{ele.CountryName}</option>
+                                    </>
+                                )
+                            }) : null
+                        }
+                    </select>
+                    <label>State</label> &nbsp; &nbsp; &nbsp;
+                    <select className="col-md-2 my-1 text-left" onChange={(e) => setCityList(e.target.value)}>
+                        <option>Select State...</option>
+                        { States ?
+                            States.map((ele) => { 
+                                return(
+                                    <>
+                                        <option value= {ele.StateName}>{ele.StateName}</option>
+                                    </>
+                                )
+                            }) : null
+                        }
+                    </select>
+                    &nbsp; &nbsp; &nbsp;
+                    <label>City</label> &nbsp; &nbsp; &nbsp;
+                    <select className="col-md-2 my-1 text-left" onChange={(e) => setCityList(e.target.value)}> 
+                        <option>Select City...</option>
+                        { City ?
+                            City.map((ele) => { 
+                                return(
+                                    <>
+                                        <option value= {ele.CityName}>{ele.CityName}</option>
+                                    </>
+                                )
+                            }) : null
+                        }
+                    </select> 
+                    &nbsp; &nbsp; &nbsp;
+
+                </div>
+                
+                <div className='col-md-12 my-3 text-left'>
+                    <select onChange={(e) => setRequest(e.target.value)}>
+                        <option value={"Employees"}>Sorting</option>
+                        <option value={"ascending"}>Acending</option>
+                        <option value={"descending"}>Descending</option>
                     </select>
                 </div>
+
                 <div className='col-md-20 mx-auto'>
-                    <button onClick={() => setRequest("ascending")} >Ascending</button>
-                    <button onClick={() => setRequest("descending")}>Descending</button>
                     <table className='table table-hover'>
                         <thead className='text-black text-center'>
                             <tr>
@@ -104,6 +150,9 @@ const Deshboard = () => {
                                 <th>Salary 2nd month</th>
                                 <th>Salary 3rd month</th>
                                 <th>Total Salary</th>
+                                <th>Country</th>
+                                <th>State</th>
+                                <th>City</th>
                                 <th>Edit</th>
                                 <th>Delete</th>                 
                             </tr>
@@ -123,6 +172,9 @@ const Deshboard = () => {
                                         <td>{ele.salary2}</td>
                                         <td>{ele.salary3}</td>
                                         <td>{ele.salary1 + ele.salary2 + ele.salary3}</td>
+                                        <td>{ele.country}</td>
+                                        <td>{ele.state}</td>
+                                        <td>{ele.city}</td>
                                         <td><button class="page-link"><NavLink to={`/EditUser/:?id=${ele._id}`}>Edit</NavLink></button></td>
                                         <td><button class="page-link" onClick={() => handleDelete(ele._id)}>Delete</button></td>     
                                     </tr>                

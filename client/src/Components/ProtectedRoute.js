@@ -17,7 +17,6 @@ const ProtectedRoute = ({authStatus, component: Component, ...rest}) => {
     return (
         <>  
             <Route {...rest} render= {(props) => {
-                //authState is true then show the component
                 if(authStatus) {
                     return <Component {...props}/>;
                 }

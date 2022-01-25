@@ -12,7 +12,7 @@ import { LoginUser} from "../actions/userActions";
 
 const Login = () => {
 
-    //dispatch the api request
+    //============================= Dispatch The Api Request =============================
     const dispatch = useDispatch();
     const formik = useFormik({
         initialValues: {
@@ -21,7 +21,7 @@ const Login = () => {
 
         onSubmit: (values) => {
 
-            //login the user
+            //============================= Login The User =============================
             dispatch(LoginUser(values))     
         }
     })
@@ -47,6 +47,7 @@ const Login = () => {
                 </div>
                 
             </div>
+            {/* //============================= Navigate TO Register ============================= */}
             <div className="sign_div">
                 <NavLink to = "/Registration">Create An Account</NavLink>
             </div>

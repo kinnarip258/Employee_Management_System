@@ -10,14 +10,14 @@ const mongoose = require('mongoose');
 
 const countrySchema = new mongoose.Schema({
     
-    CountryID : {
-        type: Number,
-        required:true
-    },
     CountryName : {
         type: String,
         required:true
     },
+    CountryID: {
+        type: Number,
+        required:true
+    }
 })
 
 //============================= User Model =============================

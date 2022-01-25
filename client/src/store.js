@@ -8,7 +8,7 @@ import ApiReducers from './reducers/ApiReducers';
 
 //============================= Store Start =============================
 
-//debug the application's state changes
+//============================= Debug The Application's State Changes =============================
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(); 
 
 //createstore

@@ -10,15 +10,15 @@ const mongoose = require('mongoose');
 
 const citySchema = new mongoose.Schema({
 
-    CityID : {
-        type: Number,
-        required:true
-    },
     CityName : {
         type: String,
         required:true
     },
-    StateID : {
+    CityID: {
+        type: Number,
+        required:true
+    },
+    StateID: {
         type: Number,
         required:true
     }

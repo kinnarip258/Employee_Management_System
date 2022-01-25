@@ -5,59 +5,58 @@ import {useHistory, NavLink} from "react-router-dom";
 import {useFormik} from "formik";
 import queryString from "query-string";
 import { useDispatch, useSelector } from 'react-redux';
-import { RegisterUser, SaveUpdate , getCountry,getState, getCity} from '../actions/userActions';
+import { RegisterUser, SaveUpdate } from '../actions/userActions';
 
 //========================== Import Modules End =============================
 
 //============================= Register Component Start =============================
 
 const Register = () => {
-    //navigate the page
+    //============================= Navigate the Page =============================
     const history = useHistory();
-    //for store the edited user data
+    //============================= Store Edite Employee Data =============================
     const [editedObject,setEditedObject] = useState([]);
-    //get edited user id
+    //============================= Get Edited User Id =============================
+
     const {id} = queryString.parse(window.location.search);
-     //get response of the api request
-     const user = useSelector(state => state.user)
-    //get list of country, state, city
-    const Country = useSelector(state => state.Country);
-    const States = useSelector(state => state.States);
-    const City = useSelector(state => state.City)
-    
+    //============================= Get Response Of The Api =============================
+    const user = useSelector(state => state.user)
+
+    //============================= dispatch Api Request =============================
     const dispatch = useDispatch();
+    //============================= UseFormik =============================
     const formik = useFormik({
-        //initialValues form input field
+        //============================= Initial Values =============================
         initialValues: {
             fname:"",  lname:"", email:"", phone:"", company:"", profession:"", 
             salary1:"", salary2:"", salary3:"", password:"" , cpassword:"",
             city:"", state:"", country:"" 
         },
 
-        //when the form submitted
+        //============================= Submit The Form =============================
         onSubmit: (values) =>  {
-            //update the user data
+            //============================= Dispatch Updated User Data =============================
             if(id){ 
                 dispatch(SaveUpdate(id,values))
-                //navigate to about component
+                //============================= Navigate To Dashboard =============================
                 history.push('/Dashboard')
             }
-            //add new user
+            //============================= Dispatch New User Data =============================
             else{
                 dispatch(RegisterUser(values))
-                //resetform fields
+                //============================= Reset Fields =============================
                 formik.resetForm();
             }
         }     
     });
     
-    //for getting the edited user data
+    //============================= UseEffect For Get EditUser Data =============================
     useEffect(() => {
         const editUser = user.find((ele) => ele._id === id ? ele : null);
         setEditedObject(editUser);
     },[id]);
 
-    //set edited user data values
+    //============================= Set Edited User Data to InitialValues =============================
     useEffect(() => {
         if(id && editedObject) {
             //setvalues
@@ -65,20 +64,6 @@ const Register = () => {
         }
     },[editedObject])
 
-    useEffect(() => {
-        dispatch(getCountry());
-        if(formik.values.country !== ""){
-            const ID = Country.filter(ele => ele.CountryName === formik.values.country)
-            console.log("ID: ", ID.ContryID)
-            dispatch(getState(formik.values.country))
-        }
-        
-        else if(formik.values.state !== ""){
-            dispatch(getCity(formik.values.state))
-        }
-        
-
-    }, [formik.values.country, formik.values.state])
 
     return (
         <div>
@@ -115,50 +100,15 @@ const Register = () => {
                     <label>Salary (3rd Month)</label>
                     <input required onChange={formik.handleChange} value={formik.values.salary3}  name="salary3" type='number' placeholder="Enter 3rd Month Salary ..." />
                     
-                    &nbsp;
                     <label>Country </label><br/>
-                    <select className="form-select" onChange = {formik.handleChange} name='country' value={formik.values.country}>
-                        <option selected>Select Country</option>
-                        { Country ?
-                            Country.map((ele) => { 
-                                return(
-                                    <>
-                                        <option value= {ele.CountryName}>{ele.CountryName}</option>
-                                    </>
-                                )
-                            }) : null
-                        }
-                    </select>
-                    <br/>
-                    &nbsp;
+                    <input required onChange={formik.handleChange} value={formik.values.country}  name="country" type='text' placeholder="Enter Country ..." />
+                    
                     <label>State </label><br/>
-                    <select className="form-select" onChange = {formik.handleChange} name='state' value={formik.values.state}>
-                        <option selected>Select State</option>
-                        { States ? 
-                            States.map((ele) => { 
-                                return(
-                                    <>
-                                        <option value= {ele.StateName}>{ele.StateName}</option>
-                                    </>
-                                )
-                            }) : null
-                        }
-                    </select>
-                    <br/>
+                    <input required onChange={formik.handleChange} value={formik.values.state}  name="state" type='text' placeholder="Enter State ..." />
+                    
                     <label>City </label><br/>
-                    <select className="form-select" onChange = {formik.handleChange} name='city' value={formik.values.city}>
-                        <option selected>Select City</option>
-                        { City ? 
-                            City.map((ele) => { 
-                                return(
-                                    <>
-                                        <option value= {ele.CityName}>{ele.CityName}</option>
-                                    </>
-                                )
-                            }) : null
-                        }
-                    </select>
-                    <br/>
+                    <input required onChange={formik.handleChange} value={formik.values.city}  name="city" type='text' placeholder="Enter City ..." />
+
                     <label>Password </label>
                     <input required onChange={formik.handleChange} value={formik.values.password}  name="password" type='Password' placeholder="Enter Password ..." />
 
@@ -168,7 +118,7 @@ const Register = () => {
                     <button type="submit">{!id ? "Register" : "Update"}</button>
                 </form>
             </div>
-            {/*Navigate to Login Component */}
+            {/*//============================= Navigate To Login ============================= */}
             <div className="sign_div">
                 <NavLink to = "/Login">Already Sign In</NavLink>
             </div>

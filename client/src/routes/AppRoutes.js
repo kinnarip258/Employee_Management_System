@@ -8,7 +8,6 @@ import Error404 from "../Components/Error";
 import Register from "../Components/Register";
 import Logout from '../Components/Logout';
 import ProtectedRoute from '../Components/ProtectedRoute';
-import CalenderCilent from '../Components/Calender';
 import { Switch,Route, Redirect} from "react-router-dom";
 import {useSelector} from "react-redux";
 
@@ -18,7 +17,7 @@ import {useSelector} from "react-redux";
 
 const AppRoutes = () => {
 
-    // for login-logout status
+    //============================= For Login-Logout Status =============================
     const LoginState = useSelector(state => state.LoginState)
 
         return (

@@ -10,12 +10,12 @@ const mongoose = require('mongoose');
 
 const stateSchema = new mongoose.Schema({
     
-    StateID : {
-        type: Number,
-        required:true
-    },
     StateName : {
         type: String,
+        required:true
+    },
+    StateID : {
+        type: Number,
         required:true
     },
     CountryID : {
