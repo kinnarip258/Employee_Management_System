@@ -191,10 +191,8 @@ router.get('/getUser', authenticate, async (req,res) => {
                         $add: ["$salary1","$salary2","$salary3"]
                     }
                 }
-            }
-        )
-        //============================= Get CountryName =============================
-        aggregateQuery.push(
+            },
+            //============================= Get CountryName =============================
             {
                 $lookup:{
                     from: "countries",
@@ -202,10 +200,8 @@ router.get('/getUser', authenticate, async (req,res) => {
                     foreignField: "CountryID",
                     as: "CountryName"
                 }
-            }
-        )
-        //============================= Get StateName =============================
-        aggregateQuery.push(
+            },
+            //============================= Get StateName =============================
             {
                 $lookup:{
                     from: "states",
@@ -213,10 +209,8 @@ router.get('/getUser', authenticate, async (req,res) => {
                     foreignField: "StateID",
                     as: "StateName"
                 }
-            }
-        )
-        //============================= Get CityName =============================
-        aggregateQuery.push(
+            },
+            //============================= Get CityName =============================
             {
                 $lookup:{
                     from: "cities",
@@ -243,7 +237,7 @@ router.get('/getUser', authenticate, async (req,res) => {
                             {company: new RegExp("^" + searchUser, 'i')},
                             {salary1: parseInt(searchUser)},
                             {salary2: parseInt(searchUser)},
-                            {salary3: parseInt(searchUser)}
+                            {salary3: parseInt(searchUser)},
                         ]   
                     }
                 },                                
@@ -261,7 +255,7 @@ router.get('/getUser', authenticate, async (req,res) => {
                 $limit: limit  
             }
         )
-        
+
         //============================= Apply AggreagteQuery In User Collection =============================
         const users = await User.aggregate([aggregateQuery]);
 
@@ -321,9 +315,7 @@ router.get(`/getCountryStateCity`, async (req,res) => {
             else{
                 res.send({countries, states});
             }
-
         }
-       
         else{
             res.send({countries}); 
         }       
