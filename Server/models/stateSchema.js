@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 //============================= Model Schema Of City =============================
 
 const stateSchema = new mongoose.Schema({
+
     
     StateName : {
         type: String,

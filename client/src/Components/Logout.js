@@ -3,7 +3,6 @@
 import React, {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
 import {LogoutUser} from "../actions/userActions";
-import {useHistory} from 'react-router-dom';
 
 //========================== Import Modules End =============================
 
@@ -13,13 +12,11 @@ const Logout = () => {
 
     //============================= Dispatch The Api Request =============================
     const dispatch = useDispatch();
-    const history = useHistory();
     
     useEffect(() => {
         //============================= Logout The User =============================
-        dispatch(LogoutUser());
-        history.push('/Login');
-    }, []);
+        dispatch(LogoutUser());      
+    }, [dispatch]);
 
     return(
         <>

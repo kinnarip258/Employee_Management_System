@@ -17,7 +17,8 @@ const countrySchema = new mongoose.Schema({
     CountryID: {
         type: Number,
         required:true
-    }
+    },
+    
 })
 
 //============================= User Model =============================

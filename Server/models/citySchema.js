@@ -21,7 +21,7 @@ const citySchema = new mongoose.Schema({
     StateID: {
         type: Number,
         required:true
-    }
+    },
 })
 
 //============================= User Model =============================

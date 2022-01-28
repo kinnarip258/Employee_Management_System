@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState} from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {getUserDetailsUser, DeleteUser} from "../actions/userActions";
+import {GetUserDetails, DeleteUser, CheckCookie} from "../actions/userActions";
 import Pagination from '@mui/material/Pagination';
 
 //========================== Import Modules End =============================
@@ -16,7 +16,7 @@ const Deshboard = () => {
     const dispatch = useDispatch();
 
     //============================= Get Response Of The Api =============================
-    const user = useSelector(state => state.user)
+    const user = useSelector(state => state.user);
 
     //============================= Pagination =============================
     const page = useSelector(state => state.page);
@@ -25,18 +25,6 @@ const Deshboard = () => {
     //============================= For Different Request =============================
 
     const [request, setRequest] = useState("Employees");
-
-    
-    //============================= Get List Of Country, States, City =============================
-    const Country = useSelector(state => state.Country);
-    const States = useSelector(state => state.States);
-    const City = useSelector(state => state.City)
-
-   console.log("Country: ", Country);
-   console.log("States: ", States);
-   console.log("City: ", City);
-
-   const [cityList, setCityList] = useState("")
 
     //============================= Delete Employee =============================
     const handleDelete = (id) => {
@@ -65,12 +53,13 @@ const Deshboard = () => {
     //============================= Optimise Search Employee =============================
     const optimiseVersion = useCallback(debounce(handleSearch), [])
 
-    
     //============================= useEffect =============================
-
+    
     useEffect(() => {
-        dispatch(getUserDetailsUser(pageNumber, request, cityList));
-    }, [pageNumber,request, cityList])
+        //============================= Get Employee Data =============================
+        dispatch(GetUserDetails(pageNumber, request));
+
+    }, [pageNumber, request]);
 
     return(
         <>
@@ -82,52 +71,6 @@ const Deshboard = () => {
                     <input className='col-md-2 my-1 text-left' onKeyUp={optimiseVersion} placeholder="Search Employee..."/>
                 </div>
 
-                <div className="col-md-10 my-1 text-right">
-                    
-                    <label>Country</label> &nbsp;  &nbsp; &nbsp;
-                    <select className="col-md-2 my-1 text-left" onChange={(e) => setCityList(e.target.value)}>
-                        <option>Select Country...</option> 
-                        { Country ?
-                            Country.map((ele) => { 
-                                return(
-                                    <>
-                                        <option value= {ele.CountryName}>{ele.CountryName}</option>
-                                    </>
-                                )
-                            }) : null
-                        }
-                    </select>
-                    <label>State</label> &nbsp; &nbsp; &nbsp;
-                    <select className="col-md-2 my-1 text-left" onChange={(e) => setCityList(e.target.value)}>
-                        <option>Select State...</option>
-                        { States ?
-                            States.map((ele) => { 
-                                return(
-                                    <>
-                                        <option value= {ele.StateName}>{ele.StateName}</option>
-                                    </>
-                                )
-                            }) : null
-                        }
-                    </select>
-                    &nbsp; &nbsp; &nbsp;
-                    <label>City</label> &nbsp; &nbsp; &nbsp;
-                    <select className="col-md-2 my-1 text-left" onChange={(e) => setCityList(e.target.value)}> 
-                        <option>Select City...</option>
-                        { City ?
-                            City.map((ele) => { 
-                                return(
-                                    <>
-                                        <option value= {ele.CityName}>{ele.CityName}</option>
-                                    </>
-                                )
-                            }) : null
-                        }
-                    </select> 
-                    &nbsp; &nbsp; &nbsp;
-
-                </div>
-                
                 <div className='col-md-12 my-3 text-left'>
                     <select onChange={(e) => setRequest(e.target.value)}>
                         <option value={"Employees"}>Sorting</option>
@@ -159,27 +102,29 @@ const Deshboard = () => {
                         </thead>  
                         <tbody>
                         {
-                            user.map(ele => {
-                                return(     
-                                    <tr key = {ele.id}>          
-                                        <td>{ele.fname}</td>
-                                        <td>{ele.lname}</td>
-                                        <td>{ele.email}</td>
-                                        <td>{ele.phone}</td>
-                                        <td>{ele.company}</td>
-                                        <td>{ele.profession}</td>
-                                        <td>{ele.salary1}</td> 
-                                        <td>{ele.salary2}</td>
-                                        <td>{ele.salary3}</td>
-                                        <td>{ele.salary1 + ele.salary2 + ele.salary3}</td>
-                                        <td>{ele.country}</td>
-                                        <td>{ele.state}</td>
-                                        <td>{ele.city}</td>
-                                        <td><button class="page-link"><NavLink to={`/EditUser/:?id=${ele._id}`}>Edit</NavLink></button></td>
-                                        <td><button class="page-link" onClick={() => handleDelete(ele._id)}>Delete</button></td>     
-                                    </tr>                
-                                )
-                            })
+                            user ? (
+                                user.map(ele => {
+                                    return(     
+                                        <tr key = {ele.id}>          
+                                            <td>{ele.fname}</td>
+                                            <td>{ele.lname}</td>
+                                            <td>{ele.email}</td>
+                                            <td>{ele.phone}</td>
+                                            <td>{ele.company}</td>
+                                            <td>{ele.profession}</td>
+                                            <td>{ele.salary1}</td> 
+                                            <td>{ele.salary2}</td>
+                                            <td>{ele.salary3}</td>
+                                            <td>{ele.totalSalary}</td>
+                                            <td>{ele.CountryName.map((ele) => ele.CountryName)}</td>
+                                            <td>{ele.StateName.map((ele) => ele.StateName)}</td>
+                                            <td>{ele.CityName.map((ele) => ele.CityName)}</td>
+                                            <td><button class="page-link"><NavLink to={`/EditUser/:?id=${ele._id}`}>Edit</NavLink></button></td>
+                                            <td><button class="page-link" onClick={() => handleDelete(ele._id)}>Delete</button></td>     
+                                        </tr>                
+                                    )
+                                })
+                            ) : null
                         }
                         </tbody>
                     </table>
@@ -192,6 +137,8 @@ const Deshboard = () => {
             </div>     
         </>
     )
+    
+        
 };
 
 //============================= Dashboard Component End =============================

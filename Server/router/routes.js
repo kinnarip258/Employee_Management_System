@@ -18,11 +18,12 @@ const Country = require('../models/countrySchema');
 //============================= Register =============================
 
 router.post('/signUp', async (req,res) => {
-    
-    const {fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword,country, state, city } = req.body;
+    console.log("req.body", req.body)
+    const {fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword,country, state, city} = req.body;
 
     //============================= Details Are Filled Properly =============================
-    if(!fname || !lname || !email || !phone || !company || !profession || !salary1 || !salary2 || !salary3  || !password || !cpassword || !city || !state || !country){
+    if(!fname || !lname || !email || !phone || !company || !profession || !salary1 || !salary2 || !salary3 
+         || !password || !cpassword || !city || !state || !country){
         return res.status(422 ).send({error: "please fill the field properly"});
     }
     try{
@@ -39,10 +40,12 @@ router.post('/signUp', async (req,res) => {
         
         else{
             //============================= Save Register User =============================
-            await new User({fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword, country, state, city,}).save();
+            await new User({fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword, country, state, city}).save();
 
             //============================= Send Email To Register User =============================
             //sendMail({toUser: user.email, user: user})
+
+            res.send({msg: "User Register Successfully!"});
 
         }       
     } 
@@ -85,7 +88,7 @@ router.post('/signIn', async (req,res) => {
                     httpOnly: true
                 });
                 //============================= Send Login User =============================
-                res.send(userLogin);
+                res.send({msg: "User Login Successfully!"});
             }
         }
         else{
@@ -101,53 +104,19 @@ router.post('/signIn', async (req,res) => {
 
 //============================= Update Employee Details =============================
 
-router.put('/updateUser/:id', async (req,res) => {
+router.put('/updateUser', authenticate, async (req,res) => {
     try{
-        const {fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword, country, state, city} = req.body;
-
+        console.log(req.query.ID)
+        console.log(req.body);
         //============================= Save Employee Updated Details =============================
-        await User.findByIdAndUpdate(req.params.id,
-            {
-                fname : fname,
-                lname : lname,
-                email: email,
-                salary1: salary1,
-                salary2: salary2,
-                salary3: salary3,
-                phone: phone,
-                company: company,
-                profession: profession,
-                password : password,
-                cpassword : cpassword,
-                country: country, 
-                state: state, 
-                city: city,
-            },
+        await User.findByIdAndUpdate(req.query.ID, req.body ,
             {
                 new: false
             },
         );
-
-        //============================= Country Exist =============================
-        const CountryExist = await Country.findOne({CountryName: country.toUpperCase()});
-        if(!CountryExist){
-            await new Country({CountryName: country.toUpperCase()}).save();
-        }
- 
-        //============================= State Exist =============================
-        const StateExist = await State.findOne({StateName: state.toLowerCase()});
-        if(!StateExist){
-            await new State({StateName: State.toLowerCase(), CountryName: country.toUpperCase()}).save();
-        }
-
-        //============================= City Exist =============================
-        const CityExist = await City.findOne({CityName: city.toLowerCase()});
-        if(!CityExist){
-            await new City({CityName: city.toLowerCase(), StateName: state.toLowerCase()}).save();
-        } 
-
+        
         //============================= Send Response =============================
-        res.json({msg: "Employee Updated Sucessfully!"})
+        res.json({msg: "Employee Updated Sucessfully!" })
             
     }
     catch(err) {
@@ -159,13 +128,12 @@ router.put('/updateUser/:id', async (req,res) => {
 
 //============================= Delete Employee =============================
 
-router.delete('/deleteUser/:id', authenticate,async (req,res) => {
+router.delete('/deleteUser', authenticate, async (req,res) => {
     
     try{
-        //============================= Clear Cookie =============================
-        res.clearCookie("jwt");
+        
         //============================= Delete Employee =============================
-        await User.findByIdAndRemove(req.params.id);
+        await User.findByIdAndRemove(req.query.ID);
         //============================= Send Response =============================
         res.send({msg: "User Deleted!"})
     }
@@ -179,7 +147,7 @@ router.delete('/deleteUser/:id', authenticate,async (req,res) => {
 
 router.get('/logout', authenticate, async (req,res) => {
     try{
-        console.log("jwt cookie: ", req.cookies.jwt)
+
         //============================= Remove Token From Database =============================
         req.authenticateUser.Tokens = req.authenticateUser.Tokens.filter((ele) => {
             return ele.token !== req.token
@@ -200,113 +168,106 @@ router.get('/logout', authenticate, async (req,res) => {
 
 //============================= Get Employees =============================
 
-
-//authenticate,
-router.get('/getUser', async (req,res) => {
+router.get('/getUser', authenticate, async (req,res) => {
     try{
 
-        let {Page, Request, CitySearchList} = req.query;
-        let skip = (Page-1) * 10;
+        let {Page, Request } = req.query;
+        let limit = 8;
+        let skip = (Page-1) * limit;
 
         //============================= Count Total Documents =============================
         const total = await User.countDocuments({});
         //============================= Count Total Pages =============================
-        let totalPage = Math.ceil(total/10);
-
+        let totalPage = Math.ceil(total/limit);
 
         //============================= Create Array =============================
         let aggregateQuery = [];
-       
-            //============================= Sort In Ascending Order =============================
-            if(Request === "ascending" || Request === "descending"){
-                aggregateQuery.push(
-                    {$sort: { fname : Request === "ascending" ? 1 : -1}}
-                ) 
-             }
-             //============================= Search Employee =============================
-            else if(Request !== "Employees" ){
-                const searchUser = Request;
-                aggregateQuery.push(
-                    {
-                        $match: {
-                            $or: [
-                                {fname: new RegExp("^" + searchUser, 'i')},
-                                {company: new RegExp("^" + searchUser, 'i')},
-                                {salary1: parseInt(searchUser)},
-                                {salary2: parseInt(searchUser)},
-                                {salary3: parseInt(searchUser)}
-                            ]
-                        }
-                    },
-                                            
-                )
+
+        //============================= Add Field TotalSalary =============================
+        aggregateQuery.push(
+            {
+                $addFields: {
+                    totalSalary: {
+                        $add: ["$salary1","$salary2","$salary3"]
+                    }
+                }
             }
-        
+        )
+        //============================= Get CountryName =============================
+        aggregateQuery.push(
+            {
+                $lookup:{
+                    from: "countries",
+                    localField: "country",
+                    foreignField: "CountryID",
+                    as: "CountryName"
+                }
+            }
+        )
+        //============================= Get StateName =============================
+        aggregateQuery.push(
+            {
+                $lookup:{
+                    from: "states",
+                    localField: "state",
+                    foreignField: "StateID",
+                    as: "StateName"
+                }
+            }
+        )
+        //============================= Get CityName =============================
+        aggregateQuery.push(
+            {
+                $lookup:{
+                    from: "cities",
+                    localField: "city",
+                    foreignField: "CityID",
+                    as: "CityName"
+                }
+            },
+        )
+        //============================= Sort The Employees =============================
+        if(Request === "ascending" || Request === "descending"){
+            aggregateQuery.push(
+                {$sort: { fname : Request === "ascending" ? 1 : -1}}
+            ) 
+        }
+        //============================= Search Employee =============================
+        else if(Request !== "Employees" ){
+            const searchUser = Request;
+            aggregateQuery.push(
+                {
+                    $match: {
+                        $or: [
+                            {fname: new RegExp("^" + searchUser, 'i')},
+                            {company: new RegExp("^" + searchUser, 'i')},
+                            {salary1: parseInt(searchUser)},
+                            {salary2: parseInt(searchUser)},
+                            {salary3: parseInt(searchUser)}
+                        ]   
+                    }
+                },                                
+            )
+        }
         //============================= Get Countries From Country Collection =============================
         const countries = await Country.find()
 
-        if(CitySearchList){
-            
-        //============================= Get States From State Collection =============================
-        
-            const states = await State.find({CountryName: CitySearchList});
-        
-        //============================= Get Cities From City Collection =============================
-
-            const cities = await City.find({StateName: CitySearchList});
-            
-
-        //============================= Get Users From City Collection =============================
-            const citySearchUsers = await City.findOne({CityName: CitySearchList});
-            
-            if(citySearchUsers){
-                console.log("CitySearchList", CitySearchList);
-                console.log("citySearchUsers.CityName", citySearchUsers.CityName)
-                aggregateQuery.push(
-                    {
-                        $match: {
-                            city: CitySearchList
-                        }
-                    }   
-                )
+        //============================= Pagination =============================
+        aggregateQuery.push(
+            {
+                $skip: skip
+            },
+            {
+                $limit: limit  
             }
-
-            //============================= Pagination =============================
-            aggregateQuery.push(
-                {
-                    $skip: skip
-                },
-                {
-                    $limit: 10  
-                }
-            )
-            //============================= Apply AggreagteQuery In User Collection =============================
-            const users = await User.aggregate([aggregateQuery]);
-            console.log(users)
-            //============================= Send Response =============================
-            res.send({users, totalPage, countries, states, cities});
-            
-        }
-        else{
-
-            //============================= Pagination =============================
-            aggregateQuery.push(
-                {
-                    $skip: skip
-                },
-                {
-                    $limit: 10  
-                }
-            )
-
-            //============================= Apply AggreagteQuery In User Collection =============================
-            const users = await User.aggregate([aggregateQuery]);
-
-            //============================= Send Response =============================
-            res.send({users, totalPage, countries});
-
-        }
+        )
         
+        //============================= Apply AggreagteQuery In User Collection =============================
+        const users = await User.aggregate([aggregateQuery]);
+
+        //============================= Send Response =============================
+        res.send({users, totalPage, countries});    
+    
     }
     catch(err){
         //============================= Send Error Massage =============================
@@ -314,13 +275,133 @@ router.get('/getUser', async (req,res) => {
     }
 });
 
-router.post('/addCountry', async (req,res) => {
+
+//============================= Get Country, State, City =============================
+
+router.get(`/getCountryStateCity`, async (req,res) => {
     
-    const { CountryName, CountryID} = req.body;
-   
-    await new Country({CountryName, CountryID}).save();
+    try{
+        const {Search, CountryID, StateID} = req.query;
+
+        //============================= Get Countries From Country Collection =============================
+        const countries = await Country.find()
+        
+        if(CountryID || StateID){
+            //============================= Get States From State Collection =============================
+            const states = await State.find({CountryID: CountryID});
+            
+            if(Search === "City"){
+
+                //============================= Get Cities From City Collection =============================
+
+                const aggreagteQuery = [];
+
+                aggreagteQuery.push(
+                    {
+                        $lookup:{
+                            from: "states",
+                            localField: "StateID",
+                            foreignField: "StateID",
+                            as: "CountryDetails"
+                        }
+                    },
+                    {
+                        $match: {
+                            $and: [
+                                {StateID: parseInt(StateID)},
+                                {"CountryDetails.CountryID" : parseInt(CountryID)}
+                            ]
+                        }
+                    },
+                )
+                const cities = await City.aggregate([aggreagteQuery])
+                res.send({countries, states, cities})
+
+            }
+            else{
+                res.send({countries, states});
+            }
+
+        }
+       
+        else{
+            res.send({countries}); 
+        }       
+    }
+    catch(err){
+        console.log(err);
+    }
+})
+
+//============================= Check Cookie =============================
+
+router.get(`/checkCookie`, async (req,res) => {
     
-    res.send({msg: "country"})
+    try{ 
+       
+        if(req.cookies.jwt){
+            //============================= Set LoginState =============================
+            const LoginState = false;
+            res.send(LoginState)
+        }
+        else {
+            //============================= Set LoginState =============================
+            const LoginState = true;
+            res.send(LoginState)
+        }
+    }     
+    catch(err){
+        console.log(err);
+    }
+})
+
+
+//============================= Add Country =============================
+
+router.post(`/addCountry`, async (req,res) => {
+    
+    try{
+        console.log(req.body);
+        const { CountryName, CountryID} = req.body;
+        await new Country({CountryName, CountryID}).save();
+        
+        res.send({msg: "country"})
+    }
+    catch(err){
+        console.log(err);
+    }
+})
+
+//============================= Add State =============================
+
+router.post('/addState', async (req,res) => {
+    
+    try{
+        console.log(req.body);
+        const { StateName, StateID, CountryID} = req.body;
+        await new State({StateName, StateID, CountryID}).save();
+        
+        res.send({msg: "state"})
+    }
+    catch(err){
+        console.log(err);
+    }
+})
+
+//============================= Add City =============================
+
+router.post('/addCity', async (req,res) => {
+
+    try{
+        console.log(req.body);
+        const { CityName, CityID, StateID} = req.body;
+        await new City({CityName, CityID, StateID}).save();
+        
+        res.send({msg: "city"})
+    }
+    catch(err){
+        console.log(err);
+    }
 })
 
 //========================== Export Module Start ===========================

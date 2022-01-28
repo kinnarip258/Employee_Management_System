@@ -5,7 +5,7 @@ import {useHistory, NavLink} from "react-router-dom";
 import {useFormik} from "formik";
 import queryString from "query-string";
 import { useDispatch, useSelector } from 'react-redux';
-import { RegisterUser, SaveUpdate } from '../actions/userActions';
+import { GetCountryStateCity, RegisterUser, SaveUpdate, CheckCookie } from '../actions/userActions';
 
 //========================== Import Modules End =============================
 
@@ -16,12 +16,27 @@ const Register = () => {
     const history = useHistory();
     //============================= Store Edite Employee Data =============================
     const [editedObject,setEditedObject] = useState([]);
-    //============================= Get Edited User Id =============================
 
+    //============================= Get Edited User Id =============================
     const {id} = queryString.parse(window.location.search);
+
     //============================= Get Response Of The Api =============================
     const user = useSelector(state => state.user)
+    
+    //============================= Get List Of Country, States, City =============================
+    const Country = useSelector(state => state.Country);
+    const States = useSelector(state => state.States);
+    const City = useSelector(state => state.City)
 
+    //============================= Search Country, State, City =============================
+    const [search, setSearch] = useState("Country");
+
+    //============================= CountryID =============================
+    const [CountryID, setCountryID] = useState("");
+
+    //============================= StateID =============================
+    const [StateID, setStateID] = useState("");
+    
     //============================= dispatch Api Request =============================
     const dispatch = useDispatch();
     //============================= UseFormik =============================
@@ -30,7 +45,7 @@ const Register = () => {
         initialValues: {
             fname:"",  lname:"", email:"", phone:"", company:"", profession:"", 
             salary1:"", salary2:"", salary3:"", password:"" , cpassword:"",
-            city:"", state:"", country:"" 
+            country:"", state:"", city:"" 
         },
 
         //============================= Submit The Form =============================
@@ -52,8 +67,11 @@ const Register = () => {
     
     //============================= UseEffect For Get EditUser Data =============================
     useEffect(() => {
-        const editUser = user.find((ele) => ele._id === id ? ele : null);
-        setEditedObject(editUser);
+        if(id){
+            const editUser = user.find((ele) => ele._id === id ? ele : null);
+            console.log(editUser);
+            setEditedObject(editUser);
+        }
     },[id]);
 
     //============================= Set Edited User Data to InitialValues =============================
@@ -64,6 +82,17 @@ const Register = () => {
         }
     },[editedObject])
 
+    useEffect(() => {
+        if(formik.values.country !== ""){
+            setSearch("State");
+            setCountryID(formik.values.country)
+        }
+        if(formik.values.state !== ""){
+            setSearch("City");
+            setStateID(formik.values.state)
+        }  
+        dispatch(GetCountryStateCity(search, CountryID, StateID));  
+    }, [search,CountryID, StateID,formik.values.country,formik.values.state])
 
     return (
         <div>
@@ -101,14 +130,47 @@ const Register = () => {
                     <input required onChange={formik.handleChange} value={formik.values.salary3}  name="salary3" type='number' placeholder="Enter 3rd Month Salary ..." />
                     
                     <label>Country </label><br/>
-                    <input required onChange={formik.handleChange} value={formik.values.country}  name="country" type='text' placeholder="Enter Country ..." />
-                    
+                    <select required onChange={formik.handleChange} value={formik.values.country} name="country">
+                        <option selected>Select Country...</option> 
+                        { Country ?
+                            Country.map((ele) => { 
+                                return(
+                                    <>
+                                        <option value= {ele.CountryID}>{ele.CountryName}</option>
+                                    </>
+                                )
+                            }) : null
+                        }
+                    </select>
+                    <br/>
                     <label>State </label><br/>
-                    <input required onChange={formik.handleChange} value={formik.values.state}  name="state" type='text' placeholder="Enter State ..." />
-                    
+                    <select required onChange={formik.handleChange} value={formik.values.state}  name="state">
+                        <option selected>Select State...</option>
+                        { States ?
+                            States.map((ele) => { 
+                                return(
+                                    <>
+                                        <option value= {ele.StateID}>{ele.StateName}</option>
+                                    </>
+                                )
+                            }) : null
+                        }
+                    </select>
+                    <br/>
                     <label>City </label><br/>
-                    <input required onChange={formik.handleChange} value={formik.values.city}  name="city" type='text' placeholder="Enter City ..." />
-
+                    <select required onChange={formik.handleChange} value={formik.values.city} name="city"> 
+                        <option selected>Select City...</option>
+                        { City ?
+                            City.map((ele) => { 
+                                return(
+                                    <>
+                                        <option value= {ele.CityID}>{ele.CityName}</option>
+                                    </>
+                                )
+                            }) : null
+                        }
+                    </select> 
+                    <br/>
                     <label>Password </label>
                     <input required onChange={formik.handleChange} value={formik.values.password}  name="password" type='Password' placeholder="Enter Password ..." />
 
@@ -118,7 +180,7 @@ const Register = () => {
                     <button type="submit">{!id ? "Register" : "Update"}</button>
                 </form>
             </div>
-            {/*//============================= Navigate To Login ============================= */}
+            {/* ============================= Navigate To Login ============================= */}
             <div className="sign_div">
                 <NavLink to = "/Login">Already Sign In</NavLink>
             </div>

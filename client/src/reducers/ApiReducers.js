@@ -10,7 +10,7 @@ const initialState = {
     Country: [], 
     States: [],
     City: [],  
-    LoginState: false
+    LoginState: true
 }
 
 //========================== InitialState End =============================
@@ -25,32 +25,30 @@ const ApiReducers = (state = initialState, action) => {
 
             return {
                 ...state,
+                LoginState: true
             }
 
         case "Save_Update": 
         
             return {
                 ...state,
-                user: [action.payload]  
             }
 
         case "Login_User":
             
             return {
                 ...state,
-                user: [action.payload],
                 LoginState: false
             }
 
         case "Delete_User":
             
             return  {
-                ...state,
-                LoginState: true   
+                ...state,   
             }
 
-        case "getUserDetails_User":
-            
+        case "Get_UserDetails":
+
             return {
                 ...state,
                 user: action.payload.users,
@@ -60,12 +58,24 @@ const ApiReducers = (state = initialState, action) => {
                 City: action.payload.cities
             }
 
+        case "Get_CountryStateCity":
+
+            return {
+                Country: action.payload.countries,
+                States: action.payload.states,
+                City: action.payload.cities
+            }
+    
         case "Logout_User":
             
             return {
                 LoginState: true
             }
-            
+        case "CheckCookie":
+
+        return {
+            LoginState: action.payload
+        }
         default:
             return state;
     }

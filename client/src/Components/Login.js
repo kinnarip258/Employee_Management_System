@@ -1,10 +1,10 @@
 //========================== Import Modules Start ===========================
 
-import React from "react";
+import React, { useEffect } from "react";
 import { NavLink} from "react-router-dom";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
-import { LoginUser} from "../actions/userActions";
+import { LoginUser, CheckCookie} from "../actions/userActions";
 
 //========================== Import Modules End =============================
 
@@ -18,12 +18,15 @@ const Login = () => {
         initialValues: {
             email: "", password: ""
         },
-
+         
         onSubmit: (values) => {
-
             //============================= Login The User =============================
             dispatch(LoginUser(values))     
         }
+    })
+
+    useEffect(() => {
+        dispatch(CheckCookie())
     })
 
     return(
@@ -33,7 +36,7 @@ const Login = () => {
                     <h1>Login Form</h1>
                 </div>
                 <div className="form_div">
-                    <form type="submit">
+                    <form type="submit" onSubmit={formik.handleSubmit}>
                         <label>Username </label> 
                         <input required type='text' name="email" value={formik.values.email}
                          onChange={formik.handleChange} placeholder="Enter Email ID..." />

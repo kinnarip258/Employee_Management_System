@@ -10,7 +10,6 @@ export const RegisterUser = (values) => {
         Axios.post(`/signUp`, values)
         .then(res => {
             const userData = res.data;
-            console.log("userData from actions register: ", userData);
             alert("Register Successfully!")
             dispatch({type: "Register_User", payload: userData})
         })
@@ -26,7 +25,7 @@ export const RegisterUser = (values) => {
 //============================= Save Updated Detils Of Employee Action Start =============================
 export const SaveUpdate = (id,values) => {
     return (dispatch) => {
-        Axios.put(`/updateUser/${id}`, values) 
+        Axios.put(`/updateUser/?ID=${id}`, values) 
         .then(res => {
             const userData = res.data;
             dispatch({type: "Save_Update", payload: userData})
@@ -59,7 +58,7 @@ export const LoginUser = (values) => {
 //============================= Delete Employee Action Start =============================
 export const DeleteUser = (id) =>{
     return (dispatch) => {
-        Axios.delete(`/deleteUser/${id}`)
+        Axios.delete(`/deleteUser/?ID=${id}`)
         .then(res => {
             const userData = res.data;
             dispatch({type: "Delete_User", payload: userData})
@@ -72,13 +71,13 @@ export const DeleteUser = (id) =>{
 //============================= End =============================
 
 //============================= Get Employees Details Action Start =============================
-export const getUserDetailsUser = (page, Request, Name) => {
+export const GetUserDetails = (Page, Request, SearchCityEmployee ,ID) => {
     
     return (dispatch) => {
-        Axios.get(`/getUser/?Page=${page}&Request=${Request}&CitySearchList=${Name}`) 
+        Axios.get(`/getUser/?Page=${Page}&Request=${Request}&SearchList=${SearchCityEmployee}&ID=${ID}`) 
         .then(res => {
             const userData = res.data;
-            dispatch({type: "getUserDetails_User", payload: userData})
+            dispatch({type: "Get_UserDetails", payload: userData})
         })
         .catch(err => {
             console.log("error: ", err);
@@ -95,6 +94,40 @@ export const LogoutUser = () => {
         .then(res => {
             const userData = res.data;
             dispatch({type: "Logout_User", payload: userData})
+        })
+        .catch(err => {
+            console.log("error: ", err);
+        });
+    }
+}
+//============================= End =============================
+
+
+//============================= Get Country, State, City =============================
+export const GetCountryStateCity = (Search, CountryID, StateID) => {
+    
+    return (dispatch) => {
+        Axios.get(`/getCountryStateCity/?Search=${Search}&CountryID=${CountryID}&StateID=${StateID}`)
+        .then(res => {
+            const userData = res.data;
+            dispatch({type: "Get_CountryStateCity", payload: userData})
+        })
+        .catch(err => {
+            console.log("error: ", err);
+        });
+    }
+}
+//============================= End =============================
+
+
+//============================= Get Country, State, City =============================
+export const CheckCookie = () => {
+    
+    return (dispatch) => {
+        Axios.get(`/checkCookie`)
+        .then(res => {
+            const userData = res.data;
+            dispatch({type: "CheckCookie", payload: userData})
         })
         .catch(err => {
             console.log("error: ", err);

@@ -19,7 +19,7 @@ const AppRoutes = () => {
 
     //============================= For Login-Logout Status =============================
     const LoginState = useSelector(state => state.LoginState)
-
+    console.log("LoginState",LoginState)
         return (
             <div>
                     <Switch>
@@ -29,13 +29,15 @@ const AppRoutes = () => {
                     
                         <ProtectedRoute exact path = '/Logout' component={Logout} authStatus={!LoginState}/>
                         <ProtectedRoute exact path= '/Dashboard' component={Dashboard} authStatus={!LoginState}/>
+                        
                         {
                             LoginState ? (
-                                <> 
+                                <>
                                     <Route exact path = '/Login' component={Login} />
                                 </>
-                            ) : <Redirect to= "/Dashboard"/>
+                            ): <Redirect to='/Dashboard' />
                         }
+      
                         <Route component={Error404} />    
                     </Switch>   
             </div>

@@ -48,15 +48,15 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     city:{
-        type: String,
+        type: Number,
         required: true
     },
     state: {
-        type: String,
+        type: Number,
         required: true
     },
     country:{
-        type: String,
+        type: Number,
         required: true
     },
     password: {
