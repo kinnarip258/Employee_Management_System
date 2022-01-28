@@ -168,7 +168,7 @@ router.get('/logout', authenticate, async (req,res) => {
 
 //============================= Get Employees =============================
 
-router.get('/getUser', authenticate, async (req,res) => {
+router.get('/getUser', async (req,res) => {
     try{
 
         let {Page, Request } = req.query;
@@ -238,6 +238,9 @@ router.get('/getUser', authenticate, async (req,res) => {
                             {salary1: parseInt(searchUser)},
                             {salary2: parseInt(searchUser)},
                             {salary3: parseInt(searchUser)},
+                            {"CountryName.CountryName": new RegExp("^" + searchUser, 'i')},
+                            {"StateName.StateName": new RegExp("^" + searchUser, 'i')},
+                            {"CityName.CityName": new RegExp("^" + searchUser, 'i')}
                         ]   
                     }
                 },                                
