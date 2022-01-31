@@ -168,7 +168,7 @@ router.get('/logout', authenticate, async (req,res) => {
 
 //============================= Get Employees =============================
 
-router.get('/getUser', async (req,res) => {
+router.get('/getUser',authenticate, async (req,res) => {
     try{
 
         let {Page, Request } = req.query;
@@ -227,7 +227,7 @@ router.get('/getUser', async (req,res) => {
             ) 
         }
         //============================= Search Employee =============================
-        else if(Request !== "Employees" ){
+        else if(Request !== "ascending" || Request !== "descending"){
             const searchUser = Request;
             aggregateQuery.push(
                 {

@@ -24,7 +24,7 @@ const Deshboard = () => {
 
     //============================= For Different Request =============================
 
-    const [request, setRequest] = useState("Employees");
+    const [request, setRequest] = useState("");
 
     //============================= Delete Employee =============================
     const handleDelete = (id) => {
@@ -73,7 +73,7 @@ const Deshboard = () => {
 
                 <div className='col-md-12 my-3 text-left'>
                     <select onChange={(e) => setRequest(e.target.value)}>
-                        <option value={"Employees"}>Sorting</option>
+                        <option value={""}>Sorting</option>
                         <option value={"ascending"}>Acending</option>
                         <option value={"descending"}>Descending</option>
                     </select>

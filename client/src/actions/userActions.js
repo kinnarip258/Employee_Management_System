@@ -71,10 +71,10 @@ export const DeleteUser = (id) =>{
 //============================= End =============================
 
 //============================= Get Employees Details Action Start =============================
-export const GetUserDetails = (Page, Request, SearchCityEmployee ,ID) => {
+export const GetUserDetails = (Page, Request) => {
     
     return (dispatch) => {
-        Axios.get(`/getUser/?Page=${Page}&Request=${Request}&SearchList=${SearchCityEmployee}&ID=${ID}`) 
+        Axios.get(`/getUser/?Page=${Page}&Request=${Request}`) 
         .then(res => {
             const userData = res.data;
             dispatch({type: "Get_UserDetails", payload: userData})

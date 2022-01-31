@@ -53,9 +53,6 @@ const ApiReducers = (state = initialState, action) => {
                 ...state,
                 user: action.payload.users,
                 page: action.payload.totalPage,
-                Country: action.payload.countries,
-                States: action.payload.states,
-                City: action.payload.cities
             }
 
         case "Get_CountryStateCity":
