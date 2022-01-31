@@ -27,7 +27,7 @@ const Login = () => {
 
     useEffect(() => {
         dispatch(CheckCookie())
-    })
+    }, [dispatch])
 
     return(
         <>

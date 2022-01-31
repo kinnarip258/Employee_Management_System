@@ -39,6 +39,7 @@ router.post('/signUp', async (req,res) => {
         } 
         
         else{
+            console.log(fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword, country, state, city)
             //============================= Save Register User =============================
             await new User({fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword, country, state, city}).save();
 
@@ -167,8 +168,8 @@ router.get('/logout', authenticate, async (req,res) => {
 });
 
 //============================= Get Employees =============================
-
-router.get('/getUser',authenticate, async (req,res) => {
+//authenticate, 
+router.get('/getUser',async (req,res) => {
     try{
 
         let {Page, Request } = req.query;
@@ -246,9 +247,7 @@ router.get('/getUser',authenticate, async (req,res) => {
                 },                                
             )
         }
-        //============================= Get Countries From Country Collection =============================
-        const countries = await Country.find()
-
+    
         //============================= Pagination =============================
         aggregateQuery.push(
             {
@@ -261,9 +260,9 @@ router.get('/getUser',authenticate, async (req,res) => {
 
         //============================= Apply AggreagteQuery In User Collection =============================
         const users = await User.aggregate([aggregateQuery]);
-
+        console.log(users)
         //============================= Send Response =============================
-        res.send({users, totalPage, countries});    
+        res.send({users, totalPage});    
     
     }
     catch(err){
@@ -278,6 +277,7 @@ router.get('/getUser',authenticate, async (req,res) => {
 router.get(`/getCountryStateCity`, async (req,res) => {
     
     try{
+        console.log(req.query);
         const {Search, CountryID, StateID} = req.query;
 
         //============================= Get Countries From Country Collection =============================
@@ -288,32 +288,20 @@ router.get(`/getCountryStateCity`, async (req,res) => {
             const states = await State.find({CountryID: CountryID});
             
             if(Search === "City"){
-
                 //============================= Get Cities From City Collection =============================
-
                 const aggreagteQuery = [];
 
                 aggreagteQuery.push(
                     {
-                        $lookup:{
-                            from: "states",
-                            localField: "StateID",
-                            foreignField: "StateID",
-                            as: "CountryDetails"
-                        }
-                    },
-                    {
                         $match: {
                             $and: [
                                 {StateID: parseInt(StateID)},
-                                {"CountryDetails.CountryID" : parseInt(CountryID)}
                             ]
                         }
                     },
                 )
                 const cities = await City.aggregate([aggreagteQuery])
                 res.send({countries, states, cities})
-
             }
             else{
                 res.send({countries, states});
