@@ -20,7 +20,7 @@ const Register = () => {
     const history = useHistory();
     //============================= Store Edite Employee Data =============================
     const [editedObject,setEditedObject] = useState([]);
-    console.log("editedObject",editedObject);
+    
     //============================= Get Edited User Id =============================
     const {id} = queryString.parse(window.location.search);
 
@@ -98,10 +98,12 @@ const Register = () => {
         //============================= Submit The Form =============================
         onSubmit: (values) =>  {
             //============================= Dispatch Updated User Data =============================
-            if(id){ 
+            if(id){
+
                 dispatch(SaveUpdate(id,values))
-                //============================= Navigate To Dashboard =============================
-                history.push('/Dashboard')
+                //============================= Navigate to Dashboard Page =============================
+                history.push('/Dashboard');
+                
             }
             //============================= Dispatch New User Data =============================
             else{

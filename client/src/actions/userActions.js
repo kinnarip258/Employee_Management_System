@@ -33,6 +33,7 @@ export const SaveUpdate = (id,values) => {
         Axios.put(`/updateUser/?ID=${id}`, values) 
         .then(res => {
             const userData = res.data;
+            toast.success("Data Updated Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
             dispatch({type: "Save_Update", payload: userData})
         })
         .catch(err => {

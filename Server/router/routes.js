@@ -165,7 +165,7 @@ router.get('/logout', authenticate, async (req,res) => {
 
 router.get('/getUser', authenticate, async (req,res) => {
     try{
-        console.log(req.query)
+
         let {Page, Sort, Request} = req.query;
         let limit = 5;
         let skip = (Page-1) * limit;
@@ -217,7 +217,6 @@ router.get('/getUser', authenticate, async (req,res) => {
         )
 
         if(Request === ""){
-            console.log("run blank")
             aggregateQuery.push(
                 {$sort: { fname : Sort === "descending" ? -1 : 1}},
                 //============================= Pagination =============================
@@ -238,7 +237,6 @@ router.get('/getUser', authenticate, async (req,res) => {
         
         //============================= Search Employee =============================
         else if(Request !== ""){
-            console.log("run search")
             const searchUser = Request;
             console.log(searchUser)
             aggregateQuery.push(
