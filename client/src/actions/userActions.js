@@ -1,5 +1,10 @@
 //========================== Import Modules Start ===========================
+
 import Axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure()
+
 //========================== Import Modules End =============================
 
 //============================= Actions =============================
@@ -10,12 +15,12 @@ export const RegisterUser = (values) => {
         Axios.post(`/signUp`, values)
         .then(res => {
             const userData = res.data;
-            alert("Register Successfully!")
-            dispatch({type: "Register_User", payload: userData})
+            toast.success("Register Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
+            dispatch({type: "Register_User", payload: userData})  
         })
         .catch(err => {
             console.log("error: ", err);
-            alert("Invalid Credentials!");
+            toast.error("Email Or Phone Number Already Exist!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
         });
         
     }
@@ -43,14 +48,13 @@ export const LoginUser = (values) => {
     return (dispatch) => {
         Axios.post(`/signIn`, values) 
         .then(res => {
-            const userData = res.data;
-            alert("Login Successfully!")
-            dispatch({type: "Login_User", payload: userData})
+            toast.success("Login Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
+            dispatch({type: "Login_User"})
         })
         .catch(err => {
             console.log("error: ", err);
-            alert("Invalid Credentials!")
-        });
+            toast.error("Invalid Credentials!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
+        });;
     }
 }
 //============================= End =============================
@@ -71,10 +75,10 @@ export const DeleteUser = (id) =>{
 //============================= End =============================
 
 //============================= Get Employees Details Action Start =============================
-export const GetUserDetails = (Page, Request) => {
+export const GetUserDetails = (Page,Sort, Request) => {
     
     return (dispatch) => {
-        Axios.get(`/getUser/?Page=${Page}&Request=${Request}`) 
+        Axios.get(`/getUser/?Page=${Page}&Sort=${Sort}&Request=${Request}`) 
         .then(res => {
             const userData = res.data;
             dispatch({type: "Get_UserDetails", payload: userData})

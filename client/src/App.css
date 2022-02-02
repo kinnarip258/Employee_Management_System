@@ -53,11 +53,14 @@
     text-align: center;
 }
 
-.error {
+.errorpage {
     text-align: center;
     margin: 400px 500px 500px 500px ;
 }
 
+.error {
+    color: red;
+}
 .pagination{
     display: inline-block;
     cursor: pointer;

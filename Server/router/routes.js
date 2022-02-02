@@ -18,28 +18,19 @@ const Country = require('../models/countrySchema');
 //============================= Register =============================
 
 router.post('/signUp', async (req,res) => {
-    console.log("req.body", req.body)
+   
     const {fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword,country, state, city} = req.body;
-
-    //============================= Details Are Filled Properly =============================
-    if(!fname || !lname || !email || !phone || !company || !profession || !salary1 || !salary2 || !salary3 
-         || !password || !cpassword || !city || !state || !country){
-        return res.status(422 ).send({error: "please fill the field properly"});
-    }
+    
     try{
         //============================= User Exist =============================
         const userExist = await User.findOne({email: email});
 
         if(userExist) {
-            return res.status(422).send({error: "email already exist!"});
+            return res.status(422).send({error: "user already exist!"});
         } 
-        //============================= Password And Confirm Password Matching =============================
-        else if(password !== cpassword){
-            return res.status(422).send({ error: "password are not matching!"});
-        } 
-        
+
         else{
-            console.log(fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword, country, state, city)
+
             //============================= Save Register User =============================
             await new User({fname, lname, email, phone, company, profession, salary1, salary2, salary3, password, cpassword, country, state, city}).save();
 
@@ -70,8 +61,7 @@ router.post('/signIn', async (req,res) => {
         }
         //============================= User Exist =============================
         const userLogin = await User.findOne({ email: email});
-
-        
+    
         if(userLogin){
             //============================= Login User PassWord Matching=============================
             const isMatch = await bcrypt.compare(password, userLogin.password);
@@ -132,7 +122,11 @@ router.put('/updateUser', authenticate, async (req,res) => {
 router.delete('/deleteUser', authenticate, async (req,res) => {
     
     try{
-        
+
+        if(req.token === req.cookies.jwt){
+            //============================= Clear Cookie =============================
+            res.clearCookie("jwt");
+        }
         //============================= Delete Employee =============================
         await User.findByIdAndRemove(req.query.ID);
         //============================= Send Response =============================
@@ -168,16 +162,16 @@ router.get('/logout', authenticate, async (req,res) => {
 });
 
 //============================= Get Employees =============================
-//authenticate, 
-router.get('/getUser',async (req,res) => {
+
+router.get('/getUser', authenticate, async (req,res) => {
     try{
-
-        let {Page, Request } = req.query;
-        let limit = 8;
+        console.log(req.query)
+        let {Page, Sort, Request} = req.query;
+        let limit = 5;
         let skip = (Page-1) * limit;
-
         //============================= Count Total Documents =============================
         const total = await User.countDocuments({});
+
         //============================= Count Total Pages =============================
         let totalPage = Math.ceil(total/limit);
 
@@ -221,49 +215,67 @@ router.get('/getUser',async (req,res) => {
                 }
             },
         )
-        //============================= Sort The Employees =============================
-        if(Request === "ascending" || Request === "descending"){
+
+        if(Request === ""){
+            console.log("run blank")
             aggregateQuery.push(
-                {$sort: { fname : Request === "ascending" ? 1 : -1}}
-            ) 
+                {$sort: { fname : Sort === "descending" ? -1 : 1}},
+                //============================= Pagination =============================
+                {
+                    $skip: skip
+                },
+                {
+                    $limit: limit  
+                }  
+            )
+            //============================= Apply AggreagteQuery In User Collection =============================
+            const users = await User.aggregate([aggregateQuery]);
+            
+            //============================= Send Response =============================
+            res.send({users, totalPage});    
+    
         }
+        
         //============================= Search Employee =============================
-        else if(Request !== "ascending" || Request !== "descending"){
+        else if(Request !== ""){
+            console.log("run search")
             const searchUser = Request;
+            console.log(searchUser)
             aggregateQuery.push(
                 {
                     $match: {
                         $or: [
-                            {fname: new RegExp("^" + searchUser, 'i')},
-                            {company: new RegExp("^" + searchUser, 'i')},
-                            {salary1: parseInt(searchUser)},
-                            {salary2: parseInt(searchUser)},
-                            {salary3: parseInt(searchUser)},
-                            {"CountryName.CountryName": new RegExp("^" + searchUser, 'i')},
-                            {"StateName.StateName": new RegExp("^" + searchUser, 'i')},
-                            {"CityName.CityName": new RegExp("^" + searchUser, 'i')}
+                            {fname: RegExp("^" + searchUser, 'i')},
+                            {lname: RegExp("^" + searchUser, 'i')},
+                            {profession: RegExp("^" + searchUser, 'i')},
+                            {company: RegExp("^" + searchUser, 'i')},
+                            {email: RegExp("^" + searchUser, 'i')},
+                            {phone: parseInt(searchUser)},
+                            {"CountryName.CountryName": RegExp("^" + searchUser, 'i')},
+                            {"StateName.StateName": RegExp("^" + searchUser, 'i')},
+                            {"CityName.CityName": RegExp("^" + searchUser, 'i')}
                         ]   
                     }
-                },                                
-            )
-        }
-    
-        //============================= Pagination =============================
-        aggregateQuery.push(
-            {
-                $skip: skip
-            },
-            {
-                $limit: limit  
-            }
-        )
-
-        //============================= Apply AggreagteQuery In User Collection =============================
-        const users = await User.aggregate([aggregateQuery]);
-        console.log(users)
-        //============================= Send Response =============================
-        res.send({users, totalPage});    
-    
+                }, 
+                {$sort: { fname : Sort === "descending" ? -1 : 1}},
+                //============================= Pagination =============================
+                {
+                    $skip: skip
+                },
+                {
+                    $limit: limit  
+                }                            
+            )//============================= Sort The Employees =============================
+            
+            //============================= Apply AggreagteQuery In User Collection =============================
+            const users = await User.aggregate([aggregateQuery]);
+            
+            //============================= Count Total Pages of SearchUser =============================
+            let totalPage = Math.ceil(users.length/limit);
+           
+            //============================= Send Response =============================
+            res.send({users, totalPage});              
+        }       
     }
     catch(err){
         //============================= Send Error Massage =============================
@@ -277,7 +289,7 @@ router.get('/getUser',async (req,res) => {
 router.get(`/getCountryStateCity`, async (req,res) => {
     
     try{
-        console.log(req.query);
+
         const {Search, CountryID, StateID} = req.query;
 
         //============================= Get Countries From Country Collection =============================

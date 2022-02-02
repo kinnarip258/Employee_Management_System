@@ -10,11 +10,10 @@ const initialState = {
     Country: [], 
     States: [],
     City: [],  
-    LoginState: true
+    LoginState: undefined
 }
 
 //========================== InitialState End =============================
-
 
 //============================= Reducers Start =============================
 
@@ -22,10 +21,9 @@ const ApiReducers = (state = initialState, action) => {
     switch (action.type) {
 
         case "Register_User":
-
             return {
                 ...state,
-                LoginState: true
+            
             }
 
         case "Save_Update": 
@@ -35,7 +33,7 @@ const ApiReducers = (state = initialState, action) => {
             }
 
         case "Login_User":
-            
+
             return {
                 ...state,
                 LoginState: false
@@ -44,7 +42,8 @@ const ApiReducers = (state = initialState, action) => {
         case "Delete_User":
             
             return  {
-                ...state,   
+                ...state,
+                LoginState: true  
             }
 
         case "Get_UserDetails":
@@ -68,6 +67,7 @@ const ApiReducers = (state = initialState, action) => {
             return {
                 LoginState: true
             }
+
         case "CheckCookie":
 
         return {

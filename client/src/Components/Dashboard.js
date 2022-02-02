@@ -3,8 +3,9 @@
 import React, { useCallback, useEffect, useState} from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {GetUserDetails, DeleteUser, CheckCookie} from "../actions/userActions";
+import {GetUserDetails, DeleteUser } from "../actions/userActions";
 import Pagination from '@mui/material/Pagination';
+import {toast} from 'react-toastify';
 
 //========================== Import Modules End =============================
 
@@ -25,10 +26,14 @@ const Deshboard = () => {
     //============================= For Different Request =============================
 
     const [request, setRequest] = useState("");
+    const [sort, setSort] = useState("ascending")
 
     //============================= Delete Employee =============================
     const handleDelete = (id) => {
-        dispatch(DeleteUser(id));
+        
+        if(window.confirm("Are You Sure")){
+            dispatch(DeleteUser(id))        
+        }
     }
     
     //============================= handle Search =============================
@@ -57,9 +62,9 @@ const Deshboard = () => {
     
     useEffect(() => {
         //============================= Get Employee Data =============================
-        dispatch(GetUserDetails(pageNumber, request));
+        dispatch(GetUserDetails(pageNumber,sort, request));
 
-    }, [pageNumber, request]);
+    }, [pageNumber,sort, request, dispatch]);
 
     return(
         <>
@@ -72,67 +77,78 @@ const Deshboard = () => {
                 </div>
 
                 <div className='col-md-12 my-3 text-left'>
-                    <select onChange={(e) => setRequest(e.target.value)}>
-                        <option value={""}>Sorting</option>
+                    <select onChange={(e) => setSort(e.target.value)}>
+                        <option>Sorting</option>
                         <option value={"ascending"}>Acending</option>
                         <option value={"descending"}>Descending</option>
                     </select>
                 </div>
 
-                <div className='col-md-20 mx-auto'>
-                    <table className='table table-hover'>
-                        <thead className='text-black text-center'>
-                            <tr>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Email</th>
-                                <th>Phone Number</th>
-                                <th>Company</th>
-                                <th>Profession</th>
-                                <th>Salary 1st month</th>
-                                <th>Salary 2nd month</th>
-                                <th>Salary 3rd month</th>
-                                <th>Total Salary</th>
-                                <th>Country</th>
-                                <th>State</th>
-                                <th>City</th>
-                                <th>Edit</th>
-                                <th>Delete</th>                 
-                            </tr>
-                        </thead>  
-                        <tbody>
-                        {
-                            user ? (
-                                user.map(ele => {
-                                    return(     
-                                        <tr key = {ele.id}>          
-                                            <td>{ele.fname}</td>
-                                            <td>{ele.lname}</td>
-                                            <td>{ele.email}</td>
-                                            <td>{ele.phone}</td>
-                                            <td>{ele.company}</td>
-                                            <td>{ele.profession}</td>
-                                            <td>{ele.salary1}</td> 
-                                            <td>{ele.salary2}</td>
-                                            <td>{ele.salary3}</td>
-                                            <td>{ele.totalSalary}</td>
-                                            <td>{ele.CountryName.map((ele) => ele.CountryName)}</td>
-                                            <td>{ele.StateName.map((ele) => ele.StateName)}</td>
-                                            <td>{ele.CityName.map((ele) => ele.CityName)}</td>
-                                            <td><button class="page-link"><NavLink to={`/EditUser/:?id=${ele._id}`}>Edit</NavLink></button></td>
-                                            <td><button class="page-link" onClick={() => handleDelete(ele._id)}>Delete</button></td>     
-                                        </tr>                
-                                    )
-                                })
-                            ) : null
-                        }
-                        </tbody>
-                    </table>
-                </div>
+                {
+                    page !== 0 ? (
+    
+                        <div className='col-md-20 mx-auto'>
+                            <table className='table table-hover'>
+                                <thead className='text-black text-center'>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Email</th>
+                                        <th>Phone Number</th>
+                                        <th>Company</th>
+                                        <th>Profession</th>
+                                        <th>Salary 1st month</th>
+                                        <th>Salary 2nd month</th>
+                                        <th>Salary 3rd month</th>
+                                        <th>Total Salary</th>
+                                        <th>Country</th>
+                                        <th>State</th>
+                                        <th>City</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>                 
+                                    </tr>
+                                </thead>  
+                                <tbody>
+                                {
+                                    user ? (
+                                        user.map(ele => {
+                                            return(     
+                                                <tr key = {ele.id}>          
+                                                    <td>{ele.fname}</td>
+                                                    <td>{ele.lname}</td>
+                                                    <td>{ele.email}</td>
+                                                    <td>{ele.phone}</td>
+                                                    <td>{ele.company}</td>
+                                                    <td>{ele.profession}</td>
+                                                    <td>{ele.salary1}</td> 
+                                                    <td>{ele.salary2}</td>
+                                                    <td>{ele.salary3}</td>
+                                                    <td>{ele.totalSalary}</td>
+                                                    <td>{ele.CountryName.map((ele) => ele.CountryName)}</td>
+                                                    <td>{ele.StateName.map((ele) => ele.StateName)}</td>
+                                                    <td>{ele.CityName.map((ele) => ele.CityName)}</td>
+                                                    <td><button class="page-link"><NavLink to={`/EditUser/:?id=${ele._id}`}>Edit</NavLink></button></td>
+                                                    <td><button class="page-link" onClick={() => handleDelete(ele._id)}>Delete</button></td>     
+                                                </tr>                
+                                            )
+                                        })
+                                    ) : null
+                                }
+                                </tbody>
+                            </table>
 
-                <Pagination count={page} variant="outlined" color="secondary" onChange={(e, value) =>  {
-                    setPageNumber(value)  
-                }}/>   
+                            <Pagination count={page} variant="outlined" color="secondary" onChange={(e, value) =>  {
+                                setPageNumber(value) }}/>  
+                        </div>
+                
+                    ) : (
+                        <div>
+                            <h1>NO DATA FOUND</h1>
+                        </div>
+                    )
+                }
+
+                  
                     
             </div>     
         </>

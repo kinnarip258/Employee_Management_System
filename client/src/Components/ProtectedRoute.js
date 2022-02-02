@@ -12,15 +12,15 @@ import {Route, Redirect} from 'react-router-dom';
 //component: componenet connected with route
 //...rest: rest of the properties
 const ProtectedRoute = ({authStatus, component: Component, ...rest}) => {
-    
+
     return (
         <>  
             <Route {...rest} render= {(props) => {
-                if(authStatus) {
+                if(authStatus !== false) {
                     return <Component {...props}/>;
                 }
                 else{
-                    return <Redirect to='/' />;
+                    return <Redirect to='/Dashboard' />;
                 }
             }}/> 
         </>
