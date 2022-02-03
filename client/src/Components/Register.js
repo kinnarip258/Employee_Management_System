@@ -5,7 +5,7 @@ import {useHistory, NavLink} from "react-router-dom";
 import {useFormik} from "formik";
 import queryString from "query-string";
 import { useDispatch, useSelector } from 'react-redux';
-import { GetCountryStateCity, RegisterUser, SaveUpdate} from '../actions/userActions';
+import { Get_CountryStateCity, Register_User, Save_Update} from '../actions/userActions';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,6 +16,7 @@ toast.configure()
 //============================= Register Component Start =============================
 
 const Register = () => {
+    
     //============================= Navigate the Page =============================
     const history = useHistory();
     //============================= Store Edite Employee Data =============================
@@ -100,10 +101,10 @@ const Register = () => {
             //============================= Dispatch Updated User Data =============================
             if(id){
 
-                dispatch(SaveUpdate(id,values))
-                //============================= Navigate to Dashboard Page =============================
-                history.push('/Dashboard');
-                
+                dispatch(Save_Update(id,values))
+                //============================= Navigate to Dashboard =============================
+                history.push('/Dashboard')
+            
             }
             //============================= Dispatch New User Data =============================
             else{
@@ -111,9 +112,9 @@ const Register = () => {
                     toast.warning("Password Not Match")
                 }
                 else{
-                    dispatch(RegisterUser(values))
+                    dispatch(Register_User(values))
                     //============================= Reset Fields =============================
-                    //formik.resetForm();
+                    formik.resetForm();
                 }
             }        
         }     
@@ -144,8 +145,9 @@ const Register = () => {
             setSearch("City");
             setStateID(formik.values.state)
         }  
-        dispatch(GetCountryStateCity(search, CountryID, StateID));  
-    }, [search,CountryID, StateID,formik.values.country,formik.values.state])
+        dispatch(Get_CountryStateCity(search, CountryID, StateID));
+          
+    }, [search,CountryID, StateID, formik.values.country,formik.values.state])
 
     return (
         <div>

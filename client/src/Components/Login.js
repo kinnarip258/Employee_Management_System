@@ -4,7 +4,7 @@ import React from "react";
 import { NavLink} from "react-router-dom";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
-import { LoginUser } from "../actions/userActions";
+import { Login_User } from "../actions/userActions";
 
 //========================== Import Modules End =============================
 
@@ -21,7 +21,7 @@ const Login = () => {
          
         onSubmit: (values) => {
             //============================= Login The User =============================
-            dispatch(LoginUser(values))     
+            dispatch(Login_User(values))     
         }
     })
 

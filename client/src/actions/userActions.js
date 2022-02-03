@@ -1,5 +1,4 @@
 //========================== Import Modules Start ===========================
-
 import Axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,7 +9,7 @@ toast.configure()
 //============================= Actions =============================
 
 //============================= Register User Action Start =============================
-export const RegisterUser = (values) => {
+export const Register_User = (values) => {
     return (dispatch) => {
         Axios.post(`/signUp`, values)
         .then(res => {
@@ -19,7 +18,6 @@ export const RegisterUser = (values) => {
             dispatch({type: "Register_User", payload: userData})  
         })
         .catch(err => {
-            console.log("error: ", err);
             toast.error("Email Or Phone Number Already Exist!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
         });
         
@@ -27,8 +25,9 @@ export const RegisterUser = (values) => {
 }
 //============================= End =============================
 
+
 //============================= Save Updated Detils Of Employee Action Start =============================
-export const SaveUpdate = (id,values) => {
+export const Save_Update = (id,values) => {
     return (dispatch) => {
         Axios.put(`/updateUser/?ID=${id}`, values) 
         .then(res => {
@@ -44,7 +43,7 @@ export const SaveUpdate = (id,values) => {
 //============================= End =============================
 
 //============================= Login User Action Start =============================
-export const LoginUser = (values) => {
+export const Login_User = (values) => {
     
     return (dispatch) => {
         Axios.post(`/signIn`, values) 
@@ -53,7 +52,6 @@ export const LoginUser = (values) => {
             dispatch({type: "Login_User"})
         })
         .catch(err => {
-            console.log("error: ", err);
             toast.error("Invalid Credentials!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
         });;
     }
@@ -61,9 +59,9 @@ export const LoginUser = (values) => {
 //============================= End =============================
 
 //============================= Delete Employee Action Start =============================
-export const DeleteUser = (id) =>{
+export const Delete_User = (email) =>{
     return (dispatch) => {
-        Axios.delete(`/deleteUser/?ID=${id}`)
+        Axios.delete(`/deleteUser/?Email=${email}`)
         .then(res => {
             const userData = res.data;
             dispatch({type: "Delete_User", payload: userData})
@@ -76,7 +74,7 @@ export const DeleteUser = (id) =>{
 //============================= End =============================
 
 //============================= Get Employees Details Action Start =============================
-export const GetUserDetails = (Page,Sort, Request) => {
+export const Get_UserDetails = (Page,Sort, Request) => {
     
     return (dispatch) => {
         Axios.get(`/getUser/?Page=${Page}&Sort=${Sort}&Request=${Request}`) 
@@ -92,7 +90,7 @@ export const GetUserDetails = (Page,Sort, Request) => {
 //============================= End =============================
 
 //============================= Logout User Action Start =============================
-export const LogoutUser = () => {
+export const Logout_User = () => {
 
     return (dispatch) => {
         Axios.get(`/logout`)
@@ -109,7 +107,7 @@ export const LogoutUser = () => {
 
 
 //============================= Get Country, State, City =============================
-export const GetCountryStateCity = (Search, CountryID, StateID) => {
+export const Get_CountryStateCity = (Search, CountryID, StateID) => {
     
     return (dispatch) => {
         Axios.get(`/getCountryStateCity/?Search=${Search}&CountryID=${CountryID}&StateID=${StateID}`)

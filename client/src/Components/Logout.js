@@ -2,7 +2,7 @@
 
 import React, {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
-import {LogoutUser} from "../actions/userActions";
+import {Logout_User} from "../actions/userActions";
 
 //========================== Import Modules End =============================
 
@@ -15,7 +15,7 @@ const Logout = () => {
     
     useEffect(() => {
         //============================= Logout The User =============================
-        dispatch(LogoutUser());      
+        dispatch(Logout_User());      
     }, [dispatch]);
 
     return(

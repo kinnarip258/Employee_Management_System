@@ -23,9 +23,9 @@ router.post('/signUp', async (req,res) => {
     
     try{
         //============================= User Exist =============================
-        const userExist = await User.findOne({email: email});
-
-        if(userExist) {
+        const emailExist = await User.findOne({email: email});
+        const phoneExist = await User.findOne({phone: phone})
+        if(emailExist || phoneExist) {
             return res.status(422).send({error: "user already exist!"});
         } 
 
@@ -44,7 +44,6 @@ router.post('/signUp', async (req,res) => {
     catch (err) {
         //============================= Error Message =============================
         res.send(err)
-        console.log(err);
     }  
 })
 
@@ -89,7 +88,6 @@ router.post('/signIn', async (req,res) => {
    } catch (err) {
        //============================= Send Error Message =============================
         res.send(err)
-        console.log(err);
    }
 })
 
@@ -97,8 +95,6 @@ router.post('/signIn', async (req,res) => {
 
 router.put('/updateUser', authenticate, async (req,res) => {
     try{
-        console.log(req.query.ID)
-        console.log(req.body);
         //============================= Save Employee Updated Details =============================
         await User.findByIdAndUpdate(req.query.ID, req.body ,
             {
@@ -112,7 +108,6 @@ router.put('/updateUser', authenticate, async (req,res) => {
     }
     catch(err) {
         //============================= Send Error Message =============================
-        console.log(err);
         res.send(err);
     };
 });
@@ -122,18 +117,17 @@ router.put('/updateUser', authenticate, async (req,res) => {
 router.delete('/deleteUser', authenticate, async (req,res) => {
     
     try{
-
-        if(req.token === req.cookies.jwt){
+    
+        if(req.authenticateUser.email === req.query.Email){
             //============================= Clear Cookie =============================
             res.clearCookie("jwt");
         }
         //============================= Delete Employee =============================
-        await User.findByIdAndRemove(req.query.ID);
+        await User.findOneAndDelete({email: req.query.Email});
         //============================= Send Response =============================
         res.send({msg: "User Deleted!"})
     }
     catch(err) {
-        console.log("error: ", err)
         res.send("error" + err)
     };
 });
@@ -218,7 +212,10 @@ router.get('/getUser', authenticate, async (req,res) => {
 
         if(Request === ""){
             aggregateQuery.push(
+                
+                //============================= Sorting =============================
                 {$sort: { fname : Sort === "descending" ? -1 : 1}},
+
                 //============================= Pagination =============================
                 {
                     $skip: skip
@@ -231,14 +228,12 @@ router.get('/getUser', authenticate, async (req,res) => {
             const users = await User.aggregate([aggregateQuery]);
             
             //============================= Send Response =============================
-            res.send({users, totalPage});    
-    
+            res.send({users, totalPage});   
         }
         
         //============================= Search Employee =============================
         else if(Request !== ""){
             const searchUser = Request;
-            console.log(searchUser)
             aggregateQuery.push(
                 {
                     $match: {
@@ -254,8 +249,11 @@ router.get('/getUser', authenticate, async (req,res) => {
                             {"CityName.CityName": RegExp("^" + searchUser, 'i')}
                         ]   
                     }
-                }, 
+                },
+                
+                //============================= Sorting =============================
                 {$sort: { fname : Sort === "descending" ? -1 : 1}},
+
                 //============================= Pagination =============================
                 {
                     $skip: skip
@@ -280,7 +278,6 @@ router.get('/getUser', authenticate, async (req,res) => {
         res.status(500).send(err);  
     }
 });
-
 
 //============================= Get Country, State, City =============================
 
@@ -322,7 +319,7 @@ router.get(`/getCountryStateCity`, async (req,res) => {
         }       
     }
     catch(err){
-        console.log(err);
+        res.send(err);
     }
 })
 
@@ -344,7 +341,7 @@ router.get(`/checkCookie`, async (req,res) => {
         }
     }     
     catch(err){
-        console.log(err);
+        res.send(err);
     }
 })
 
@@ -361,7 +358,7 @@ router.post(`/addCountry`, async (req,res) => {
         res.send({msg: "country"})
     }
     catch(err){
-        console.log(err);
+        res.send(err);
     }
 })
 
@@ -377,7 +374,7 @@ router.post('/addState', async (req,res) => {
         res.send({msg: "state"})
     }
     catch(err){
-        console.log(err);
+        res.send(err);
     }
 })
 
@@ -393,7 +390,7 @@ router.post('/addCity', async (req,res) => {
         res.send({msg: "city"})
     }
     catch(err){
-        console.log(err);
+        res.send(err);
     }
 })
 

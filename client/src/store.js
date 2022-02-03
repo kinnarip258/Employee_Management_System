@@ -2,7 +2,7 @@
 
 import { createStore, applyMiddleware, compose } from "redux";
 import ReduxThunk from 'redux-thunk';
-import ApiReducers from './reducers/ApiReducers';
+import Reducers from './reducers/ApiReducers';
 
 //========================== Load Modules End =============================
 
@@ -16,7 +16,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_D
 //ReduxThunk as middleware
 //compose middleware and composeEnhancers
 const store = createStore(
-    ApiReducers,
+    Reducers,
     compose(applyMiddleware(ReduxThunk), composeEnhancers)
 )
 

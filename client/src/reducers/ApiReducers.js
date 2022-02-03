@@ -1,52 +1,53 @@
 //========================== Import Modules Start ===========================
 
+import {Register_User, Save_Update, Edit_User, Login_User, Delete_User, Get_UserDetails, Logout_User, Get_CountryStateCity, CheckCookie} from "../actions/actionTypes"
+
 //========================== Import Modules End =============================
 
 //========================== InitialState Start ===========================
 
 const initialState = {
     user: [],
+    edituser : [],
     page: [],
     Country: [], 
     States: [],
     City: [],  
-    LoginState: undefined
+    LoginState: true
 }
 
 //========================== InitialState End =============================
 
 //============================= Reducers Start =============================
 
-const ApiReducers = (state = initialState, action) => {
+const Reducers = (state = initialState, action) => {
     switch (action.type) {
 
-        case "Register_User":
+        case Register_User:
             return {
                 ...state,
-            
             }
 
-        case "Save_Update": 
+        case Save_Update: 
         
             return {
                 ...state,
             }
 
-        case "Login_User":
+        case Login_User:
 
             return {
                 ...state,
                 LoginState: false
             }
 
-        case "Delete_User":
+        case Delete_User:
             
             return  {
-                ...state,
-                LoginState: true  
+                ...state,  
             }
 
-        case "Get_UserDetails":
+        case Get_UserDetails:
 
             return {
                 ...state,
@@ -54,7 +55,7 @@ const ApiReducers = (state = initialState, action) => {
                 page: action.payload.totalPage,
             }
 
-        case "Get_CountryStateCity":
+        case Get_CountryStateCity:
 
             return {
                 Country: action.payload.countries,
@@ -62,14 +63,14 @@ const ApiReducers = (state = initialState, action) => {
                 City: action.payload.cities
             }
     
-        case "Logout_User":
+        case Logout_User:
             
             return {
                 LoginState: true
             }
 
-        case "CheckCookie":
-
+        case CheckCookie:
+            
         return {
             LoginState: action.payload
         }
@@ -82,6 +83,6 @@ const ApiReducers = (state = initialState, action) => {
 
 //============================= Export Default Start =============================
 
-export default ApiReducers;
+export default Reducers;
 
 //============================= Export Default End =============================

@@ -1,7 +1,7 @@
 //========================== Import Modules Start ===========================
 
 import {combineReducers} from 'redux';
-import ApiReducers from './ApiReducers';
+import Reducers from './ApiReducers';
 
 //========================== Import Modules End =============================
 
@@ -10,6 +10,6 @@ import ApiReducers from './ApiReducers';
 //============================= Export Default Start =============================
 
 //combine reducer file
-export const reducers = combineReducers({ApiReducers});
+export const reducers = combineReducers({Reducers});
 
 //============================= Export Default End =============================

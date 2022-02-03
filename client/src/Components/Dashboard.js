@@ -1,12 +1,11 @@
 //========================== Import Modules Start ===========================
 
-import React, { useCallback, useEffect, useState} from "react";
+import React, { useEffect, useState} from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {GetUserDetails, DeleteUser } from "../actions/userActions";
+import {Get_UserDetails, Delete_User } from "../actions/userActions";
 import Pagination from '@mui/material/Pagination';
-import {toast} from 'react-toastify';
-
+import debounce from "lodash.debounce";
 //========================== Import Modules End =============================
 
 //============================= Dashboard Component Start =============================
@@ -29,10 +28,10 @@ const Deshboard = () => {
     const [sort, setSort] = useState("ascending")
 
     //============================= Delete Employee =============================
-    const handleDelete = (id) => {
+    const handleDelete = (email) => {
         
         if(window.confirm("Are You Sure")){
-            dispatch(DeleteUser(id))        
+            dispatch(Delete_User(email))        
         }
     }
     
@@ -41,30 +40,17 @@ const Deshboard = () => {
        setRequest(e.target.value)
     }
    
-    //============================= Debouncing =============================
-    const debounce = (func) => {
-        let timer;
-        return function (...args){
-            const context = this;
-            if(timer) clearTimeout(timer);
-            timer = setTimeout(() => {
-                timer = null
-                func.apply(context, args);
-
-            }, 500)
-        }
-    }
     
     //============================= Optimise Search Employee =============================
-    const optimiseVersion = useCallback(debounce(handleSearch), [])
+    const optimiseVersion = debounce(handleSearch, [500])
 
     //============================= useEffect =============================
     
     useEffect(() => {
         //============================= Get Employee Data =============================
-        dispatch(GetUserDetails(pageNumber,sort, request));
+        dispatch(Get_UserDetails(pageNumber,sort, request));
 
-    }, [pageNumber,sort, request, dispatch]);
+    }, [pageNumber,sort, request, dispatch, Delete_User]);
 
     return(
         <>
@@ -128,7 +114,7 @@ const Deshboard = () => {
                                                     <td>{ele.StateName.map((ele) => ele.StateName)}</td>
                                                     <td>{ele.CityName.map((ele) => ele.CityName)}</td>
                                                     <td><button class="page-link"><NavLink to={`/EditUser/:?id=${ele._id}`}>Edit</NavLink></button></td>
-                                                    <td><button class="page-link" onClick={() => handleDelete(ele._id)}>Delete</button></td>     
+                                                    <td><button class="page-link" onClick={() => handleDelete(ele.email)}>Delete</button></td>     
                                                 </tr>                
                                             )
                                         })
@@ -137,8 +123,6 @@ const Deshboard = () => {
                                 </tbody>
                             </table>
 
-                            <Pagination count={page} variant="outlined" color="secondary" onChange={(e, value) =>  {
-                                setPageNumber(value) }}/>  
                         </div>
                 
                     ) : (
@@ -148,7 +132,8 @@ const Deshboard = () => {
                     )
                 }
 
-                  
+                <Pagination count={page} variant="outlined" color="secondary" onChange={(e, value) =>  {
+                    setPageNumber(value) }}/>  
                     
             </div>     
         </>

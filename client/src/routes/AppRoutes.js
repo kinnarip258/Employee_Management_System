@@ -8,7 +8,7 @@ import Error404 from "../Components/Error";
 import Register from "../Components/Register";
 import Logout from '../Components/Logout';
 import ProtectedRoute from '../Components/ProtectedRoute';
-import { Switch,Route, Redirect} from "react-router-dom";
+import { Switch,Route, Redirect, NavLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import { CheckCookie } from '../actions/userActions';
 
@@ -25,7 +25,7 @@ const AppRoutes = () => {
     //============================= CheckCookie For Login State =============================
     useEffect(() => {
         dispatch(CheckCookie())
-    },[dispatch])
+    },[Route, ProtectedRoute])
     
     //============================= For Login-Logout Status =============================
     const LoginState = useSelector(state => state.LoginState)
@@ -34,16 +34,16 @@ const AppRoutes = () => {
             <div>
                     <Switch>
                         <Route exact path = '/' component={Home} />
-                        <ProtectedRoute exact path = '/EditUser/:id' component={Register} authStatus={!LoginState}/>
                         
-                        <ProtectedRoute exact path = '/Registration' component={Register} authStatus={LoginState}/>
+                        <Route exact path = '/EditUser/:id' component={Register} />
+
+                        <Route exact path = '/Registration' component={Register} />
 
                         <ProtectedRoute exact path = '/Login' component={Login} authStatus={LoginState}/>
                         
                         {
-                            LoginState === false ? (
+                            LoginState !== true ? (
                                 <>
-
                                     <Route exact path = '/Logout' component={Logout} />
 
                                     <Route exact path= '/Dashboard' component={Dashboard} />

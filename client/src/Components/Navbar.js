@@ -16,26 +16,29 @@ const Navbar = () => {
         <>
             <div className="nav_div">
 
+            <NavLink to = '/'> Home </NavLink>
+
+            <NavLink to = '/Registration'> Registration </NavLink>
+
                 {
-                    LoginState === false ? (
+                    LoginState === true ? (
 
                         <>
-                            <NavLink to = '/Dashboard'> Dashboard </NavLink>
-
-                            <NavLink to = '/Logout'> Logout</NavLink>
+                            
+                            <NavLink to = '/Login'> Login </NavLink>
+                            
                         </>
                         
                     ) : (
                         <>
-                            <NavLink to = '/'> Home </NavLink>
-               
-                            <NavLink to = '/Registration'> Registration </NavLink>
-                                    
-                            <NavLink to = '/Login'> Login </NavLink>
+                            <NavLink to = '/Dashboard'> Dashboard </NavLink>
+
+                            <NavLink to = '/Logout'> Logout</NavLink>     
+                            
                         </>
-                    )
-                }        
-                    
+                    )         
+                }
+                   
             </div>
         
             <hr/>  
