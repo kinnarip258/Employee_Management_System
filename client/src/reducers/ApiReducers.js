@@ -13,7 +13,8 @@ const initialState = {
     Country: [], 
     States: [],
     City: [],  
-    LoginState: true
+    LoginState: true,
+    LoginUser: []
 }
 
 //========================== InitialState End =============================
@@ -26,12 +27,14 @@ const Reducers = (state = initialState, action) => {
         case Register_User:
             return {
                 ...state,
+                LoginState: true
             }
 
         case Save_Update: 
         
             return {
                 ...state,
+                LoginState: false
             }
 
         case Login_User:
@@ -54,6 +57,7 @@ const Reducers = (state = initialState, action) => {
                 ...state,
                 user: action.payload.users,
                 page: action.payload.totalPage,
+                LoginUser: action.payload.LoginUser
             }
 
         case Get_CountryStateCity:

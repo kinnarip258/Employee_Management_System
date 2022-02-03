@@ -3,9 +3,10 @@
 import React, { useEffect, useState} from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {Get_UserDetails, Delete_User } from "../actions/userActions";
+import {Get_UserDetails, Delete_User, CheckCookie } from "../actions/userActions";
 import Pagination from '@mui/material/Pagination';
 import debounce from "lodash.debounce";
+
 //========================== Import Modules End =============================
 
 //============================= Dashboard Component Start =============================
@@ -18,6 +19,9 @@ const Deshboard = () => {
     //============================= Get Response Of The Api =============================
     const user = useSelector(state => state.user);
 
+    //============================= Get Response Of The Api =============================
+    const LoginUser = useSelector(state => state.LoginUser);
+    
     //============================= Pagination =============================
     const page = useSelector(state => state.page);
     const [pageNumber, setPageNumber] = useState(1);
@@ -56,6 +60,11 @@ const Deshboard = () => {
     return(
         <>
             <div className='main_div'>
+
+                <div className='col-md-12 my-3 text-center'>
+                    <h1>{LoginUser && (`Welcome ${LoginUser.fname} ${LoginUser.lname}`)}</h1>
+                </div>
+
                 <div className='col-md-12 my-3 text-center'>
                     <h1>Employee Data</h1>
                 </div>

@@ -95,15 +95,37 @@ router.post('/signIn', async (req,res) => {
 
 router.put('/updateUser', authenticate, async (req,res) => {
     try{
-        //============================= Save Employee Updated Details =============================
-        await User.findByIdAndUpdate(req.query.ID, req.body ,
-            {
-                new: false
-            },
-        );
         
-        //============================= Send Response =============================
-        res.json({msg: "Employee Updated Sucessfully!" })
+        if(req.body.email !== req.query.editUser){
+            const emailExist = await User.findOne({email: req.body.email});
+
+            if(emailExist) {
+                return res.status(422).send({error: "user already exist!"});
+            } 
+            else{
+                //============================= Save Employee Updated Details =============================
+                await User.findByIdAndUpdate(req.query.ID, req.body,
+                    {
+                        new: false
+                    },
+                );
+                
+                //============================= Send Response =============================
+                res.json({msg: "Employee Updated Sucessfully!" })
+            }
+        }
+        else{
+
+            //============================= Save Employee Updated Details =============================
+            await User.findByIdAndUpdate(req.query.ID, req.body,
+                {
+                    new: false
+                },
+            );
+            
+            //============================= Send Response =============================
+            res.json({msg: "Employee Updated Sucessfully!" })
+        }
             
     }
     catch(err) {
@@ -169,8 +191,9 @@ router.get('/getUser',authenticate, async (req,res) => {
     try{
 
         let {Page, Sort, Search} = req.query;
-        let limit = 10;
+        let limit = 8;
         let skip = (Page-1) * limit;
+        const LoginUser = req.authenticateUser;
 
         //============================= Create Array =============================
         let aggregateQuery = [];
@@ -255,10 +278,10 @@ router.get('/getUser',authenticate, async (req,res) => {
             )
             
             //============================= Apply AggreagteQuery In User Collection =============================
-            
+
             const users = await User.aggregate([aggregateQuery])
             //============================= Send Response =============================
-            res.send({users, totalPage});  
+            res.send({users, totalPage, LoginUser});  
         } 
         else if(Search === ""){
 
@@ -285,7 +308,7 @@ router.get('/getUser',authenticate, async (req,res) => {
             const users = await User.aggregate([aggregateQuery]);
             
             //============================= Send Response =============================
-            res.send({users, totalPage});   
+            res.send({users, totalPage, LoginUser});   
         }
                 
     }

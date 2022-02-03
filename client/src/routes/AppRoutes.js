@@ -9,8 +9,9 @@ import Register from "../Components/Register";
 import Logout from '../Components/Logout';
 import ProtectedRoute from '../Components/ProtectedRoute';
 import { Switch,Route, Redirect, NavLink} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector,useDispatch} from "react-redux";
 import { CheckCookie } from '../actions/userActions';
+
 
 
 //========================== Import Modules End =============================
@@ -19,36 +20,35 @@ import { CheckCookie } from '../actions/userActions';
 
 const AppRoutes = () => {
 
-    //============================= For Dispatch Action =============================
     const dispatch = useDispatch();
 
-    //============================= CheckCookie For Login State =============================
     useEffect(() => {
-        dispatch(CheckCookie())
-    },[Route, ProtectedRoute])
-    
+        dispatch(CheckCookie());
+    }, [Route, ProtectedRoute])
+
     //============================= For Login-Logout Status =============================
     const LoginState = useSelector(state => state.LoginState)
+
     console.log("LoginState", LoginState)
         return (
             <div>
                     <Switch>
                         <Route exact path = '/' component={Home} />
                         
-                        <Route exact path = '/EditUser/:id' component={Register} />
+                        <ProtectedRoute exact path = '/EditUser/:id' component={Register} authStatus={LoginState}/>
 
-                        <Route exact path = '/Registration' component={Register} />
+                        <ProtectedRoute exact path = '/Logout' component={Logout} authStatus={LoginState}/>
 
-                        <ProtectedRoute exact path = '/Login' component={Login} authStatus={LoginState}/>
+                        <ProtectedRoute exact path= '/Dashboard' component={Dashboard} authStatus={LoginState}/>
                         
                         {
-                            LoginState !== true ? (
+                            LoginState !== false ? (
                                 <>
-                                    <Route exact path = '/Logout' component={Logout} />
+                                    <Route exact path = '/Login' component={Login} /> 
 
-                                    <Route exact path= '/Dashboard' component={Dashboard} />
+                                    <Route exact path = '/Registration' component={Register} />
                                 </>
-                            ) : <Redirect to='/' />
+                            ) : <Redirect to='/Dashboard' />
                         }
       
                         <Route component={Error404} />    

@@ -1,16 +1,17 @@
 //========================== Import Modules Start ===========================
 
-import React from "react";
+import React, { useEffect } from "react";
 import { NavLink} from "react-router-dom";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
-import { Login_User } from "../actions/userActions";
+import { CheckCookie, Login_User } from "../actions/userActions";
 
 //========================== Import Modules End =============================
 
 //============================= Login Component Start =============================
 
 const Login = () => {
+
 
     //============================= Dispatch The Api Request =============================
     const dispatch = useDispatch();
@@ -24,6 +25,10 @@ const Login = () => {
             dispatch(Login_User(values))     
         }
     })
+
+    useEffect(() => {
+        dispatch(CheckCookie())
+    }, [dispatch])
 
     return(
         <>

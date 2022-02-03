@@ -28,16 +28,16 @@ export const Register_User = (values) => {
 
 
 //============================= Save Updated Detils Of Employee Action Start =============================
-export const Save_Update = (id,values) => {
+export const Save_Update = (id,values, editUser) => {
 
     return (dispatch) => {
-        Axios.put(`/updateUser/?ID=${id}`, values) 
+        Axios.put(`/updateUser/?ID=${id}&editUser=${editUser}`, values)
         .then(() => {
             toast.success("Data Updated Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
             dispatch({type: "Save_Update"})
         })
         .catch(err => {
-            console.log("error: ", err);
+            toast.error("Email Already Exist!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
         });
     }     
 }

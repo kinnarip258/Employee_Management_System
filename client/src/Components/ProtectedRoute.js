@@ -16,11 +16,11 @@ const ProtectedRoute = ({authStatus, component: Component, ...rest}) => {
     return (
         <>  
             <Route {...rest} render= {(props) => {
-                if(authStatus !== false) {
+                if(authStatus !== true) {
                     return <Component {...props}/>;
                 }
                 else{
-                    return <Redirect to='/Dashboard' />;
+                    return <Redirect to='/' />;
                 }
             }}/> 
         </>

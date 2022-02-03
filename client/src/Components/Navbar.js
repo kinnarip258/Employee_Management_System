@@ -1,15 +1,17 @@
 //========================== Import Modules Start ===========================
 
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { CheckCookie } from '../actions/userActions';
+
 
 //========================== Import Modules End =============================
 
 //============================= Navbar Component Start =============================
 
 const Navbar = () => {
-    
+
     const LoginState = useSelector(state => state.LoginState)
     
     return (
@@ -18,18 +20,21 @@ const Navbar = () => {
 
             <NavLink to = '/'> Home </NavLink>
 
-            <NavLink to = '/Registration'> Registration </NavLink>
-
                 {
-                    LoginState === true ? (
+                    LoginState !== false && (
 
                         <>
-                            
+
+                            <NavLink to = '/Registration'> Registration </NavLink>
+
                             <NavLink to = '/Login'> Login </NavLink>
                             
                         </>
                         
-                    ) : (
+                    ) 
+                }
+                { 
+                    LoginState === false &&  (
                         <>
                             <NavLink to = '/Dashboard'> Dashboard </NavLink>
 

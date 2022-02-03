@@ -5,7 +5,7 @@ import {useHistory, NavLink} from "react-router-dom";
 import {useFormik} from "formik";
 import queryString from "query-string";
 import { useDispatch, useSelector } from 'react-redux';
-import { Get_CountryStateCity, Register_User, Save_Update} from '../actions/userActions';
+import { CheckCookie, Get_CountryStateCity, Register_User, Save_Update} from '../actions/userActions';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -101,10 +101,9 @@ const Register = () => {
             //============================= Dispatch Updated User Data =============================
             if(id){
 
-                dispatch(Save_Update(id,values))
+                dispatch(Save_Update(id,values, editedObject.email))
                 //============================= Navigate to Dashboard =============================
                 history.push('/Dashboard')
-            
             }
             //============================= Dispatch New User Data =============================
             else{
