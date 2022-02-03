@@ -12,7 +12,7 @@ import debounce from "lodash.debounce";
 
 const Deshboard = () => {
 
-    //============================= dispatch Api Request =============================
+    //============================= dispatch Api Search =============================
     const dispatch = useDispatch();
 
     //============================= Get Response Of The Api =============================
@@ -24,7 +24,8 @@ const Deshboard = () => {
 
     //============================= For Different Request =============================
 
-    const [request, setRequest] = useState("");
+    const [Search, setSearch] = useState("");
+
     const [sort, setSort] = useState("ascending")
 
     //============================= Delete Employee =============================
@@ -37,7 +38,7 @@ const Deshboard = () => {
     
     //============================= handle Search =============================
     const handleSearch = (e) => {
-       setRequest(e.target.value)
+       setSearch(e.target.value)
     }
    
     
@@ -48,9 +49,9 @@ const Deshboard = () => {
     
     useEffect(() => {
         //============================= Get Employee Data =============================
-        dispatch(Get_UserDetails(pageNumber,sort, request));
+        dispatch(Get_UserDetails(pageNumber, sort, Search));
 
-    }, [pageNumber,sort, request, dispatch, Delete_User]);
+    }, [pageNumber, sort, Search, dispatch, Delete_User]);
 
     return(
         <>

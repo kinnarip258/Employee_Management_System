@@ -10,6 +10,7 @@ toast.configure()
 
 //============================= Register User Action Start =============================
 export const Register_User = (values) => {
+
     return (dispatch) => {
         Axios.post(`/signUp`, values)
         .then(res => {
@@ -28,12 +29,12 @@ export const Register_User = (values) => {
 
 //============================= Save Updated Detils Of Employee Action Start =============================
 export const Save_Update = (id,values) => {
+
     return (dispatch) => {
         Axios.put(`/updateUser/?ID=${id}`, values) 
-        .then(res => {
-            const userData = res.data;
+        .then(() => {
             toast.success("Data Updated Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
-            dispatch({type: "Save_Update", payload: userData})
+            dispatch({type: "Save_Update"})
         })
         .catch(err => {
             console.log("error: ", err);
@@ -47,7 +48,7 @@ export const Login_User = (values) => {
     
     return (dispatch) => {
         Axios.post(`/signIn`, values) 
-        .then(res => {
+        .then(() => {
             toast.success("Login Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
             dispatch({type: "Login_User"})
         })
@@ -60,11 +61,12 @@ export const Login_User = (values) => {
 
 //============================= Delete Employee Action Start =============================
 export const Delete_User = (email) =>{
+
     return (dispatch) => {
         Axios.delete(`/deleteUser/?Email=${email}`)
-        .then(res => {
-            const userData = res.data;
-            dispatch({type: "Delete_User", payload: userData})
+        .then((res) => {
+            toast.success("Deleted Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
+            dispatch({type: "Delete_User", payload: res.data})
         })
         .catch(err => {
             console.log("error: ", err);
@@ -74,10 +76,10 @@ export const Delete_User = (email) =>{
 //============================= End =============================
 
 //============================= Get Employees Details Action Start =============================
-export const Get_UserDetails = (Page,Sort, Request) => {
+export const Get_UserDetails = (Page,Sort, Search) => {
     
     return (dispatch) => {
-        Axios.get(`/getUser/?Page=${Page}&Sort=${Sort}&Request=${Request}`) 
+        Axios.get(`/getUser/?Page=${Page}&Sort=${Sort}&Search=${Search}`) 
         .then(res => {
             const userData = res.data;
             dispatch({type: "Get_UserDetails", payload: userData})
@@ -94,9 +96,8 @@ export const Logout_User = () => {
 
     return (dispatch) => {
         Axios.get(`/logout`)
-        .then(res => {
-            const userData = res.data;
-            dispatch({type: "Logout_User", payload: userData})
+        .then(() => {
+            dispatch({type: "Logout_User"})
         })
         .catch(err => {
             console.log("error: ", err);

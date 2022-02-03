@@ -44,7 +44,8 @@ const Reducers = (state = initialState, action) => {
         case Delete_User:
             
             return  {
-                ...state,  
+                ...state,
+                LoginState: action.payload  
             }
 
         case Get_UserDetails:

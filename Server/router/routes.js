@@ -117,15 +117,23 @@ router.put('/updateUser', authenticate, async (req,res) => {
 router.delete('/deleteUser', authenticate, async (req,res) => {
     
     try{
-    
+
         if(req.authenticateUser.email === req.query.Email){
             //============================= Clear Cookie =============================
             res.clearCookie("jwt");
+            const LoginState = true
+            //============================= Delete Employee =============================
+            await User.findOneAndDelete({email: req.query.Email});
+            //============================= Send Response =============================
+            res.send(LoginState)
         }
-        //============================= Delete Employee =============================
-        await User.findOneAndDelete({email: req.query.Email});
-        //============================= Send Response =============================
-        res.send({msg: "User Deleted!"})
+        else{
+            const LoginState = false
+            //============================= Delete Employee =============================
+            await User.findOneAndDelete({email: req.query.Email});
+            //============================= Send Response =============================
+            res.send(LoginState)
+        } 
     }
     catch(err) {
         res.send("error" + err)
@@ -157,17 +165,12 @@ router.get('/logout', authenticate, async (req,res) => {
 
 //============================= Get Employees =============================
 
-router.get('/getUser', authenticate, async (req,res) => {
+router.get('/getUser',authenticate, async (req,res) => {
     try{
 
-        let {Page, Sort, Request} = req.query;
-        let limit = 5;
+        let {Page, Sort, Search} = req.query;
+        let limit = 10;
         let skip = (Page-1) * limit;
-        //============================= Count Total Documents =============================
-        const total = await User.countDocuments({});
-
-        //============================= Count Total Pages =============================
-        let totalPage = Math.ceil(total/limit);
 
         //============================= Create Array =============================
         let aggregateQuery = [];
@@ -210,7 +213,61 @@ router.get('/getUser', authenticate, async (req,res) => {
             },
         )
 
-        if(Request === ""){
+        //============================= Search Employee =============================
+        if(Search !== ""){
+
+            aggregateQuery.push(
+                {
+                    $match: {
+                        $or: [
+                            {fname: RegExp("^" + Search, 'i')},
+                            {lname: RegExp("^" + Search, 'i')},
+                            {profession: RegExp("^" + Search, 'i')},
+                            {company: RegExp("^" + Search, 'i')},
+                            {email: RegExp("^" + Search, 'i')},
+                            {phone: parseInt(Search)},
+                            {"CountryName.CountryName": RegExp("^" + Search, 'i')},
+                            {"StateName.StateName": RegExp("^" + Search, 'i')},
+                            {"CityName.CityName": RegExp("^" + Search, 'i')}
+                        ]   
+                    }
+                },    
+            )
+            
+            //============================= Apply AggreagteQuery In User Collection =============================
+            const matchUser = await User.aggregate([aggregateQuery]);
+
+            //============================= Count Total Pages of SearchUser =============================
+            let totalPage = Math.ceil(matchUser.length/limit);
+            
+            aggregateQuery.push(
+                //============================= Sorting =============================
+                {$sort: { fname : Sort === "descending" ? -1 : 1}},
+
+                //============================= Pagination =============================
+                {
+                    $skip: skip
+                },
+                {
+                    $limit: limit  
+                }  
+                     
+            )
+            
+            //============================= Apply AggreagteQuery In User Collection =============================
+            
+            const users = await User.aggregate([aggregateQuery])
+            //============================= Send Response =============================
+            res.send({users, totalPage});  
+        } 
+        else if(Search === ""){
+
+            //============================= Count Total Documents =============================
+            const total = await User.countDocuments({});
+
+            //============================= Count Total Pages =============================
+            let totalPage = Math.ceil(total/limit);
+
             aggregateQuery.push(
                 
                 //============================= Sorting =============================
@@ -230,52 +287,12 @@ router.get('/getUser', authenticate, async (req,res) => {
             //============================= Send Response =============================
             res.send({users, totalPage});   
         }
-        
-        //============================= Search Employee =============================
-        else if(Request !== ""){
-            const searchUser = Request;
-            aggregateQuery.push(
-                {
-                    $match: {
-                        $or: [
-                            {fname: RegExp("^" + searchUser, 'i')},
-                            {lname: RegExp("^" + searchUser, 'i')},
-                            {profession: RegExp("^" + searchUser, 'i')},
-                            {company: RegExp("^" + searchUser, 'i')},
-                            {email: RegExp("^" + searchUser, 'i')},
-                            {phone: parseInt(searchUser)},
-                            {"CountryName.CountryName": RegExp("^" + searchUser, 'i')},
-                            {"StateName.StateName": RegExp("^" + searchUser, 'i')},
-                            {"CityName.CityName": RegExp("^" + searchUser, 'i')}
-                        ]   
-                    }
-                },
                 
-                //============================= Sorting =============================
-                {$sort: { fname : Sort === "descending" ? -1 : 1}},
-
-                //============================= Pagination =============================
-                {
-                    $skip: skip
-                },
-                {
-                    $limit: limit  
-                }                            
-            )//============================= Sort The Employees =============================
-            
-            //============================= Apply AggreagteQuery In User Collection =============================
-            const users = await User.aggregate([aggregateQuery]);
-            
-            //============================= Count Total Pages of SearchUser =============================
-            let totalPage = Math.ceil(users.length/limit);
-           
-            //============================= Send Response =============================
-            res.send({users, totalPage});              
-        }       
     }
     catch(err){
         //============================= Send Error Massage =============================
-        res.status(500).send(err);  
+        res.status(500).send(err);
+        console.log(err) 
     }
 });
 
