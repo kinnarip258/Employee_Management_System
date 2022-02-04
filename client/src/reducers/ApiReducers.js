@@ -6,13 +6,13 @@
 
 const initialState = {
     user: [],
-    edituser : [],
     page: [],
     Country: [], 
     States: [],
     City: [],  
     LoginState: true,
-    LoginUser: ""
+    LoginUser: "",
+    toggle: false
 }
 
 //========================== InitialState End =============================
@@ -25,21 +25,22 @@ const Reducers = (state = initialState, action) => {
         case "Register_User":
             return {
                 ...state,
-                LoginState: true
+                LoginState: true, 
             }
 
         case "Save_Update": 
         
             return {
                 ...state,
-                LoginState: false
+                toggle: true
             }
 
         case "Login_User":
 
             return {
                 ...state,
-                LoginState: false
+                LoginState: false,
+            
             }
 
         case "Delete_User":
@@ -61,6 +62,7 @@ const Reducers = (state = initialState, action) => {
         case "Get_CountryStateCity":
 
             return {
+                ...state,
                 Country: action.payload.countries,
                 States: action.payload.states,
                 City: action.payload.cities
@@ -69,13 +71,17 @@ const Reducers = (state = initialState, action) => {
         case "Logout_User":
             
             return {
-                LoginState: true
+                ...state,
+                LoginState: true,
             }
 
         case "CheckCookie":
             
         return {
-            LoginState: action.payload
+            ...state,
+            LoginState: action.payload.LoginState,
+            cookie: action.payload.cookie
+
         }
         default:
             return state;

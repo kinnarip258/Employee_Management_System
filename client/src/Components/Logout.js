@@ -12,6 +12,8 @@ const Logout = () => {
 
     //============================= Dispatch The Api Request =============================
     const dispatch = useDispatch();
+
+    console.log("run")
     
     useEffect(() => {
         //============================= Logout The User =============================

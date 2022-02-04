@@ -26,7 +26,7 @@ router.post('/signUp', async (req,res) => {
         const emailExist = await User.findOne({email: email});
         const phoneExist = await User.findOne({phone: phone})
         if(emailExist || phoneExist) {
-            return res.status(422).send({error: "user already exist!"});
+            return res.status(400).send({error: "User Already Exist!"});
         } 
 
         else{
@@ -37,7 +37,7 @@ router.post('/signUp', async (req,res) => {
             //============================= Send Email To Register User =============================
             //sendMail({toUser: user.email, user: user})
 
-            res.send({msg: "User Register Successfully!"});
+            res.send({msg:"User Register Successfully!"});
 
         }       
     } 
@@ -100,7 +100,7 @@ router.put('/updateUser', authenticate, async (req,res) => {
             const emailExist = await User.findOne({email: req.body.email});
 
             if(emailExist) {
-                return res.status(422).send({error: "user already exist!"});
+                return res.status(400).send({error: "user already exist!"});
             } 
             else{
                 //============================= Save Employee Updated Details =============================
@@ -111,7 +111,7 @@ router.put('/updateUser', authenticate, async (req,res) => {
                 );
                 
                 //============================= Send Response =============================
-                res.json({msg: "Employee Updated Sucessfully!" })
+                res.send({msg: "Employee Updated Sucessfully!" })
             }
         }
         else{
@@ -276,7 +276,7 @@ router.get('/getUser',authenticate, async (req,res) => {
                 }  
                      
             )
-            
+
             //============================= Apply AggreagteQuery In User Collection =============================
 
             const users = await User.aggregate([aggregateQuery])
@@ -372,12 +372,14 @@ router.get(`/checkCookie`, async (req,res) => {
         if(req.cookies.jwt){
             //============================= Set LoginState =============================
             const LoginState = false;
-            res.send(LoginState)
+            const cookie = req.cookies.jwt;
+            res.send({LoginState, cookie})
         }
         else {
             //============================= Set LoginState =============================
             const LoginState = true;
-            res.send(LoginState)
+            const cookie = undefined;
+            res.send({LoginState, cookie})
         }
     }     
     catch(err){

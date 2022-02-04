@@ -12,8 +12,6 @@ import { Switch,Route, Redirect, NavLink} from "react-router-dom";
 import {useSelector,useDispatch} from "react-redux";
 import { CheckCookie } from '../actions/userActions';
 
-
-
 //========================== Import Modules End =============================
 
 //============================= Routes Component Start =============================
@@ -24,12 +22,9 @@ const AppRoutes = () => {
 
     useEffect(() => {
         dispatch(CheckCookie())
-    }, [dispatch])
-
+    }, [dispatch, ProtectedRoute])
 
     const LoginState = useSelector(state => state.LoginState);
-
-    console.log("LoginState",LoginState)
 
         return (
             <div>
@@ -52,7 +47,8 @@ const AppRoutes = () => {
                             ) : <Redirect to='/Dashboard' />
                         }
       
-                        <Route component={Error404} />    
+                        <Route component={Error404} />  
+  
                     </Switch>   
             </div>
         )

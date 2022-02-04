@@ -16,7 +16,7 @@ export const Register_User = (values) => {
         .then(res => {
             const userData = res.data;
             toast.success("Register Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
-            dispatch({type: "Register_User", payload: userData})  
+            dispatch({type: "Register_User"})  
         })
         .catch(err => {
             toast.error("Email Or Phone Number Already Exist!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });

@@ -3,7 +3,7 @@
 import React, { useEffect, useState} from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {Get_UserDetails, Delete_User, CheckCookie } from "../actions/userActions";
+import {Get_UserDetails, Delete_User} from "../actions/userActions";
 import Pagination from '@mui/material/Pagination';
 import debounce from "lodash.debounce";
 
@@ -24,6 +24,7 @@ const Deshboard = () => {
     
     //============================= Pagination =============================
     const page = useSelector(state => state.page);
+
     const [pageNumber, setPageNumber] = useState(1);
 
     //============================= For Different Request =============================
@@ -42,10 +43,10 @@ const Deshboard = () => {
     
     //============================= handle Search =============================
     const handleSearch = (e) => {
+        setPageNumber(1)
        setSearch(e.target.value)
     }
    
-    
     //============================= Optimise Search Employee =============================
     const optimiseVersion = debounce(handleSearch, [500])
 

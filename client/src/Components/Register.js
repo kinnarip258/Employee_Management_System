@@ -5,11 +5,11 @@ import {useHistory, NavLink} from "react-router-dom";
 import {useFormik} from "formik";
 import queryString from "query-string";
 import { useDispatch, useSelector } from 'react-redux';
-import { CheckCookie, Get_CountryStateCity, Register_User, Save_Update} from '../actions/userActions';
+import { Get_CountryStateCity, Register_User, Save_Update} from '../actions/userActions';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-toast.configure()
+toast.configure();
 
 //========================== Import Modules End =============================
 
@@ -19,6 +19,7 @@ const Register = () => {
     
     //============================= Navigate the Page =============================
     const history = useHistory();
+
     //============================= Store Edite Employee Data =============================
     const [editedObject,setEditedObject] = useState([]);
     
@@ -26,7 +27,10 @@ const Register = () => {
     const {id} = queryString.parse(window.location.search);
 
     //============================= Get Response Of The Api =============================
-    const user = useSelector(state => state.user)
+    const user = useSelector(state => state.user);
+
+    //============================= Get Response Of The Api =============================
+    const toggle = useSelector(state => state.toggle);
     
     //============================= Get List Of Country, States, City =============================
     const Country = useSelector(state => state.Country);
@@ -101,9 +105,7 @@ const Register = () => {
             //============================= Dispatch Updated User Data =============================
             if(id){
 
-                dispatch(Save_Update(id,values, editedObject.email))
-                //============================= Navigate to Dashboard =============================
-                history.push('/Dashboard')
+                dispatch(Save_Update(id, values, editedObject.email))
             }
             //============================= Dispatch New User Data =============================
             else{
@@ -118,6 +120,14 @@ const Register = () => {
             }        
         }     
     });
+
+    useEffect(() => {
+        if(toggle === true){
+
+            //============================= Navigate to Dashboard =============================
+            history.push('/Dashboard')
+        }
+    }, [toggle])
     
     //============================= UseEffect For Get EditUser Data =============================
     useEffect(() => {
@@ -144,7 +154,7 @@ const Register = () => {
             setSearch("City");
             setStateID(formik.values.state)
         }  
-        dispatch(Get_CountryStateCity(search, CountryID, StateID));
+        dispatch( Get_CountryStateCity(search, CountryID, StateID));
           
     }, [search,CountryID, StateID, formik.values.country,formik.values.state])
 
