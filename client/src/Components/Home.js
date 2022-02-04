@@ -1,16 +1,20 @@
 //========================== Import Modules Start ===========================
 
 import React from "react";
+import { useSelector } from "react-redux";
 
 //========================== Import Modules End =============================
 
 //============================= Home Component Start =============================
 
 const Home = () => {
+
+    const LoginUser = useSelector(state => state.LoginUser)
+
     return (
         <>
             <div className="header_div">
-                <h1> Welcome </h1>
+                {LoginUser ? <h1>{`WelCome ${LoginUser.fname} ${LoginUser.lname}`}</h1>  : <h1> Welcome </h1>}
             </div>
         </>
     )

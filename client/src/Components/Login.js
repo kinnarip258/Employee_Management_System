@@ -24,12 +24,8 @@ const Login = () => {
             //============================= Login The User =============================
             dispatch(Login_User(values))     
         }
-    })
-
-    useEffect(() => {
-        dispatch(CheckCookie())
-    }, [dispatch])
-
+    });
+    
     return(
         <>
             <div className="main_div">
@@ -53,7 +49,7 @@ const Login = () => {
             </div>
             {/* //============================= Navigate TO Register ============================= */}
             <div className="sign_div">
-                <NavLink to = "/Registration">Create An Account</NavLink>
+                <NavLink to = "/">Create An Account</NavLink>
             </div>
         </>
     )

@@ -1,7 +1,5 @@
 //========================== Import Modules Start ===========================
 
-import {Register_User, Save_Update, Edit_User, Login_User, Delete_User, Get_UserDetails, Logout_User, Get_CountryStateCity, CheckCookie} from "../actions/actionTypes"
-
 //========================== Import Modules End =============================
 
 //========================== InitialState Start ===========================
@@ -14,7 +12,7 @@ const initialState = {
     States: [],
     City: [],  
     LoginState: true,
-    LoginUser: []
+    LoginUser: ""
 }
 
 //========================== InitialState End =============================
@@ -24,34 +22,34 @@ const initialState = {
 const Reducers = (state = initialState, action) => {
     switch (action.type) {
 
-        case Register_User:
+        case "Register_User":
             return {
                 ...state,
                 LoginState: true
             }
 
-        case Save_Update: 
+        case "Save_Update": 
         
             return {
                 ...state,
                 LoginState: false
             }
 
-        case Login_User:
+        case "Login_User":
 
             return {
                 ...state,
                 LoginState: false
             }
 
-        case Delete_User:
+        case "Delete_User":
             
             return  {
                 ...state,
                 LoginState: action.payload  
             }
 
-        case Get_UserDetails:
+        case "Get_UserDetails":
 
             return {
                 ...state,
@@ -60,7 +58,7 @@ const Reducers = (state = initialState, action) => {
                 LoginUser: action.payload.LoginUser
             }
 
-        case Get_CountryStateCity:
+        case "Get_CountryStateCity":
 
             return {
                 Country: action.payload.countries,
@@ -68,13 +66,13 @@ const Reducers = (state = initialState, action) => {
                 City: action.payload.cities
             }
     
-        case Logout_User:
+        case "Logout_User":
             
             return {
                 LoginState: true
             }
 
-        case CheckCookie:
+        case "CheckCookie":
             
         return {
             LoginState: action.payload

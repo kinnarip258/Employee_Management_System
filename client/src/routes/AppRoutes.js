@@ -1,6 +1,6 @@
 //========================== Import Modules Start ===========================
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Home from "../Components/Home";
 import Login from '../Components/Login';
 import Dashboard from '../Components/Dashboard';
@@ -23,13 +23,14 @@ const AppRoutes = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(CheckCookie());
-    }, [Route, ProtectedRoute])
+        dispatch(CheckCookie())
+    }, [dispatch])
 
-    //============================= For Login-Logout Status =============================
-    const LoginState = useSelector(state => state.LoginState)
 
-    console.log("LoginState", LoginState)
+    const LoginState = useSelector(state => state.LoginState);
+
+    console.log("LoginState",LoginState)
+
         return (
             <div>
                     <Switch>

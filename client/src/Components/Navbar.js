@@ -1,10 +1,9 @@
 //========================== Import Modules Start ===========================
 
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import {  useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { CheckCookie } from '../actions/userActions';
-
+import queryString from "query-string";
 
 //========================== Import Modules End =============================
 
@@ -12,39 +11,46 @@ import { CheckCookie } from '../actions/userActions';
 
 const Navbar = () => {
 
+    //============================= Get Edited User Id =============================
+    const {id} = queryString.parse(window.location.search);
+    console.log(id)
     const LoginState = useSelector(state => state.LoginState)
-    
+
     return (
         <>
             <div className="nav_div">
 
             <NavLink to = '/'> Home </NavLink>
 
-                {
-                    LoginState !== false && (
+            {
+                LoginState !== false && id ? (
+                    <>
+                        <NavLink to = '/Dashboard'> Dashboard </NavLink>
+                        <NavLink to = '/Logout'> Logout</NavLink> 
+                    </>
+                ) :null
+            }
 
-                        <>
+            {
+                LoginState === false ? (
+                    <>
+                        <NavLink to = '/Dashboard'> Dashboard </NavLink>
+                        <NavLink to = '/Logout'> Logout</NavLink> 
+                    </>
+                ) :null
+            } 
 
-                            <NavLink to = '/Registration'> Registration </NavLink>
-
-                            <NavLink to = '/Login'> Login </NavLink>
-                            
-                        </>
-                        
-                    ) 
-                }
-                { 
-                    LoginState === false &&  (
-                        <>
-                            <NavLink to = '/Dashboard'> Dashboard </NavLink>
-
-                            <NavLink to = '/Logout'> Logout</NavLink>     
-                            
-                        </>
-                    )         
-                }
-                   
-            </div>
+            {
+                LoginState !== false && !id ? (
+                    <>
+                    <NavLink to = '/Registration'> Registration </NavLink>
+                    <NavLink to = '/Login'> Login </NavLink>
+                    </>
+                ) : null
+            }        
+                             
+            </div>   
+                       
         
             <hr/>  
         </>
