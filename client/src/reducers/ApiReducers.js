@@ -41,6 +41,9 @@ const Reducers = (state = initialState, action) => {
         
             return {
                 ...state,
+                Country: [],
+                States: [],
+                City: [],
                 toggle: true
             }
 

@@ -19,13 +19,14 @@ const Navbar = () => {
         <>
             <div className="nav_div">
 
-            {LoginUser ? 
-                <h3>{`Sign in as ${LoginUser.fname} ${LoginUser.lname}`}</h3> 
-            : null}
-
             {
                 !LoginState && (
                     <>
+
+                    {LoginUser ? 
+                        <h3>{`Sign in as ${LoginUser.fname} ${LoginUser.lname}`}</h3> 
+                    : null}
+                        <NavLink to = '/Dashboard'> Dashboard </NavLink>
                         <NavLink to = '/Logout'> Logout</NavLink> 
                     </>
                 ) 
