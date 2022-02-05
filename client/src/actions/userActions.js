@@ -25,6 +25,16 @@ export const Register_User = (values) => {
 }
 //============================= End =============================
 
+//============================= Register Toggle Action Start =============================
+export const Register_Toggle = () => {
+
+    return (dispatch) => {
+        dispatch({type: "Register_Toggle"})        
+    }
+}
+//============================= End =============================
+
+
 
 //============================= Save Updated Detils Of Employee Action Start =============================
 export const Save_Update = (id,values, editUser) => {

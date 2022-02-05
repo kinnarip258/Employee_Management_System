@@ -30,6 +30,13 @@ const Reducers = (state = initialState, action) => {
                 registerToggle: true
             }
 
+        case "Register_Toggle":
+            
+            return {
+                ...state,
+                registerToggle: false
+            }
+
         case "Save_Update": 
         
             return {

@@ -14,4 +14,5 @@ export const Get_UserDetails = "Get_UserDetails";
 export const Delete_User = "Delete_User";
 export const Save_Update = "Save_Update";
 export const Get_CountryStateCity = "Get_CountryStateCity";
+export const Register_Toggle = "Register_Toggle"
 //============================= Export Action Types End =============================
