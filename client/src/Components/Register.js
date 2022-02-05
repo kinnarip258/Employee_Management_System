@@ -15,7 +15,9 @@ toast.configure();
 
 //============================= Register Component Start =============================
 
+
 const Register = () => {
+    
     
     //============================= Navigate the Page =============================
     const history = useHistory();
@@ -324,5 +326,6 @@ const Register = () => {
 //============================= Export Default Start =============================
 
 export default Register;
+
 
 //============================= Export Default End =============================

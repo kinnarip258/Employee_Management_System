@@ -2,7 +2,7 @@
 import Axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-toast.configure()
+toast.configure();
 
 //========================== Import Modules End =============================
 
@@ -15,7 +15,7 @@ export const Register_User = (values) => {
         Axios.post(`/signUp`, values)
         .then(() => {
             toast.success("Register Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
-            dispatch({type: "Register_User"})  
+            dispatch({type: "Register_User"});
         })
         .catch(() => {
             toast.error("Email Or Phone Number Already Exist!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
