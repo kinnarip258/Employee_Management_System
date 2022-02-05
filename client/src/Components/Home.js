@@ -14,7 +14,9 @@ const Home = () => {
     return (
         <>
             <div className="header_div">
-                {LoginUser ? <h1>{`WelCome ${LoginUser.fname} ${LoginUser.lname}`}</h1>  : <h1> Welcome </h1>}
+
+                {LoginUser ? <h1>{`Welcome ${LoginUser.fname} ${LoginUser.lname}`}</h1> : <h1> Welcome </h1>}
+                
             </div>
         </>
     )

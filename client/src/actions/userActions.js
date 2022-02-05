@@ -13,12 +13,11 @@ export const Register_User = (values) => {
 
     return (dispatch) => {
         Axios.post(`/signUp`, values)
-        .then(res => {
-            const userData = res.data;
+        .then(() => {
             toast.success("Register Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
             dispatch({type: "Register_User"})  
         })
-        .catch(err => {
+        .catch(() => {
             toast.error("Email Or Phone Number Already Exist!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
         });
         
@@ -36,7 +35,7 @@ export const Save_Update = (id,values, editUser) => {
             toast.success("Data Updated Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
             dispatch({type: "Save_Update"})
         })
-        .catch(err => {
+        .catch(() => {
             toast.error("Email Already Exist!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
         });
     }     
@@ -52,7 +51,7 @@ export const Login_User = (values) => {
             toast.success("Login Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
             dispatch({type: "Login_User"})
         })
-        .catch(err => {
+        .catch(() => {
             toast.error("Invalid Credentials!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
         });;
     }
@@ -97,6 +96,7 @@ export const Logout_User = () => {
     return (dispatch) => {
         Axios.get(`/logout`)
         .then(() => {
+            toast.success("Logout Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
             dispatch({type: "Logout_User"})
         })
         .catch(err => {

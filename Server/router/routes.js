@@ -39,7 +39,7 @@ router.post('/signUp', async (req,res) => {
 
             res.send({msg:"User Register Successfully!"});
 
-        }       
+        }   
     } 
     catch (err) {
         //============================= Error Message =============================
@@ -52,12 +52,9 @@ router.post('/signUp', async (req,res) => {
 router.post('/signIn', async (req,res) => {
    try{
         let token ;
+
         const { email, password } = req.body;
 
-        //============================= Details Are Filled Properly =============================
-        if(!email || !password) {
-            return res.status(400).send({ error: "please filled the data field!"});
-        }
         //============================= User Exist =============================
         const userLogin = await User.findOne({ email: email});
     
@@ -82,6 +79,7 @@ router.post('/signIn', async (req,res) => {
             }
         }
         else{
+            
             //============================= Send Response =============================
             res.status(400).send({ error: "Invalid Credientials!"});
         }      
@@ -98,7 +96,7 @@ router.put('/updateUser', authenticate, async (req,res) => {
         
         if(req.body.email !== req.query.editUser){
             const emailExist = await User.findOne({email: req.body.email});
-
+    
             if(emailExist) {
                 return res.status(400).send({error: "user already exist!"});
             } 
@@ -278,8 +276,8 @@ router.get('/getUser',authenticate, async (req,res) => {
             )
 
             //============================= Apply AggreagteQuery In User Collection =============================
-
             const users = await User.aggregate([aggregateQuery])
+            
             //============================= Send Response =============================
             res.send({users, totalPage, LoginUser});  
         } 
@@ -309,8 +307,7 @@ router.get('/getUser',authenticate, async (req,res) => {
             
             //============================= Send Response =============================
             res.send({users, totalPage, LoginUser});   
-        }
-                
+        }           
     }
     catch(err){
         //============================= Send Error Massage =============================
@@ -372,14 +369,14 @@ router.get(`/checkCookie`, async (req,res) => {
         if(req.cookies.jwt){
             //============================= Set LoginState =============================
             const LoginState = false;
-            const cookie = req.cookies.jwt;
-            res.send({LoginState, cookie})
+            
+            res.send({LoginState})
         }
         else {
             //============================= Set LoginState =============================
             const LoginState = true;
-            const cookie = undefined;
-            res.send({LoginState, cookie})
+        
+            res.send({LoginState})
         }
     }     
     catch(err){

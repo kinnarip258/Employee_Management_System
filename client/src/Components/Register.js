@@ -31,7 +31,10 @@ const Register = () => {
 
     //============================= Get Response Of The Api =============================
     const toggle = useSelector(state => state.toggle);
-    
+
+    //============================= Get Response Of The Api =============================
+    const registerToggle = useSelector(state => state.registerToggle);
+
     //============================= Get List Of Country, States, City =============================
     const Country = useSelector(state => state.Country);
     const States = useSelector(state => state.States);
@@ -90,6 +93,9 @@ const Register = () => {
               .min(3, 'Too Short!')
               .max(10, 'Too Long!')
               .required('Required'),
+            country: Yup.string().required('Required'),
+            state: Yup.string().required('Required'),
+            city: Yup.string().required('Required'),
             password: Yup.string()
               .min(8, 'Too Short!')
               .max(100, 'Too Long!')
@@ -114,8 +120,6 @@ const Register = () => {
                 }
                 else{
                     dispatch(Register_User(values))
-                    //============================= Reset Fields =============================
-                    formik.resetForm();
                 }
             }        
         }     
@@ -123,15 +127,22 @@ const Register = () => {
 
     useEffect(() => {
         if(toggle === true){
-
             //============================= Navigate to Dashboard =============================
             history.push('/Dashboard')
         }
     }, [toggle])
-    
+
+    useEffect(() => {
+        if(registerToggle === true){
+            //============================= Navigate to Login =============================
+            history.push('/Login')
+        }
+    }, [registerToggle])
+
     //============================= UseEffect For Get EditUser Data =============================
     useEffect(() => {
         if(id){
+            //============================= get Edited User Data =============================
             const editUser = user.find((ele) => ele._id === id ? ele : null);
             setEditedObject(editUser);
         }
@@ -169,64 +180,64 @@ const Register = () => {
 
                     <form className="register_form" id="register_form" onSubmit={formik.handleSubmit}>
                     <label>First Name </label> 
-                    <input required {...formik.getFieldProps("fname")} value={formik.values.fname}  name="fname"  type='text' placeholder="Enter First Name..." />
+                    <input {...formik.getFieldProps("fname")} value={formik.values.fname}  name="fname"  type='text' placeholder="Enter First Name..." />
                     {formik.errors.fname && formik.touched.fname ? (
                         <div className = "error">{formik.errors.fname}</div>
                     ) : null}
 
                     <label>Last Name </label> 
-                    <input required {...formik.getFieldProps("lname")} value={formik.values.lname}  name="lname"  type='text' placeholder="Enter Last Name..." />
+                    <input {...formik.getFieldProps("lname")} value={formik.values.lname}  name="lname"  type='text' placeholder="Enter Last Name..." />
                     {formik.errors.lname && formik.touched.lname ? (
                         <div className = "error">{formik.errors.lname}</div>
                     ) : null}
 
                     <label>Email ID </label>
-                    <input required {...formik.getFieldProps("email")} value={formik.values.email}  name="email" type='Email' placeholder="Enter Email ..." />
+                    <input {...formik.getFieldProps("email")} value={formik.values.email}  name="email" type='Email' placeholder="Enter Email ..." />
                     {formik.errors.email && formik.touched.email ? (
                         <div className = "error">{formik.errors.email}</div>
                     ) : null}
 
                     <label>Phone Number</label>
-                    <input required {...formik.getFieldProps("phone")} value={formik.values.phone}  name="phone" type='number' placeholder="Enter Phone Number ..." />
+                    <input {...formik.getFieldProps("phone")} value={formik.values.phone}  name="phone" type='number' placeholder="Enter Phone Number ..." />
                     {formik.errors.phone && formik.touched.phone ? (
                         <div className = "error">{formik.errors.phone}</div>
                     ) : null}
 
                     <label>Company </label>
-                    <input required {...formik.getFieldProps("company")} value={formik.values.company}  name="company" type='text' placeholder="Enter Company ..." />
+                    <input {...formik.getFieldProps("company")} value={formik.values.company}  name="company" type='text' placeholder="Enter Company ..." />
                     {formik.errors.company && formik.touched.company ? (
                         <div className = "error">{formik.errors.company}</div>
                     ) : null}
 
                     <label>Profession </label>
-                    <input required {...formik.getFieldProps("profession")} value={formik.values.profession}  name="profession" type='text' placeholder="Enter Profession ..." />
+                    <input {...formik.getFieldProps("profession")} value={formik.values.profession}  name="profession" type='text' placeholder="Enter Profession ..." />
                     {formik.errors.profession && formik.touched.profession ? (
                         <div className = "error">{formik.errors.profession}</div>
                     ) : null}
 
                     <label>Salary (1st Month)</label>
-                    <input required {...formik.getFieldProps("salary1")} value={formik.values.salary1}  name="salary1" type='number' placeholder="Enter 1st Month Salary ..." />
+                    <input {...formik.getFieldProps("salary1")} value={formik.values.salary1}  name="salary1" type='number' placeholder="Enter 1st Month Salary ..." />
                     {formik.errors.salary1 && formik.touched.salary1 ? (
                         <div className = "error">{formik.errors.salary1}</div>
                     ) : null}
 
                     <label>Salary (2nd Month)</label>
-                    <input required {...formik.getFieldProps("salary2")} value={formik.values.salary2}  name="salary2" type='number' placeholder="Enter 2nd Month Salary ..." />
+                    <input {...formik.getFieldProps("salary2")} value={formik.values.salary2}  name="salary2" type='number' placeholder="Enter 2nd Month Salary ..." />
                     {formik.errors.salary2 && formik.touched.salary2 ? (
                         <div className = "error">{formik.errors.salary2}</div>
                     ) : null}
 
                     <label>Salary (3rd Month)</label>
-                    <input required {...formik.getFieldProps("salary3")} value={formik.values.salary3}  name="salary3" type='number' placeholder="Enter 3rd Month Salary ..." />
+                    <input {...formik.getFieldProps("salary3")} value={formik.values.salary3}  name="salary3" type='number' placeholder="Enter 3rd Month Salary ..." />
                     {formik.errors.salary3 && formik.touched.salary3 ? (
                         <div className = "error">{formik.errors.salary3}</div>
                     ) : null}
 
                     <label>Total Salary </label>
-                    <p required name="totalsalary" placeholder="Enter 3rd Month Salary ..." >{formik.values.salary1 + formik.values.salary2 + formik.values.salary3}</p>
+                    <p name="totalsalary" placeholder="Enter 3rd Month Salary ..." >{formik.values.salary1 + formik.values.salary2 + formik.values.salary3}</p>
                 
                     <label>Country </label><br/>
-                    <select required {...formik.getFieldProps("country")} value={formik.values.country} name="country">
+                    <select {...formik.getFieldProps("country")} value={formik.values.country} name="country">
                         <option>Select Country...</option> 
                         { Country ?
                             Country.map((ele) => { 
@@ -238,9 +249,12 @@ const Register = () => {
                             }) : null
                         }
                     </select>
+                    {formik.errors.country && formik.touched.country ? (
+                        <div className = "error">{formik.errors.country}</div>
+                    ) : null}
                     <br/>
                     <label>State </label><br/>
-                    <select required {...formik.getFieldProps("state")} value={formik.values.state}  name="state">
+                    <select {...formik.getFieldProps("state")} value={formik.values.state}  name="state">
                         <option >Select State...</option>
                         { States ?
                             States.map((ele) => { 
@@ -252,9 +266,12 @@ const Register = () => {
                             }) : null
                         }
                     </select>
+                    {formik.errors.state && formik.touched.state ? (
+                        <div className = "error">{formik.errors.state}</div>
+                    ) : null}
                     <br/>
                     <label>City </label><br/>
-                    <select required {...formik.getFieldProps("city")} value={formik.values.city} name="city"> 
+                    <select {...formik.getFieldProps("city")} value={formik.values.city} name="city"> 
                         <option >Select City...</option>
                         { City ?
                             City.map((ele) => { 
@@ -265,16 +282,19 @@ const Register = () => {
                                 )
                             }) : null
                         }
-                    </select> 
+                    </select>
+                    {formik.errors.city && formik.touched.city ? (
+                        <div className = "error">{formik.errors.city}</div>
+                    ) : null} 
                     <br/>
                     <label>Password </label>
-                    <input required {...formik.getFieldProps("password")} value={formik.values.password}  name="password" type='Password' placeholder="Enter Password ..." />
+                    <input {...formik.getFieldProps("password")} value={formik.values.password}  name="password" type='Password' placeholder="Enter Password ..." />
                     {formik.errors.password && formik.touched.password ? (
                         <div className = "error">{formik.errors.password}</div>
                     ) : null}
 
                     <label>Confirm Password </label>
-                    <input required {...formik.getFieldProps("cpassword")} value={formik.values.cpassword}  name="cpassword" type='Password' placeholder="Enter Confirm Password ..." />
+                    <input {...formik.getFieldProps("cpassword")} value={formik.values.cpassword}  name="cpassword" type='Password' placeholder="Enter Confirm Password ..." />
                     {formik.errors.cpassword && formik.touched.cpassword ? (
                         <div className = "error">{formik.errors.cpassword}</div>
                     ) : null}
@@ -282,12 +302,17 @@ const Register = () => {
                     <button type="submit">{!id ? "Register" : "Update"}</button>
                 </form>
                 
-                
             </div>
             {/* ============================= Navigate To Login ============================= */}
-            <div className="sign_div">
-                <NavLink to = "/Login">Already Sign In</NavLink>
-            </div>
+
+            {
+                !id ? (
+                    <div className="sign_div">
+                        <NavLink to = "/Login">Already Sign In</NavLink>
+                    </div>
+                ) : null
+            }
+            
         </div>
     )
 }

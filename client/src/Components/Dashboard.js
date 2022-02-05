@@ -21,6 +21,9 @@ const Deshboard = () => {
 
     //============================= Get Response Of The Api =============================
     const LoginUser = useSelector(state => state.LoginUser);
+
+    //============================= Get Response Of The Api =============================
+    const deleteToggle = useSelector(state => state.deleteToggle);
     
     //============================= Pagination =============================
     const page = useSelector(state => state.page);
@@ -56,7 +59,8 @@ const Deshboard = () => {
         //============================= Get Employee Data =============================
         dispatch(Get_UserDetails(pageNumber, sort, Search));
 
-    }, [pageNumber, sort, Search, dispatch, Delete_User]);
+    }, [pageNumber, sort, Search, dispatch, deleteToggle]);
+
 
     return(
         <>

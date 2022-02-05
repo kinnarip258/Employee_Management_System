@@ -19,13 +19,12 @@ const ProtectedRoute = ({authStatus, component: Component, ...rest}) => {
                 if(authStatus !== true) {
                     return <Component {...props}/>;
                 }
-                else{
+                else {
                     return <Redirect to='/' />;
                 }
             }}/>   
         </>
-    )   
-    
+    )     
 }
 
 //============================= Protected Route Component End =============================

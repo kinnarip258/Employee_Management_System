@@ -8,7 +8,7 @@ import Error404 from "../Components/Error";
 import Register from "../Components/Register";
 import Logout from '../Components/Logout';
 import ProtectedRoute from '../Components/ProtectedRoute';
-import { Switch,Route, Redirect, NavLink} from "react-router-dom";
+import { Switch,Route, Redirect } from "react-router-dom";
 import {useSelector,useDispatch} from "react-redux";
 import { CheckCookie } from '../actions/userActions';
 
@@ -31,7 +31,7 @@ const AppRoutes = () => {
                     <Switch>
                         <Route exact path = '/' component={Home} />
                         
-                        <ProtectedRoute exact path = '/EditUser/:id' component={Register} authStatus={LoginState}/>
+                        <Route exact path = '/EditUser/:id' component={Register} />
 
                         <ProtectedRoute exact path = '/Logout' component={Logout} authStatus={LoginState}/>
 

@@ -3,7 +3,7 @@
 import React from 'react';
 import {  useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import Cookies from 'js-cookie'
+
 //========================== Import Modules End =============================
 
 //============================= Navbar Component Start =============================
@@ -13,9 +13,6 @@ const Navbar = () => {
     const LoginState = useSelector(state => state.LoginState)
     console.log("LoginState",LoginState)
 
-    const cookie = useSelector(state => state.cookie);
-    console.log(cookie)
-    
     return (
         <>
             <div className="nav_div">
@@ -23,7 +20,7 @@ const Navbar = () => {
             <NavLink to = '/'> Home </NavLink>
 
             {
-                LoginState === false && (
+                !LoginState && (
                     <>
                         <NavLink to = '/Dashboard'> Dashboard </NavLink>
                         <NavLink to = '/Logout'> Logout</NavLink> 

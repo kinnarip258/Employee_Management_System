@@ -1,10 +1,11 @@
 //========================== Import Modules Start ===========================
 
-import React, { useEffect } from "react";
+import React from "react";
 import { NavLink} from "react-router-dom";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
-import { CheckCookie, Login_User } from "../actions/userActions";
+import { Login_User } from "../actions/userActions";
+import * as Yup from 'yup';
 
 //========================== Import Modules End =============================
 
@@ -19,6 +20,13 @@ const Login = () => {
         initialValues: {
             email: "", password: ""
         },
+        validationSchema:Yup.object().shape({
+            email: Yup.string().email('Invalid email').required('Required'),
+            password: Yup.string()
+              .min(8, 'Too Short!')
+              .max(100, 'Too Long!')
+              .required('Required'), 
+        }), 
          
         onSubmit: (values) => {
             //============================= Login The User =============================
@@ -35,13 +43,21 @@ const Login = () => {
                 <div className="form_div">
                     <form type="submit" onSubmit={formik.handleSubmit}>
                         <label>Username </label> 
-                        <input required type='email' name="email" value={formik.values.email}
-                         onChange={formik.handleChange} placeholder="Enter Email ID..." />
+                        <input type='email' name="email" value={formik.values.email}
+                         {...formik.getFieldProps("email")} placeholder="Enter Email ID..." />
+
+                        {formik.errors.email && formik.touched.email ? (
+                        <div className = "error">{formik.errors.email}</div>
+                        ) : null}
                         
                         <label>Password </label>
-                        <input required type='password' name="password" value={formik.values.password}
-                         onChange={formik.handleChange} placeholder="Enter Password ..." />
-                        
+                        <input type='password' name="password" value={formik.values.password}
+                         {...formik.getFieldProps("password")} placeholder="Enter Password ..." />
+                         
+                        {formik.errors.password && formik.touched.password ? (
+                        <div className = "error">{formik.errors.password}</div>
+                        ) : null}
+
                         <button type="submit">Log In</button>
                     </form>
                 </div>
@@ -49,7 +65,7 @@ const Login = () => {
             </div>
             {/* //============================= Navigate TO Register ============================= */}
             <div className="sign_div">
-                <NavLink to = "/">Create An Account</NavLink>
+                <NavLink to = "/Registration">Create An Account</NavLink>
             </div>
         </>
     )
