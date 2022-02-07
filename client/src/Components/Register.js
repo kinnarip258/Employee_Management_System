@@ -128,13 +128,6 @@ const Register = () => {
     });
 
     useEffect(() => {
-        if(toggle === true){
-            //============================= Navigate to Dashboard =============================
-            history.push('/Dashboard')
-        }
-    }, [toggle])
-
-    useEffect(() => {
         if(registerToggle === true){
             //============================= Navigate to Login =============================
             history.push('/Login')
@@ -161,18 +154,30 @@ const Register = () => {
     },[editedObject])
 
     useEffect(() => {
-        if(formik.values.country !== ""){
-            setSearch("State");
-            setCountryID(formik.values.country)
-        }
-        if(formik.values.state !== ""){
+        if(id){
             setSearch("City");
-            setStateID(formik.values.state)
-        }  
-        dispatch( Get_CountryStateCity(search, CountryID, StateID));
+            dispatch( Get_CountryStateCity(search, formik.values.country, formik.values.state));
+        }
+        else{
+            if(formik.values.country !== ""){
+                setSearch("State");
+                setCountryID(formik.values.country)
+            }
+            if(formik.values.state !== ""){
+                setSearch("City");
+                setStateID(formik.values.state)
+            }  
+            dispatch( Get_CountryStateCity(search, CountryID, StateID));
+        }
           
-    }, [search,CountryID, StateID, formik.values.country,formik.values.state])
+    }, [search,, StateID, CountryID,formik.values.country, formik.values.state])
 
+    useEffect(() => {
+        if(toggle === true){
+            //============================= Navigate to Dashboard =============================
+            history.push('/Dashboard')
+        }
+    }, [toggle])
 
     return (
         <div>
