@@ -12,7 +12,7 @@ const initialState = {
     City: [],  
     LoginState: true,
     LoginUser: "",
-    toggle: false, 
+    updatetoggle: false, 
     deleteToggle: false,
     registerToggle: false
 
@@ -44,7 +44,7 @@ const Reducers = (state = initialState, action) => {
                 Country: [],
                 States: [],
                 City: [],
-                toggle: true
+                updatetoggle: true
             }
 
         case "Login_User":
@@ -71,7 +71,8 @@ const Reducers = (state = initialState, action) => {
                 user: action.payload.users,
                 page: action.payload.totalPage,
                 LoginUser: action.payload.LoginUser,
-                toggle: false,
+                updatetoggle: false,
+                deleteToggle: false,
             }
 
         case "Get_CountryStateCity":
@@ -97,6 +98,12 @@ const Reducers = (state = initialState, action) => {
             ...state,
             LoginState: action.payload.LoginState,
 
+        }
+
+        case "Upload_File":
+            
+        return {
+            ...state,
         }
         default:
             return state;

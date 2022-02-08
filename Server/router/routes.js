@@ -12,8 +12,36 @@ const User = require('../models/userSchema');
 const City  = require('../models/citySchema');
 const State = require('../models/stateSchema');
 const Country = require('../models/countrySchema');
+const cloudinary = require('../fileupload/cloudinary');
+const upload = require('../fileupload/multer');
 
 //========================== Load Modules End =============================
+
+//============================= Upload Files =============================
+
+router.post(`/uploadFile`,upload.single('files'), async (req,res) => {
+    
+    try{
+        console.log("req.files", req.files)
+        const {path} = req.file
+        const result = await cloudinary.uploader.upload(path);
+        console.log("result",result)
+
+        //create User instance
+        let user = new User({
+            filename: result.name,
+            filepath: result.secure_url,
+            cloudinary_id: result.public_id
+        });
+        await user.save();
+        res.json(user);
+
+    }
+    catch(err){
+        res.send(err);
+    }
+})
+
 
 //============================= Register =============================
 
@@ -88,6 +116,7 @@ router.post('/signIn', async (req,res) => {
         res.send(err)
    }
 })
+
 
 //============================= Update Employee Details =============================
 

@@ -134,7 +134,7 @@ export const Get_CountryStateCity = (Search, CountryID, StateID) => {
 //============================= End =============================
 
 
-//============================= Get Country, State, City =============================
+//============================= Check Cookie =============================
 export const CheckCookie = () => {
     
     return (dispatch) => {
@@ -145,6 +145,23 @@ export const CheckCookie = () => {
         })
         .catch(err => {
             console.log("error: ", err);
+        });
+    }
+}
+//============================= End =============================
+
+
+//============================= Upload File =============================
+export const Upload_File  = (file) => {
+    
+    return (dispatch) => {
+        Axios.post(`/uploadFile`, file)
+        .then(res => {
+            toast.success("File Upload Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
+            dispatch({type: "Upload_File"})
+        })
+        .catch(err => {
+            toast.error("File Not Uploaded!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
         });
     }
 }

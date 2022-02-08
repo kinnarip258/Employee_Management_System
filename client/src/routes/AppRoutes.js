@@ -11,6 +11,7 @@ import ProtectedRoute from '../Components/ProtectedRoute';
 import { Switch,Route, Redirect } from "react-router-dom";
 import {useSelector,useDispatch} from "react-redux";
 import { CheckCookie } from '../actions/userActions';
+import FileUpload from '../Components/FileUpload';
 
 //========================== Import Modules End =============================
 
@@ -35,10 +36,12 @@ const AppRoutes = () => {
 
                         <ProtectedRoute exact path = '/Logout' component={Logout} authStatus={LoginState}/>
 
+                        <ProtectedRoute exact path = '/Files' component={FileUpload} authStatus={LoginState}/>
+
                         <ProtectedRoute exact path= '/Dashboard' component={Dashboard} authStatus={LoginState}/>
                         
                         {
-                            LoginState !== false ? (
+                            LoginState === true ? (
                                 <>
                                     <Route exact path = '/Login' component={Login} /> 
 

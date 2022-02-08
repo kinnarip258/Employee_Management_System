@@ -67,6 +67,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true  
     },
+    filename: {
+        type: String,  
+    },
+    filepath: {
+        type: String, 
+    },
+    cloudinary_id: {
+        type: String, 
+    },
     Tokens: [
         {
             token: {

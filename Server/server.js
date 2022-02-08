@@ -6,6 +6,7 @@ const express = require('express');
 const dotenv = require("dotenv");
 const app = express();
 const cookieParser = require("cookie-parser");
+var bodyParser = require('body-parser');
 
 //========================== Load Modules End =============================
 
@@ -21,6 +22,9 @@ app.use(cookieParser());
 //============================= Convert Data to Json data =============================
 app.use(express.json());
 
+// app.use(bodyParser.urlencoded({extended: false, limit: "50mb"}));
+
+// app.use(bodyParser.json({limit: "50mb"}));
 
 //============================= Link Router File =============================
 app.use(require('./router/routes'));

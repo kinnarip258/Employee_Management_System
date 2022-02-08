@@ -32,7 +32,7 @@ const Register = () => {
     const user = useSelector(state => state.user);
 
     //============================= Get Response Of The Api =============================
-    const toggle = useSelector(state => state.toggle);
+    const updatetoggle = useSelector(state => state.updatetoggle);
 
     //============================= Get Response Of The Api =============================
     const registerToggle = useSelector(state => state.registerToggle);
@@ -127,6 +127,7 @@ const Register = () => {
         }     
     });
 
+    //============================= UseEffect For Navigate to Login =============================
     useEffect(() => {
         if(registerToggle === true){
             //============================= Navigate to Login =============================
@@ -135,6 +136,14 @@ const Register = () => {
             dispatch(Register_Toggle());
         }
     }, [registerToggle])
+
+    //============================= UseEffect For Navigate to Dashboard =============================
+    useEffect(() => {
+        if(updatetoggle === true){
+            //============================= Navigate to Dashboard =============================
+            history.push('/Dashboard')
+        }
+    }, [updatetoggle])
 
     //============================= UseEffect For Get EditUser Data =============================
     useEffect(() => {
@@ -172,18 +181,12 @@ const Register = () => {
           
     }, [search,, StateID, CountryID,formik.values.country, formik.values.state])
 
-    useEffect(() => {
-        if(toggle === true){
-            //============================= Navigate to Dashboard =============================
-            history.push('/Dashboard')
-        }
-    }, [toggle])
-
     return (
         <div>
-            <div className="header_div">
+            {!id ? <div className="header_div">
                 <h1>Employee Form</h1>
-            </div>
+            </div> 
+            : null}
 
              <div className="form_div">
 

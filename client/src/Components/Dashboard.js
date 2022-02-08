@@ -111,7 +111,7 @@ const Deshboard = () => {
                                 </thead>  
                                 <tbody>
                                 {
-                                    user ? (
+                                    user && (
                                         user.map(ele => {
                                             return(     
                                                 <tr key = {ele.id}>          
@@ -133,10 +133,13 @@ const Deshboard = () => {
                                                 </tr>                
                                             )
                                         })
-                                    ) : null
+                                    ) 
                                 }
                                 </tbody>
                             </table>
+
+                            <Pagination count={page} variant="outlined" color="secondary" onChange={(e, value) =>  {
+                                setPageNumber(value) }}/>  
 
                         </div>
                 
@@ -146,10 +149,7 @@ const Deshboard = () => {
                         </div>
                     )
                 }
-
-                <Pagination count={page} variant="outlined" color="secondary" onChange={(e, value) =>  {
-                    setPageNumber(value) }}/>  
-                    
+     
             </div>     
         </>
     )
