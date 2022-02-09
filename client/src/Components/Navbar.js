@@ -13,8 +13,6 @@ const Navbar = () => {
     const LoginState = useSelector(state => state.LoginState)
     console.log("LoginState",LoginState)
 
-    const LoginUser = useSelector(state => state.LoginUser)
-
     return (
         <>
             <div className="nav_div">
@@ -22,10 +20,6 @@ const Navbar = () => {
             {
                 !LoginState && (
                     <>
-
-                        {LoginUser ? 
-                            <h3>{`Sign in as ${LoginUser.fname} ${LoginUser.lname}`}</h3> 
-                        : null}
                         <NavLink to = '/Dashboard'> Dashboard </NavLink>
                         <NavLink to = '/Files'> Files </NavLink>
                         <NavLink to = '/Logout'> Logout</NavLink> 

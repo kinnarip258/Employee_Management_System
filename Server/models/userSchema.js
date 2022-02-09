@@ -13,69 +13,59 @@ const jwt = require('jsonwebtoken');
 const userSchema = new mongoose.Schema({
     fname: {
         type: String,
-        required: true
     },
     lname: {
         type: String,
-        required: true
     },
     email: {
         type: String,
-        required: true
     },
     phone: {
         type: Number,
-        required: true
     },
     company: {
         type: String,
-        required: true
     },
     profession: {
         type: String,
-        required: true
     },
     salary1: {
         type: Number,
-        required: true
     },
     salary2: {
         type: Number,
-        required: true
     },
     salary3: {
         type: Number,
-        required: true
     },
     city:{
         type: Number,
-        required: true
     },
     state: {
         type: Number,
-        required: true
     },
     country:{
         type: Number,
-        required: true
     },
     password: {
         type: String,
-        required: true
     },
     cpassword: {
         type: String,
-        required: true  
     },
-    filename: {
-        type: String,  
-    },
-    filepath: {
-        type: String, 
-    },
-    cloudinary_id: {
-        type: String, 
-    },
+    Files: [
+        {
+            filename: {
+                type: String
+            },
+            filepath:{
+                type: String
+            },
+            filetype: {
+                type: String
+            },
+        }
+    ],
     Tokens: [
         {
             token: {
@@ -111,6 +101,7 @@ userSchema.methods.generateAuthToken = async function() {
         console.log(err);
     }
 }
+
 
 //============================= User Model =============================
 const User = mongoose.model('User', userSchema);

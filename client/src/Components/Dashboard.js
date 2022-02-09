@@ -66,9 +66,9 @@ const Deshboard = () => {
         <>
             <div className='main_div'>
 
-                {/* <div className='col-md-12 my-3 text-center'>
+                <div className='col-md-12 my-3 text-center'>
                     <h1>{LoginUser && (`Welcome ${LoginUser.fname} ${LoginUser.lname}`)}</h1>
-                </div> */}
+                </div>
 
                 <div className='col-md-12 my-3 text-center'>
                     <h1>Employee Data</h1>
