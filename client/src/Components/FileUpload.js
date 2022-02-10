@@ -7,13 +7,11 @@ const FileUpload = () => {
   const [file, setFile] = useState();
   console.log("files", file);
 
-  const LoginUser = useSelector(state => state.LoginUser)
-  console.log("LoginUser._id", LoginUser._id)
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append('multi-files', file);
-    dispatch(Upload_File(LoginUser._id,formData))
+    dispatch(Upload_File(formData))
   }
   return (
       <>
@@ -24,7 +22,7 @@ const FileUpload = () => {
             <form onSubmit={handleSubmit}>
               <div>
                   <label>Upload Files</label>
-                  <input type="file" id='file' onChange={(e) => setFile(e.target.files[0]) }/>
+                  <input type="file" id="file" multiple name="file" onChange={(e) => setFile(e.target.files) }/>
                   <button type='submit'>Upload</button>
               </div>
               <div>

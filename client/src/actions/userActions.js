@@ -152,10 +152,10 @@ export const CheckCookie = () => {
 
 
 //============================= Upload File =============================
-export const Upload_File  = (id, file) => {
-    console.log("uploadactions ", id, file)
+export const Upload_File  = (file) => {
+    console.log("uploadactions ", file)
     return (dispatch) => {
-        Axios.post(`/uploadFile/?ID=${id}`, file)
+        Axios.post(`/uploadFile`, file)
         .then(() => {
             toast.success("File Upload Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
             dispatch({type: "Upload_File"})

@@ -21,34 +21,28 @@ const upload = require('../fileupload/multer');
 
 //  
 router.post(`/uploadFile`,authenticate, upload.array('multi-files'), async (req,res) => {
-    console.log("run");
+
     try{
-        console.log("req.files", req.files)
-        const {path} = req.files;
 
-        const result = await cloudinary.uploader.upload(path, {resource_type: 'auto'});
-        const email = req.authenticateUser.email;
-        console.log("email", email);
-        console.log("result", result);
-
+        const files = req.files;
         let Files = [];
 
-        Files.push(
-            {
-                filename: req.file.originalname,
-                filepath: result.secure_url,
-                filetype: result.public_id
-            },
-        )
-        console.log("Files", Files)
-        //create User instance
-        // const file = await User.findByIdAndUpdate(req.query.ID, Files);
-        // console.log("file", file);
+        for (const file of files) {
+            const { path } = file;
+            const uploadFiles = await cloudinary.uploader.upload(path, { resource_type: 'auto' })  
+            
+            Files.push(uploadFiles)    
+        }
+        
+        await User({
+            filename: req.file.originalname,
+            filepath: result.secure_url,
+            filetype: result.public_id
+        })
         
         res.json({msg: "File  Uploaded Succeessfully!! "});
 
-    }
-    catch(err){
+    } catch(err){
         res.send(err);
     }
 })
