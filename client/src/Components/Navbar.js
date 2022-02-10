@@ -11,7 +11,9 @@ import { NavLink } from 'react-router-dom';
 const Navbar = () => {
 
     const LoginState = useSelector(state => state.LoginState)
-    console.log("LoginState",LoginState)
+    console.log("LoginState",LoginState);
+
+    const LoginUser = useSelector(state => state.LoginUser);
 
     return (
         <>
@@ -20,6 +22,13 @@ const Navbar = () => {
             {
                 !LoginState && (
                     <>
+                        {
+                            LoginUser && (
+                                <>
+                                    <h3>{`SignIn As ${LoginUser.fname} ${LoginUser.lname}`}</h3>
+                                </>
+                            )
+                        }
                         <NavLink to = '/Dashboard'> Dashboard </NavLink>
                         <NavLink to = '/Files'> Files </NavLink>
                         <NavLink to = '/Logout'> Logout</NavLink> 
