@@ -4,13 +4,13 @@ import {Upload_File}from '../actions/userActions';
 
 const FileUpload = () => {
   const dispatch = useDispatch();
-  const [file, setFile] = useState();
-  console.log("files", file);
+  const [files, setFiles] = useState();
+  console.log("files", files);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('multi-files', file);
+    formData.append('multi-files', files);
     dispatch(Upload_File(formData))
   }
   return (
@@ -22,7 +22,7 @@ const FileUpload = () => {
             <form onSubmit={handleSubmit}>
               <div>
                   <label>Upload Files</label>
-                  <input type="file" id="file" multiple name="file" onChange={(e) => setFile(e.target.files) }/>
+                  <input type="file" id="file" name="files" onChange={(e) => setFiles(e.target.files[0]) } multiple/>
                   <button type='submit'>Upload</button>
               </div>
               <div>

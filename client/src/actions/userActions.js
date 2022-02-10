@@ -153,7 +153,7 @@ export const CheckCookie = () => {
 
 //============================= Upload File =============================
 export const Upload_File  = (file) => {
-    console.log("uploadactions ", file)
+    
     return (dispatch) => {
         Axios.post(`/uploadFile`, file)
         .then(() => {

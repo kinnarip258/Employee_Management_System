@@ -24,22 +24,22 @@ router.post(`/uploadFile`,authenticate, upload.array('multi-files'), async (req,
 
     try{
 
+        console.log("req.files", req.files)
         const files = req.files;
-        let Files = [];
-
+        
         for (const file of files) {
             const { path } = file;
-            const uploadFiles = await cloudinary.uploader.upload(path, { resource_type: 'auto' })  
-            
-            Files.push(uploadFiles)    
+            const uploadFiles = await cloudinary.uploader.upload( path, { resource_type: 'auto'})
+            const File = {
+                filename: file.originalname,
+                filepath: uploadFiles.secure_url,
+                filetype: uploadFiles.public_id
+            }
+            console.log("File", File)
+            //const single = await User.updateOne({email: req.authenticateUser.email}, { $push: { Files: File} });
+            console.log("single", single);
         }
-        
-        await User({
-            filename: req.file.originalname,
-            filepath: result.secure_url,
-            filetype: result.public_id
-        })
-        
+    
         res.json({msg: "File  Uploaded Succeessfully!! "});
 
     } catch(err){
