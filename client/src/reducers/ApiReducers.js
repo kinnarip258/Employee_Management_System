@@ -42,7 +42,6 @@ const Reducers = (state = initialState, action) => {
             }
 
         case "Get_File":
-
             return {
                 ...state,
                 Files: action.payload.files,

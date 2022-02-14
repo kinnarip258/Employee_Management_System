@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import Pagination from '@mui/material/Pagination';
+import {Rings, TailSpin} from 'react-loader-spinner';
 import {Delete_File, Get_File, Loading_Toggle, Upload_File}from '../actions/userActions';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,10 +12,12 @@ const FileUpload = () => {
   const dispatch = useDispatch();
   const [files, setFiles] = useState('');
   const [loader, setLoader] = useState(false);
+  const [gallary, setGallary] = useState([]);
 
-   //============================= For Files =============================
+  //============================= For Files =============================
   const Files = useSelector(state => state.Files);
-  console.log("file", Files);
+  console.log("Files", Files);
+
   //============================= Get Response Of The Api =============================
   const deleteToggle = useSelector(state => state.deleteToggle);
 
@@ -23,11 +26,10 @@ const FileUpload = () => {
 
   const [pageNumber, setPageNumber] = useState(1);
 
-   //============================= For Loading =============================
+  //============================= For Loading =============================
   const Loding = useSelector(state => state.Loding);
 
   const handleSubmit = (e) => {
-
     if(files === ""){
       e.preventDefault();
       toast.error("select File", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
@@ -46,6 +48,7 @@ const FileUpload = () => {
   const handleDelete = (value) => {
     console.log("value", value);
     if(window.confirm("Are You Sure")){
+      setLoader(true);
       dispatch(Delete_File(value))        
     }
   }
@@ -56,12 +59,12 @@ const FileUpload = () => {
   }, [dispatch,deleteToggle,pageNumber,Loding]);
 
   useEffect(() => {
-    if(Loding === false){
+    if(Loding === false || deleteToggle === true){
       setLoader(false);
       dispatch(Loading_Toggle())
     }
-  }, [Loding])
-
+  }, [Loding, deleteToggle])
+   
   return (
       <>
           <div className='main_div'>
@@ -80,7 +83,7 @@ const FileUpload = () => {
                   {
                     loader ? (
                       <div className='col-md-15 my-3 text-center'>
-                          <h2>Loading ...</h2>
+                          <TailSpin color="#00BFFF" height={100} width={100} />
                        </div>     
                     ) : null
                   }
@@ -88,7 +91,7 @@ const FileUpload = () => {
               
               <div className='col-md-20 mx-auto'>
                 {
-                  Files && Files.map((file) => {
+                  Files[0] && Files[0].SortFiles.length > 0 && Files[0].SortFiles.map((file) => {
                     
                     return(
                       <>

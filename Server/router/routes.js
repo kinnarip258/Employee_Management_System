@@ -61,23 +61,31 @@ router.get(`/files`,authenticate, async (req,res) => {
 
         //============================= Count Total Pages of SearchUser =============================
         let totalPage = Math.ceil(totalfiles.length/limit);
-        console.log("totalPage", totalPage);
 
-        const files = await User.aggregate([
+        const aggreagteQuery = [];
+
+        aggreagteQuery.push(
             {
-                $match:{
+                $match: {
                     Files: req.authenticateUser.Files
                 }
             },
-            //============================= Pagination =============================
             {
-                $skip: skip
+                $project: {
+                    _id: 0, SortFiles: {
+                        $slice: ["$Files", skip, limit]
+                    },
+                }
             },
-            {
-                $limit: limit  
-            }  
-        ]);
-        console.log("files", files);
+        );
+        const files = await User.aggregate([aggreagteQuery]);
+
+        // const image = totalfiles.map(file => file.type === ".jpeg" || ".png" || ".jpg" ? (
+        //     cloudinary.url(file.public_id, {width: 100, height: 150, crop: "fill"})
+        // ): null);
+
+        // console.log("image", image);
+
         res.send({files, totalPage})
 
     } catch(err){
@@ -95,19 +103,11 @@ router.delete(`/deleteFiles`,authenticate, async (req,res) => {
         console.log("fileID", req.query.ID);
         const cloud = await cloudinary.uploader.destroy(file, {invalidate: true, resource_type: "raw"});
         console.log("cloud", cloud);
-        const database = await User.aggregate([
-            {
-                $match: {
-                    "email": req.authenticateUser.email
-                }
-            },
-            {
-                $match: {
-                    "Files.public_id": file
-                }
-            },
-            { $unset: 'Files'}
-        ]);
+        
+        const database = await User.updateOne(
+            { email: req.authenticateUser.email },
+            { $pull: { Files: { public_id: file } } }
+        )
         console.log("database", database);
         res.send({msg: "delete successfully!"})
     } catch(err){
