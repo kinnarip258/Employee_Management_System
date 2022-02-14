@@ -18,10 +18,7 @@ const Deshboard = () => {
 
     //============================= Get Response Of The Api =============================
     const user = useSelector(state => state.user);
-
-    //============================= Get Response Of The Api =============================
-    const LoginUser = useSelector(state => state.LoginUser);
-
+    
     //============================= Get Response Of The Api =============================
     const deleteToggle = useSelector(state => state.deleteToggle);
     
@@ -66,11 +63,7 @@ const Deshboard = () => {
         <>
             <div className='main_div'>
 
-                <div className='col-md-12 my-3 text-center'>
-                    <h1>{LoginUser && (`Welcome ${LoginUser.fname} ${LoginUser.lname}`)}</h1>
-                </div>
-
-                <div className='col-md-12 my-3 text-center'>
+                <div className="header_div">
                     <h1>Employee Data</h1>
                 </div>
                 <div className='col-md-15 my-3 text-center'>

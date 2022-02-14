@@ -16,4 +16,8 @@ export const Save_Update = "Save_Update";
 export const Get_CountryStateCity = "Get_CountryStateCity";
 export const Register_Toggle = "Register_Toggle";
 export const Upload_File = "Upload_File";
+export const Get_File = "Get_File";
+export const Delete_File = "Delete_File";
+export const Get_File_Cloudinary = "Get_File_Cloudinary";
+export const Loading_Toggle = "Loading_Toggle";
 //============================= Export Action Types End =============================

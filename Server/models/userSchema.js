@@ -58,14 +58,18 @@ const userSchema = new mongoose.Schema({
             filename: {
                 type: String
             },
-            filepath:{
+            filepath: {
                 type: String
             },
             filetype: {
                 type: String
             },
+            public_id: {
+                type: String
+            }   
         }
-    ],
+    ] 
+    ,
     Tokens: [
         {
             token: {

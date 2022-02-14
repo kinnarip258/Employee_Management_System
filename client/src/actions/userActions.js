@@ -153,7 +153,7 @@ export const CheckCookie = () => {
 
 //============================= Upload File =============================
 export const Upload_File  = (file) => {
-    
+    console.log("file", file);
     return (dispatch) => {
         Axios.post(`/uploadFile`, file)
         .then(() => {
@@ -163,6 +163,65 @@ export const Upload_File  = (file) => {
         .catch(() => {
             toast.error("File Not Uploaded!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
         });
+    }
+}
+//============================= End =============================
+
+
+//============================= Get File =============================
+export const Get_File  = (page) => {
+    
+    return (dispatch) => {
+        Axios.get(`/files/?&Page=${page}`)
+        .then((res) => {
+            dispatch({type: "Get_File", payload: res.data})
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }
+}
+//============================= End =============================
+
+
+//============================= Delete File =============================
+export const Delete_File  = (id) => {
+    
+    return (dispatch) => {
+        Axios.delete(`/deleteFiles/?ID=${id}`)
+        .then(() => {
+            toast.success("File Delete Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
+            dispatch({type: "Delete_File"});
+        })
+        .catch(() => {
+            toast.error("File Not Deleted!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
+        });
+    }
+}
+//============================= End =============================
+
+
+
+//============================= Get File From Cloudinary =============================
+export const Get_File_Cloudinary  = (path) => {
+    console.log("path", path);
+    return (dispatch) => {
+        Axios.get(`${path}`)
+        .then((res) => {
+            dispatch({type: "Get_File_Cloudinary", payload: res.data});
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }
+}
+//============================= End =============================
+
+//============================= Upload File Toggle Action Start =============================
+export const Loading_Toggle = () => {
+
+    return (dispatch) => {
+        dispatch({type: "Loading_Toggle"})        
     }
 }
 //============================= End =============================

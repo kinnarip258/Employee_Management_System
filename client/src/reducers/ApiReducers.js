@@ -14,7 +14,11 @@ const initialState = {
     LoginUser: "",
     updatetoggle: false, 
     deleteToggle: false,
-    registerToggle: false
+    registerToggle: false,
+    Files: [],
+    Gallary: [],
+    Loding: true,
+    filePage: []
 
 }
 //========================== InitialState End =============================
@@ -37,6 +41,34 @@ const Reducers = (state = initialState, action) => {
                 registerToggle: false
             }
 
+        case "Get_File":
+
+            return {
+                ...state,
+                Files: action.payload.files,
+                filePage: action.payload.totalPage,
+                deleteToggle: false,    
+            }
+
+        case "Upload_File":
+            
+            return {
+                ...state,
+                Loding: false
+            }
+            
+        case "Loading_Toggle":
+            
+            return {
+                ...state,
+                Loding: true
+            }
+        case "Delete_File":
+            
+            return {
+                ...state,
+                deleteToggle: true,
+            }
         case "Save_Update": 
         
             return {
@@ -100,11 +132,6 @@ const Reducers = (state = initialState, action) => {
 
         }
 
-        case "Upload_File":
-            
-        return {
-            ...state,
-        }
         default:
             return state;
     }

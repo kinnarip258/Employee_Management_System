@@ -14,27 +14,28 @@ const State = require('../models/stateSchema');
 const Country = require('../models/countrySchema');
 const cloudinary = require('../fileupload/cloudinary');
 const upload = require('../fileupload/multer');
-
+const path = require('path');
+const fs = require('fs');
 //========================== Load Modules End =============================
 
 //============================= Upload Files =============================
 
-//  
 router.post(`/uploadFile`,authenticate, upload.array('multi-files'), async (req,res) => {
 
     try{
 
-        console.log("req.files", req.files)
         const files = req.files;
         
         for (const file of files) {
-            const { path } = file;
-            const uploadFiles = await cloudinary.uploader.upload( path, { resource_type: 'auto'})
-            console.log("uploadFiles", uploadFiles)
+                    
+            const type = path.extname(file.originalname)
+            const uploadFiles = await cloudinary.uploader.upload( file.path, { resource_type: 'raw'});
+            console.log("uploadFiles", uploadFiles);
             const File = {
                 filename: file.originalname,
                 filepath: uploadFiles.secure_url,
-                filetype: uploadFiles.format
+                filetype: type,
+                public_id: uploadFiles.public_id    
             }
 
             await User.updateOne({email: req.authenticateUser.email}, { $push: { Files: File} });
@@ -48,6 +49,71 @@ router.post(`/uploadFile`,authenticate, upload.array('multi-files'), async (req,
     }
 })
 
+//============================= Get Files =============================
+
+router.get(`/files`,authenticate, async (req,res) => {
+
+    try{
+        const Page = req.query.Page;
+        let limit = 5;
+        let skip = (Page-1) * limit;
+        const totalfiles = req.authenticateUser.Files;
+
+        //============================= Count Total Pages of SearchUser =============================
+        let totalPage = Math.ceil(totalfiles.length/limit);
+        console.log("totalPage", totalPage);
+
+        const files = await User.aggregate([
+            {
+                $match:{
+                    Files: req.authenticateUser.Files
+                }
+            },
+            //============================= Pagination =============================
+            {
+                $skip: skip
+            },
+            {
+                $limit: limit  
+            }  
+        ]);
+        console.log("files", files);
+        res.send({files, totalPage})
+
+    } catch(err){
+        res.send(err);
+    }
+})
+
+//============================= Delete Files =============================
+
+router.delete(`/deleteFiles`,authenticate, async (req,res) => {
+
+    try{
+    
+        const file = req.query.ID;
+        console.log("fileID", req.query.ID);
+        const cloud = await cloudinary.uploader.destroy(file, {invalidate: true, resource_type: "raw"});
+        console.log("cloud", cloud);
+        const database = await User.aggregate([
+            {
+                $match: {
+                    "email": req.authenticateUser.email
+                }
+            },
+            {
+                $match: {
+                    "Files.public_id": file
+                }
+            },
+            { $unset: 'Files'}
+        ]);
+        console.log("database", database);
+        res.send({msg: "delete successfully!"})
+    } catch(err){
+        res.send(err);
+    }
+})
 
 //============================= Register =============================
 
