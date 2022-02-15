@@ -1,8 +1,9 @@
 //========================== Import Modules Start ===========================
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import {  useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 //========================== Import Modules End =============================
 
@@ -10,25 +11,17 @@ import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
 
-    const LoginState = useSelector(state => state.LoginState)
-    console.log("LoginState",LoginState);
+    const cookie = Cookies.get('jwt');
 
-    const LoginUser = useSelector(state => state.LoginUser);
-
+    const LoginState = useSelector(state => state.LoginState);  
+    console.log("LoginState", LoginState);
     return (
         <>
             <div className="nav_div">
 
             {
-                !LoginState && (
+                cookie !== undefined && (
                     <>
-                        {
-                            LoginUser && (
-                                <>
-                                    <h3>{`SignIn As ${LoginUser.fname} ${LoginUser.lname}`}</h3>
-                                </>
-                            )
-                        }
                         <NavLink to = '/Dashboard'> Dashboard </NavLink>
                         <NavLink to = '/Files'> Files </NavLink>
                         <NavLink to = '/Logout'> Logout</NavLink> 
@@ -37,7 +30,7 @@ const Navbar = () => {
             }
 
             {
-                LoginState && (
+                (LoginState && cookie === undefined) && (
                     <>
                         <NavLink to = '/'> Home </NavLink>
                         <NavLink to = '/Registration'> Registration </NavLink>

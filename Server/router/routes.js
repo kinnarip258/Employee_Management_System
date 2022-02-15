@@ -15,7 +15,7 @@ const Country = require('../models/countrySchema');
 const cloudinary = require('../fileupload/cloudinary');
 const upload = require('../fileupload/multer');
 const path = require('path');
-const fs = require('fs');
+
 //========================== Load Modules End =============================
 
 //============================= Upload Files =============================
@@ -30,7 +30,7 @@ router.post(`/uploadFile`,authenticate, upload.array('multi-files'), async (req,
                     
             const type = path.extname(file.originalname)
             const uploadFiles = await cloudinary.uploader.upload( file.path, { resource_type: 'raw'});
-            console.log("uploadFiles", uploadFiles);
+
             const File = {
                 filename: file.originalname,
                 filepath: uploadFiles.secure_url,
@@ -80,12 +80,6 @@ router.get(`/files`,authenticate, async (req,res) => {
         );
         const files = await User.aggregate([aggreagteQuery]);
 
-        // const image = totalfiles.map(file => file.type === ".jpeg" || ".png" || ".jpg" ? (
-        //     cloudinary.url(file.public_id, {width: 100, height: 150, crop: "fill"})
-        // ): null);
-
-        // console.log("image", image);
-
         res.send({files, totalPage})
 
     } catch(err){
@@ -100,16 +94,49 @@ router.delete(`/deleteFiles`,authenticate, async (req,res) => {
     try{
     
         const file = req.query.ID;
-        console.log("fileID", req.query.ID);
-        const cloud = await cloudinary.uploader.destroy(file, {invalidate: true, resource_type: "raw"});
-        console.log("cloud", cloud);
         
+        const cloud = await cloudinary.uploader.destroy(file, {invalidate: true, resource_type: "raw"});
+         
         const database = await User.updateOne(
             { email: req.authenticateUser.email },
             { $pull: { Files: { public_id: file } } }
         )
         console.log("database", database);
         res.send({msg: "delete successfully!"})
+    } catch(err){
+        res.send(err);
+    }
+})
+
+
+//============================= Delete Files =============================
+
+router.delete(`/deleteMultiFiles`,authenticate, async (req,res) => {
+
+    try{
+    
+        const files = req.query.files;
+        
+        console.log("files", files);
+
+        for (const file of files) {
+                    
+            const cloud = await cloudinary.uploader.destroy(file, {invalidate: true, resource_type: "raw"});
+            console.log('cloud',cloud);
+            const database = await User.updateOne(
+                { email: req.authenticateUser.email },
+                { $pull: { Files: { public_id: file } } }
+            ) 
+            console.log('database',database);
+        }
+        //const cloud = await cloudinary.uploader.destroy(file, {invalidate: true, resource_type: "raw"});
+         
+        // const database = await User.updateOne(
+        //     { email: req.authenticateUser.email },
+        //     { $pull: { Files: { public_id: file } } }
+        // )
+        // console.log("database", database);
+        // res.send({msg: "delete successfully!"})
     } catch(err){
         res.send(err);
     }
@@ -172,7 +199,7 @@ router.post('/signIn', async (req,res) => {
                 //============================= Store Token In Cookie =============================
                 res.cookie("jwt", token , {
                     expires: new Date(Date.now() + 3600000),
-                    httpOnly: true
+
                 });
                 //============================= Send Login User =============================
                 res.send({msg: "User Login Successfully!"});

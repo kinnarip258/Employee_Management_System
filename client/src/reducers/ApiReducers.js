@@ -68,6 +68,13 @@ const Reducers = (state = initialState, action) => {
                 ...state,
                 deleteToggle: true,
             }
+
+        case "DeleteMulti_File":
+            
+            return {
+                ...state,
+                deleteToggle: true,
+            }
         case "Save_Update": 
         
             return {

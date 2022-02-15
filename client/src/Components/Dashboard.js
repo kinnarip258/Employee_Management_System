@@ -22,6 +22,8 @@ const Deshboard = () => {
     //============================= Get Response Of The Api =============================
     const deleteToggle = useSelector(state => state.deleteToggle);
     
+    const LoginUser = useSelector(state => state.LoginUser);
+
     //============================= Pagination =============================
     const page = useSelector(state => state.page);
 
@@ -62,6 +64,16 @@ const Deshboard = () => {
     return(
         <>
             <div className='main_div'>
+
+                <div className="header_div">
+                    {
+                        LoginUser && (
+                        <>
+                            <h3>{`Welcome ${LoginUser.fname} ${LoginUser.lname}`}</h3>
+                        </>
+                        )
+                    }
+                </div>
 
                 <div className="header_div">
                     <h1>Employee Data</h1>

@@ -1,22 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import Pagination from '@mui/material/Pagination';
-import {Rings, TailSpin} from 'react-loader-spinner';
-import {Delete_File, Get_File, Loading_Toggle, Upload_File}from '../actions/userActions';
+import LinearProgress from '@mui/material/LinearProgress';
+import Box from '@mui/material/Box';
+import {DeleteMulti_File, Delete_File, Get_File, Loading_Toggle, Upload_File}from '../actions/userActions';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Select from "@material-ui/core/Select";
+
 toast.configure();
 
 const FileUpload = () => {
 
   const dispatch = useDispatch();
+
+  //============================= UseState =============================
   const [files, setFiles] = useState('');
   const [loader, setLoader] = useState(false);
-  const [gallary, setGallary] = useState([]);
+  const [users, setUsers] = useState([]);
 
+  console.log("users useState", users);
   //============================= For Files =============================
   const Files = useSelector(state => state.Files);
-  console.log("Files", Files);
+  
+  //============================= For LoginUser =============================
+  const LoginUser = useSelector(state => state.LoginUser);
 
   //============================= Get Response Of The Api =============================
   const deleteToggle = useSelector(state => state.deleteToggle);
@@ -29,67 +37,113 @@ const FileUpload = () => {
   //============================= For Loading =============================
   const Loding = useSelector(state => state.Loding);
 
+  //============================= Upload Files =============================
   const handleSubmit = (e) => {
+    console.log("submit");
     if(files === ""){
       e.preventDefault();
       toast.error("select File", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
     }
     else{
       e.preventDefault();
-      setLoader(true);
       const formData = new FormData();
       for(let i = 0 ; i< 5; i++){
         formData.append('multi-files', files[i]);
       }
+      setLoader(true);
+      e.target.reset();
+      setFiles('');
       dispatch(Upload_File(formData)); 
     }
   }
 
+
+  //============================= Delete file =============================
   const handleDelete = (value) => {
-    console.log("value", value);
     if(window.confirm("Are You Sure")){
       setLoader(true);
       dispatch(Delete_File(value))        
     }
   }
 
-  useEffect(() => {
-    console.log("run");
-    dispatch(Get_File(pageNumber));
-  }, [dispatch,deleteToggle,pageNumber,Loding]);
+  //============================= Delete Multi file =============================
+  const handleMultiDelete = (e) => {
+    e.preventDefault();
+    if(window.confirm("Are You Sure")){
+      setLoader(true);
+      dispatch(DeleteMulti_File());        
+    }
+  }
 
+  const handleChange = (e) => {
+    setUsers(...users, ...e.target.value)
+  };
+
+
+
+  //============================= get File =============================
+  useEffect(() => {
+    dispatch(Get_File(pageNumber));
+  }, [dispatch, pageNumber, Loding, deleteToggle]);
+
+  //============================= For Loading =============================
   useEffect(() => {
     if(Loding === false || deleteToggle === true){
       setLoader(false);
       dispatch(Loading_Toggle())
     }
-  }, [Loding, deleteToggle])
+  }, [Loding, deleteToggle]);
    
   return (
       <>
           <div className='main_div'>
+
+            <div className="header_div">
+              {
+                  LoginUser && (
+                    <>
+                        <h3>{`Welcome ${LoginUser.fname} ${LoginUser.lname}`}</h3>
+                    </>
+                  )
+              }
+            </div>
+
             <div className="header_div">
                 <h1>Files</h1>
             </div> 
-            <form onSubmit={handleSubmit}>
-              <div className='col-md-12 my-3 text-left'>
-                  <label>Upload Files</label>
-                  <input type="file" id="file" name="files" onChange={(e) => setFiles({...files, ...e.target.files})} multiple/>
-                  <button type='submit'>Upload</button>
-              </div>
-            </form>
 
-            <div >
+            <div>
+                
                   {
-                    loader ? (
-                      <div className='col-md-15 my-3 text-center'>
-                          <TailSpin color="#00BFFF" height={100} width={100} />
-                       </div>     
-                    ) : null
-                  }
+                    loader ? (<> 
+                    <Box sx={{ width: '100%' }}>
+                        <LinearProgress />
+                    </Box></>) : (
+                      <>
+                        <form onSubmit={handleSubmit}>
+                        <div className='col-md-12 my-3 text-left'>
+                            <label>Upload Files</label>
+                            
+                            <button type='submit'>Upload</button>
+                        </div>
+                      </form>
+                      <form onSubmit={handleMultiDelete}>
+                        <div className='col-md-12 my-3 text-left'>
+                          <button type='submit' >Delete</button>
+                        </div>
+                      </form>
+                      <input type="checkbox"
+                        className="form-check-input"
+                        name="allSelect"
+                        value="allSelect"
+                        onChange={handleChange} />
+                        <label>Select All</label>
+                      </>                    
+                    )
+                }
               </div>
-              
-              <div className='col-md-20 mx-auto'>
+              <div className='mainContainor'>
+                
                 {
                   Files[0] && Files[0].SortFiles.length > 0 && Files[0].SortFiles.map((file) => {
                     
@@ -101,6 +155,12 @@ const FileUpload = () => {
                               <>
                                 <h4>{file.filename}</h4>
                                 <img src='../Images/pdfIcon.png' alt='PDf'/>
+                                <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    value={file.public_id}
+                                    onChange={handleChange}
+                                  />
                                 <button onClick={() => handleDelete(file.public_id)}>Delete</button>
                               </>
                             ) : null
@@ -110,6 +170,12 @@ const FileUpload = () => {
                               <>
                                 <h4>{file.filename}</h4>
                                 <img src='../Images/docIcon.png' alt='Doc'/>
+                                <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    value={file.public_id}
+                                    onChange={handleChange}
+                                  />
                                 <button onClick={() => handleDelete(file.public_id)}>Delete</button>
                               </>
                             ) : null
@@ -119,6 +185,12 @@ const FileUpload = () => {
                               <>
                                 <h4>{file.filename}</h4>
                                 <img src='../Images/txtIcon.png' alt='txt'/>
+                                <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    value={file.public_id}
+                                    onChange={handleChange}
+                                  />
                                 <button onClick={() => handleDelete(file.public_id)}>Delete</button>
                               </>
                             ) : null
@@ -128,20 +200,31 @@ const FileUpload = () => {
                               <>
                                 <h4>{file.filename}</h4>
                                 <img src='../Images/xmlIcon.png' alt='xml'/>
+                                <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    value={file.public_id}
+                                    onChange={handleChange}
+                                  />
                                 <button onClick={() => handleDelete(file.public_id)}>Delete</button>
                               </>
                             ) : null
                           }
-                          {/* {  
-                            file.filetype === ".jpg" || ".png" || ".jpeg" ? (
+                          {  
+                            file.filetype === ".jpg" || file.filetype === ".png" || file.filetype === ".jpeg" ? (
                               <>
                                 <h4>{file.filename}</h4>
-                                <img src='../Images/xmlIcon.png' alt='Image'/>
+                                <img src={file.filepath} alt='Image' id = "img"/>
+                                <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    value={file.public_id}
+                                    onChange={handleChange}
+                                  />
                                 <button onClick={() => handleDelete(file.public_id)}>Delete</button>
                               </>
                             ) : null
-                          
-                          } */}
+                          }
                             
                         </div>
                       </>
@@ -150,8 +233,11 @@ const FileUpload = () => {
                 }
               </div>
 
-              <Pagination count={filePage} variant="outlined" color="secondary" onChange={(e, value) =>  {
-                setPageNumber(value) }}/>  
+              <div className="pagination2">
+                <Pagination count={filePage} variant="outlined" color="secondary" onChange={(e, value) =>  {
+                  setPageNumber(value) }}/>  
+              </div>
+              
           </div>
       </>
   );

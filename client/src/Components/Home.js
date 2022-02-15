@@ -9,12 +9,12 @@ import { useSelector } from "react-redux";
 
 const Home = () => {
 
-    
+
     return (
         <>
             <div className="header_div">
 
-                <h1> Welcome </h1>
+                <h1> Home Page </h1>
                 
             </div>
         </>

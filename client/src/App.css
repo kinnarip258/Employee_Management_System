@@ -81,3 +81,21 @@ th {
     text-align: center;
 }
 
+#img {
+    vertical-align: middle;
+    border-style: none;
+    width: 150px;
+    height: 150px;
+    margin: auto;
+}
+
+.mainContainor {
+    display: table;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination2 {
+    padding-left: 40%;
+    margin-top: 5%;
+}

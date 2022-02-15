@@ -12,19 +12,20 @@ import { Switch,Route, Redirect } from "react-router-dom";
 import {useSelector,useDispatch} from "react-redux";
 import { CheckCookie } from '../actions/userActions';
 import FileUpload from '../Components/FileUpload';
+import Cookies from 'js-cookie'
 
 //========================== Import Modules End =============================
 
 //============================= Routes Component Start =============================
 
 const AppRoutes = () => {
-
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(CheckCookie())
-    }, [dispatch, ProtectedRoute])
-
+    const dispatch = useDispatch(); 
+    const cookie = Cookies.get('jwt'); 
+    // useEffect(() => {
+        
+        
+    // }, [dispatch, ProtectedRoute])
+    
     const LoginState = useSelector(state => state.LoginState);
 
         return (
@@ -34,14 +35,14 @@ const AppRoutes = () => {
                         
                         <Route exact path = '/EditUser/:id' component={Register} />
 
-                        <ProtectedRoute exact path = '/Logout' component={Logout} authStatus={LoginState}/>
+                        <ProtectedRoute exact path = '/Logout' component={Logout} authStatus={cookie}/>
 
-                        <ProtectedRoute exact path = '/Files' component={FileUpload} authStatus={LoginState}/>
+                        <ProtectedRoute exact path = '/Files' component={FileUpload} authStatus={cookie}/>
 
-                        <ProtectedRoute exact path= '/Dashboard' component={Dashboard} authStatus={LoginState}/>
+                        <ProtectedRoute exact path= '/Dashboard' component={Dashboard} authStatus={cookie}/>
                         
                         {
-                            LoginState === true ? (
+                            cookie === undefined ? (
                                 <>
                                     <Route exact path = '/Login' component={Login} /> 
 

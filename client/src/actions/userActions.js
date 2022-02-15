@@ -153,15 +153,17 @@ export const CheckCookie = () => {
 
 //============================= Upload File =============================
 export const Upload_File  = (file) => {
-    console.log("file", file);
+    
     return (dispatch) => {
         Axios.post(`/uploadFile`, file)
         .then(() => {
             toast.success("File Upload Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
             dispatch({type: "Upload_File"})
         })
-        .catch(() => {
-            toast.error("File Not Uploaded!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
+        .catch((err) => {
+            dispatch({type: "Upload_File"});
+
+            toast.error("File Not Uploaded!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
         });
     }
 }
@@ -183,7 +185,6 @@ export const Get_File  = (page) => {
 }
 //============================= End =============================
 
-
 //============================= Delete File =============================
 export const Delete_File  = (id) => {
     
@@ -199,6 +200,27 @@ export const Delete_File  = (id) => {
     }
 }
 //============================= End =============================
+
+
+
+//============================= Delete Multiple File =============================
+export const DeleteMulti_File  = (files) => {
+    
+    return (dispatch) => {
+        Axios.delete(`/deleteMultiFiles/?files=${files}`)
+        .then(() => {
+            toast.success("File Delete Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
+            dispatch({type: "DeleteMulti_File"});
+        })
+        .catch(() => {
+            dispatch({type: "DeleteMulti_File"});
+            
+            toast.error("File Not Deleted!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
+        });
+    }
+}
+//============================= End =============================
+
 
 
 

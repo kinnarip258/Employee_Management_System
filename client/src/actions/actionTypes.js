@@ -20,4 +20,5 @@ export const Get_File = "Get_File";
 export const Delete_File = "Delete_File";
 export const Get_File_Cloudinary = "Get_File_Cloudinary";
 export const Loading_Toggle = "Loading_Toggle";
+export const DeleteMulti_File = "DeleteMulti_File";
 //============================= Export Action Types End =============================
