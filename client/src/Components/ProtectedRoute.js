@@ -1,6 +1,6 @@
 //========================== Import Modules Start ===========================
 
-import React from 'react'
+import React, { useState } from 'react'
 import {Route, Redirect} from 'react-router-dom';
 
 //========================== Import Modules End =============================
@@ -13,17 +13,13 @@ import {Route, Redirect} from 'react-router-dom';
 //...rest: rest of the properties
 const ProtectedRoute = ({authStatus, component: Component, ...rest}) => { 
 
-    console.log("authStatus", authStatus);
     return (
         <>  
             <Route {...rest} render= {(props) => {
                 if(authStatus !== undefined) {
                     return <Component {...props}/>;
                 }
-                // if(authStatus === undefined) {
-                //     return <Redirect to='/'/>
-                // }
-                else{
+                if(authStatus === undefined){
                     return <Redirect to='/'/>
                 }
             }}/>   

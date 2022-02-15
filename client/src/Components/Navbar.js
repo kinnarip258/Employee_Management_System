@@ -13,8 +13,8 @@ const Navbar = () => {
 
     const cookie = Cookies.get('jwt');
 
-    const LoginState = useSelector(state => state.LoginState);  
-    console.log("LoginState", LoginState);
+    const LoginUser = useSelector(state => state.LoginUser);  
+    
     return (
         <>
             <div className="nav_div">
@@ -30,7 +30,7 @@ const Navbar = () => {
             }
 
             {
-                (LoginState && cookie === undefined) && (
+                LoginUser === "" && cookie === undefined && (
                     <>
                         <NavLink to = '/'> Home </NavLink>
                         <NavLink to = '/Registration'> Registration </NavLink>

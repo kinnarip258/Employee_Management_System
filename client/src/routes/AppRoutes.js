@@ -19,14 +19,8 @@ import Cookies from 'js-cookie'
 //============================= Routes Component Start =============================
 
 const AppRoutes = () => {
-    const dispatch = useDispatch(); 
+
     const cookie = Cookies.get('jwt'); 
-    // useEffect(() => {
-        
-        
-    // }, [dispatch, ProtectedRoute])
-    
-    const LoginState = useSelector(state => state.LoginState);
 
         return (
             <div>

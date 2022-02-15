@@ -19,7 +19,6 @@ const FileUpload = () => {
   const [loader, setLoader] = useState(false);
   const [users, setUsers] = useState([]);
 
-  console.log("users useState", users);
   //============================= For Files =============================
   const Files = useSelector(state => state.Files);
   
