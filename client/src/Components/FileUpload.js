@@ -79,7 +79,6 @@ const FileUpload = () => {
   };
 
 
-
   //============================= get File =============================
   useEffect(() => {
     dispatch(Get_File(pageNumber));
@@ -121,6 +120,7 @@ const FileUpload = () => {
                       <>
                         <form onSubmit={handleSubmit}>
                         <div className='col-md-12 my-3 text-left'>
+                        <input type='file' name='files' multiple onChange={(e) => setFiles({ ...files, ...e.target.files })} ></input>
                             <label>Upload Files</label>
                             
                             <button type='submit'>Upload</button>
@@ -152,75 +152,85 @@ const FileUpload = () => {
                           {
                             file.filetype === ".pdf" ? (
                               <>
-                                <h4>{file.filename}</h4>
-                                <img src='../Images/pdfIcon.png' alt='PDf'/>
-                                <input
-                                    type="checkbox"
-                                    className="form-check-input"
-                                    value={file.public_id}
-                                    onChange={handleChange}
-                                  />
-                                <button onClick={() => handleDelete(file.public_id)}>Delete</button>
+                                <div className='showFiles'>
+                                  <b>{file.filename}</b>
+                                  <img src='../Images/pdfIcon.png' alt='PDf'/>
+                                  <input
+                                      type="checkbox"
+                                      className="form-check-input"
+                                      value={file.public_id}
+                                      onChange={handleChange}
+                                    />
+                                  <button onClick={() => handleDelete(file.public_id)}>Delete</button>
+                                </div>
                               </>
                             ) : null
                           }
                           {
                             file.filetype === ".docx" ? (
                               <>
-                                <h4>{file.filename}</h4>
-                                <img src='../Images/docIcon.png' alt='Doc'/>
-                                <input
-                                    type="checkbox"
-                                    className="form-check-input"
-                                    value={file.public_id}
-                                    onChange={handleChange}
-                                  />
-                                <button onClick={() => handleDelete(file.public_id)}>Delete</button>
+                                <div className='showFiles'>
+                                  <b>{file.filename}</b>
+                                  <img src='../Images/docIcon.png' alt='Doc'/>
+                                  <input
+                                      type="checkbox"
+                                      className="form-check-input"
+                                      value={file.public_id}
+                                      onChange={handleChange}
+                                    />
+                                  <button onClick={() => handleDelete(file.public_id)}>Delete</button>
+                                </div>
                               </>
                             ) : null
                           }
                           {
                             file.filetype === ".txt" ? (
                               <>
-                                <h4>{file.filename}</h4>
-                                <img src='../Images/txtIcon.png' alt='txt'/>
-                                <input
-                                    type="checkbox"
-                                    className="form-check-input"
-                                    value={file.public_id}
-                                    onChange={handleChange}
-                                  />
-                                <button onClick={() => handleDelete(file.public_id)}>Delete</button>
+                                <div className='showFiles'>
+                                  <b>{file.filename}</b>
+                                  <img src='../Images/txtIcon.png' alt='txt'/>
+                                  <input
+                                      type="checkbox"
+                                      className="form-check-input"
+                                      value={file.public_id}
+                                      onChange={handleChange}
+                                    />
+                                  <button onClick={() => handleDelete(file.public_id)}>Delete</button>
+                                </div>
                               </>
                             ) : null
                           }
                           {
                             file.filetype === ".xml" ? (
                               <>
-                                <h4>{file.filename}</h4>
-                                <img src='../Images/xmlIcon.png' alt='xml'/>
-                                <input
-                                    type="checkbox"
-                                    className="form-check-input"
-                                    value={file.public_id}
-                                    onChange={handleChange}
-                                  />
-                                <button onClick={() => handleDelete(file.public_id)}>Delete</button>
+                                <div className='showFiles'>
+                                  <b>{file.filename}</b>
+                                  <img src='../Images/xmlIcon.png' alt='xml'/>
+                                  <input
+                                      type="checkbox"
+                                      className="form-check-input"
+                                      value={file.public_id}
+                                      onChange={handleChange}
+                                    />
+                                  <button onClick={() => handleDelete(file.public_id)}>Delete</button>
+                                </div>
                               </>
                             ) : null
                           }
                           {  
                             file.filetype === ".jpg" || file.filetype === ".png" || file.filetype === ".jpeg" ? (
                               <>
-                                <h4>{file.filename}</h4>
-                                <img src={file.filepath} alt='Image' id = "img"/>
-                                <input
-                                    type="checkbox"
-                                    className="form-check-input"
-                                    value={file.public_id}
-                                    onChange={handleChange}
-                                  />
-                                <button onClick={() => handleDelete(file.public_id)}>Delete</button>
+                                <div className='showFiles'> 
+                                  <b>{file.filename}</b>
+                                  <img src={file.filepath} alt='Image' id = "img"/>
+                                  <input
+                                      type="checkbox"
+                                      className="form-check-input"
+                                      value={file.public_id}
+                                      onChange={handleChange}
+                                    />
+                                  <button onClick={() => handleDelete(file.public_id)}>Delete</button>
+                                </div>
                               </>
                             ) : null
                           }

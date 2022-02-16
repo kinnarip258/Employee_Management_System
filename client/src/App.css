@@ -99,3 +99,13 @@ th {
     padding-left: 40%;
     margin-top: 5%;
 }
+
+.showFiles {
+    font-size: large;
+    justify-content: center;
+    display: inline-grid;
+    padding-left: 15px;
+    width: min-content;
+    background-color: lightgrey;
+    margin-left: 10px;
+}

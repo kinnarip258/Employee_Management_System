@@ -22,6 +22,8 @@ const AppRoutes = () => {
 
     const cookie = Cookies.get('jwt'); 
 
+    const LoginUser = useSelector(state => state.LoginUser);
+
         return (
             <div>
                     <Switch>
@@ -36,7 +38,7 @@ const AppRoutes = () => {
                         <ProtectedRoute exact path= '/Dashboard' component={Dashboard} authStatus={cookie}/>
                         
                         {
-                            cookie === undefined ? (
+                            LoginUser === "" && cookie === undefined ? (
                                 <>
                                     <Route exact path = '/Login' component={Login} /> 
 

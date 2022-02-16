@@ -58,6 +58,7 @@ router.get(`/files`,authenticate, async (req,res) => {
         let limit = 5;
         let skip = (Page-1) * limit;
         const totalfiles = req.authenticateUser.Files;
+        const LoginUser = req.authenticateUser;
 
         //============================= Count Total Pages of SearchUser =============================
         let totalPage = Math.ceil(totalfiles.length/limit);
@@ -80,7 +81,7 @@ router.get(`/files`,authenticate, async (req,res) => {
         );
         const files = await User.aggregate([aggreagteQuery]);
 
-        res.send({files, totalPage})
+        res.send({files, totalPage, LoginUser})
 
     } catch(err){
         res.send(err);

@@ -134,23 +134,6 @@ export const Get_CountryStateCity = (Search, CountryID, StateID) => {
 //============================= End =============================
 
 
-//============================= Check Cookie =============================
-export const CheckCookie = () => {
-    
-    return (dispatch) => {
-        Axios.get(`/checkCookie`)
-        .then(res => {
-            const userData = res.data;
-            dispatch({type: "CheckCookie", payload: userData})
-        })
-        .catch(err => {
-            console.log("error: ", err);
-        });
-    }
-}
-//============================= End =============================
-
-
 //============================= Upload File =============================
 export const Upload_File  = (file) => {
     

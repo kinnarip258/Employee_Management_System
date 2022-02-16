@@ -46,6 +46,7 @@ const Reducers = (state = initialState, action) => {
                 ...state,
                 Files: action.payload.files,
                 filePage: action.payload.totalPage,
+                LoginUser: action.payload.LoginUser,
                 deleteToggle: false,    
             }
 
@@ -127,16 +128,11 @@ const Reducers = (state = initialState, action) => {
             return {
                 ...state,
                 LoginState: true,
-                LoginUser: ''
+                LoginUser: '',
+                user: [],
+                Files: [],
+                filePage: []
             }
-
-        case "CheckCookie":
-            
-        return {
-            ...state,
-            LoginState: action.payload.LoginState,
-
-        }
 
         default:
             return state;

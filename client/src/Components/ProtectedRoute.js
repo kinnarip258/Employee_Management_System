@@ -19,7 +19,7 @@ const ProtectedRoute = ({authStatus, component: Component, ...rest}) => {
                 if(authStatus !== undefined) {
                     return <Component {...props}/>;
                 }
-                if(authStatus === undefined){
+                else{
                     return <Redirect to='/'/>
                 }
             }}/>   
