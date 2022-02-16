@@ -139,8 +139,14 @@ export const Upload_File  = (file) => {
     
     return (dispatch) => {
         Axios.post(`/uploadFile`, file)
-        .then(() => {
-            toast.success("File Upload Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
+        .then((res) => {
+            console.log("res", res.data);
+            if(res.data.length <= 0){
+                toast.success("File Upload Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
+            }
+            else{
+                toast.success(`${res.data} not Uploaded!`, { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
+            }
             dispatch({type: "Upload_File"})
         })
         .catch((err) => {
@@ -201,24 +207,6 @@ export const DeleteMulti_File  = (files) => {
             dispatch({type: "DeleteMulti_File"});
             
             toast.error("File Not Deleted!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
-        });
-    }
-}
-//============================= End =============================
-
-
-
-
-//============================= Get File From Cloudinary =============================
-export const Get_File_Cloudinary  = (path) => {
-    console.log("path", path);
-    return (dispatch) => {
-        Axios.get(`${path}`)
-        .then((res) => {
-            dispatch({type: "Get_File_Cloudinary", payload: res.data});
-        })
-        .catch((err) => {
-            console.log(err);
         });
     }
 }

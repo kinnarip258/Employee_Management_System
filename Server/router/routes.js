@@ -25,24 +25,44 @@ router.post(`/uploadFile`,authenticate, upload.array('multi-files'), async (req,
     try{
 
         const files = req.files;
+
+        const notValideFiles = [];
         
         for (const file of files) {
                     
             const type = path.extname(file.originalname)
-            const uploadFiles = await cloudinary.uploader.upload( file.path, { resource_type: 'raw'});
-
-            const File = {
-                filename: file.originalname,
-                filepath: uploadFiles.secure_url,
-                filetype: type,
-                public_id: uploadFiles.public_id    
+            console.log("type", type);
+            if(type !== '.jpg' && type !== '.jpeg' && type !== '.png' && type !== '.pdf' && type !== '.doc' && type !== '.txt' && type !== '.docx'){
+                
+                notValideFiles.push(
+                    
+                    file.originalname
+                    
+                )
             }
+            else{
+                const uploadFiles = await cloudinary.uploader.upload( file.path, { resource_type: 'raw'});
 
-            await User.updateOne({email: req.authenticateUser.email}, { $push: { Files: File} });
+                const File = {
+                    filename: file.originalname,
+                    filepath: uploadFiles.secure_url,
+                    filetype: type,
+                    public_id: uploadFiles.public_id,
+                
+                }
+            
+                await User.updateOne({email: req.authenticateUser.email}, { $push: { Files: File} });
+            }
         
+        };
+        if(notValideFiles){
+            console.log("notValideFiles", notValideFiles);
+            res.send(notValideFiles);
         }
-    
-        res.json({msg: "File  Uploaded Succeessfully!! "});
+        else{
+            res.json({msg: "File Uploaded Succeessfully!!"});
+        }
+        
 
     } catch(err){
         res.send(err);
@@ -51,7 +71,7 @@ router.post(`/uploadFile`,authenticate, upload.array('multi-files'), async (req,
 
 //============================= Get Files =============================
 
-router.get(`/files`,authenticate, async (req,res) => {
+router.get(`/files`, authenticate, async (req,res) => {
 
     try{
         const Page = req.query.Page;
@@ -74,7 +94,7 @@ router.get(`/files`,authenticate, async (req,res) => {
             {
                 $project: {
                     _id: 0, SortFiles: {
-                        $slice: ["$Files", skip, limit]
+                        $slice: ["$Files", skip, limit],
                     },
                 }
             },
@@ -96,13 +116,13 @@ router.delete(`/deleteFiles`,authenticate, async (req,res) => {
     
         const file = req.query.ID;
         
-        const cloud = await cloudinary.uploader.destroy(file, {invalidate: true, resource_type: "raw"});
+        await cloudinary.uploader.destroy(file, {invalidate: true, resource_type: "raw"});
          
-        const database = await User.updateOne(
+        await User.updateOne(
             { email: req.authenticateUser.email },
             { $pull: { Files: { public_id: file } } }
         )
-        console.log("database", database);
+        
         res.send({msg: "delete successfully!"})
     } catch(err){
         res.send(err);
@@ -117,27 +137,18 @@ router.put(`/deleteMultiFiles`,authenticate, async (req,res) => {
     try{
 
         const files = req.body;
-        
-        console.log("files", files);
 
         for (const file of files) { 
 
-            const cloud = await cloudinary.uploader.destroy(file, {invalidate: true, resource_type: "raw"});
-            console.log('cloud',cloud);
-            const database = await User.updateOne(
+            await cloudinary.uploader.destroy(file, {invalidate: true, resource_type: "raw"});
+            await User.updateOne(
                 { email: req.authenticateUser.email },
                 { $pull: { Files: { public_id: file } } }
             ) 
-            console.log('database',database);
         }
-        //const cloud = await cloudinary.uploader.destroy(file, {invalidate: true, resource_type: "raw"});
-         
-        // const database = await User.updateOne(
-        //     { email: req.authenticateUser.email },
-        //     { $pull: { Files: { public_id: file } } }
-        // )
-        // console.log("database", database);
-        // res.send({msg: "delete successfully!"})
+
+        res.send({msg: "delete successfully!"})
+        
     } catch(err){
         res.send(err);
     }

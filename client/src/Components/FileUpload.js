@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import {DeleteMulti_File, Delete_File, Get_File, Loading_Toggle, Upload_File}from '../actions/userActions';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Select from "@material-ui/core/Select";
+
 
 toast.configure();
 
@@ -16,7 +16,7 @@ const FileUpload = () => {
 
   //============================= UseState =============================
   const [files, setFiles] = useState('');
-
+ 
   //============================= For Files =============================
   const Files = useSelector(state => state.Files);
   
@@ -36,7 +36,6 @@ const FileUpload = () => {
 
   //============================= Upload Files =============================
   const handleSubmit = (e) => {
-    console.log("submit");
     if(files === ""){
       e.preventDefault();
       toast.error("select File", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
@@ -45,7 +44,7 @@ const FileUpload = () => {
       e.preventDefault();
       dispatch(Loading_Toggle());
       const formData = new FormData();
-      for(let i = 0 ; i< 5; i++){
+      for(let i = 0 ; i< 10; i++){
         formData.append('multi-files', files[i]);
       }
       e.target.reset();
@@ -53,7 +52,6 @@ const FileUpload = () => {
       dispatch(Upload_File(formData)); 
     }
   }
-
 
   //============================= Delete file =============================
   const handleDelete = (value) => {
@@ -66,15 +64,22 @@ const FileUpload = () => {
 
   //============================= Delete Multi file =============================
   const handleMultiDelete = (e) => {
-    e.preventDefault();
-    if(window.confirm("Are You Sure")){
-      dispatch(Loading_Toggle());
-      dispatch(DeleteMulti_File(multipleDelete));        
+    if(multipleDelete.length <= 0){
+      e.preventDefault();
+      toast.error("select File First", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
+    }
+    else{
+      e.preventDefault();
+      if(window.confirm("Are You Sure")){
+        dispatch(Loading_Toggle());
+        dispatch(DeleteMulti_File(multipleDelete));        
+      }
     }
   }
 
   const handleChange = (id) => {
-    console.log(multipleDelete.includes(id));
+    
+    
     if (multipleDelete.includes(id)) {
         const checkedmyArray = multipleDelete.filter((i) => {
             return i !== id;
@@ -128,15 +133,16 @@ const FileUpload = () => {
                         <form onSubmit={handleMultiDelete}>
                           <div>
                             <button type='submit' >Delete</button>
+                            
                           </div>
                         </form>
-                        <input type="checkbox"
+                        {/* <input type="checkbox"
                           className="form-check-input"
                           name="allSelect"
                           value="allSelect"
-                          // onChange={() => handleChange(file.public_id)}
+                          onChange={() => handleChange()}
                           />
-                          <label>Select All</label>
+                          <label>Select All</label> */}
                       </>                    
                     )
                 }

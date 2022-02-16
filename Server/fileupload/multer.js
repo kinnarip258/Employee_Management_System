@@ -11,15 +11,7 @@ module.exports = multer({
         }
     }),
     limits: {
-            fieldNameSize: 200,
-            fileSize: 5 * 1024 * 1024,
-        },
-    fileFilter: (req, file, cb) => {
-        let ext = path.extname(file.originalname);
-        if(ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png' && ext !== '.pdf' && ext !== '.doc' && ext !== '.txt' && ext !== '.docx'){
-            cb(new Error("File Type is Not supported"), false);
-            return;
-        }
-        cb(null, true)
-    }
+        fieldNameSize: 200,
+        fileSize: 5 * 1024 * 1024,
+    },
 });

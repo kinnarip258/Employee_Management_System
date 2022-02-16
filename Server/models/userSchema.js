@@ -66,10 +66,13 @@ const userSchema = new mongoose.Schema({
             },
             public_id: {
                 type: String
-            }   
+            } ,
+            createAt:{
+                type: Date,
+                default: Date.now()
+            }
         }
-    ] 
-    ,
+    ],
     Tokens: [
         {
             token: {
