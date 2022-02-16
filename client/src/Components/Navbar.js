@@ -15,6 +15,8 @@ const Navbar = () => {
 
     const LoginUser = useSelector(state => state.LoginUser);  
     
+    const Loading = useSelector(state => state.Loading);
+
     return (
         <>
             <div className="nav_div">
@@ -24,7 +26,9 @@ const Navbar = () => {
                     <>
                         <NavLink to = '/Dashboard'> Dashboard </NavLink>
                         <NavLink to = '/Files'> Files </NavLink>
-                        <NavLink to = '/Logout'> Logout</NavLink> 
+                        {
+                            Loading ? null : <NavLink to = '/Logout'> Logout</NavLink>
+                        } 
                     </>
                 ) 
             }

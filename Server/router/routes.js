@@ -112,16 +112,16 @@ router.delete(`/deleteFiles`,authenticate, async (req,res) => {
 
 //============================= Delete Files =============================
 
-router.delete(`/deleteMultiFiles`,authenticate, async (req,res) => {
+router.put(`/deleteMultiFiles`,authenticate, async (req,res) => {
 
     try{
-    
-        const files = req.query.files;
+
+        const files = req.body;
         
         console.log("files", files);
 
-        for (const file of files) {
-                    
+        for (const file of files) { 
+
             const cloud = await cloudinary.uploader.destroy(file, {invalidate: true, resource_type: "raw"});
             console.log('cloud',cloud);
             const database = await User.updateOne(

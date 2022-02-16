@@ -146,7 +146,7 @@ export const Upload_File  = (file) => {
         .catch((err) => {
             dispatch({type: "Upload_File"});
 
-            toast.error("File Not Uploaded!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
+            toast.error("File Type Not Supported!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
         });
     }
 }
@@ -178,6 +178,8 @@ export const Delete_File  = (id) => {
             dispatch({type: "Delete_File"});
         })
         .catch(() => {
+            dispatch({type: "DeleteMulti_File"});
+            
             toast.error("File Not Deleted!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
         });
     }
@@ -188,9 +190,9 @@ export const Delete_File  = (id) => {
 
 //============================= Delete Multiple File =============================
 export const DeleteMulti_File  = (files) => {
-    
+
     return (dispatch) => {
-        Axios.delete(`/deleteMultiFiles/?files=${files}`)
+        Axios.put(`/deleteMultiFiles`, files)
         .then(() => {
             toast.success("File Delete Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
             dispatch({type: "DeleteMulti_File"});

@@ -17,7 +17,7 @@ const initialState = {
     registerToggle: false,
     Files: [],
     Gallary: [],
-    Loding: true,
+    Loading: false,
     filePage: []
 
 }
@@ -54,27 +54,27 @@ const Reducers = (state = initialState, action) => {
             
             return {
                 ...state,
-                Loding: false
+                Loading: false
             }
             
         case "Loading_Toggle":
             
             return {
                 ...state,
-                Loding: true
+                Loading: true
             }
         case "Delete_File":
             
             return {
                 ...state,
-                deleteToggle: true,
+                Loading: false,
             }
 
         case "DeleteMulti_File":
             
             return {
                 ...state,
-                deleteToggle: true,
+                Loading: false,
             }
         case "Save_Update": 
         

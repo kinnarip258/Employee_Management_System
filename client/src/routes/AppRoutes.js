@@ -22,6 +22,7 @@ const AppRoutes = () => {
 
     const cookie = Cookies.get('jwt'); 
 
+    const Loading = useSelector(state => state.Loading);
     const LoginUser = useSelector(state => state.LoginUser);
 
         return (
@@ -31,7 +32,9 @@ const AppRoutes = () => {
                         
                         <Route exact path = '/EditUser/:id' component={Register} />
 
-                        <ProtectedRoute exact path = '/Logout' component={Logout} authStatus={cookie}/>
+                        {
+                            Loading ? null : <ProtectedRoute exact path = '/Logout' component={Logout} authStatus={cookie}/>
+                        }
 
                         <ProtectedRoute exact path = '/Files' component={FileUpload} authStatus={cookie}/>
 
