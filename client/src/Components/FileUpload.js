@@ -4,14 +4,14 @@ import Pagination from '@mui/material/Pagination';
 import LinearProgress from '@mui/material/LinearProgress';
 import Box from '@mui/material/Box';
 import {DeleteMulti_File, Delete_File, Get_File, Loading_Toggle, Upload_File}from '../actions/userActions';
+import Checkbox from '@mui/material/Checkbox';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
 toast.configure();
 
 const FileUpload = () => {
 
+  //============================= For Api Dispatch =============================
   const dispatch = useDispatch();
 
   //============================= UseState =============================
@@ -21,14 +21,16 @@ const FileUpload = () => {
   const Files = useSelector(state => state.Files);
   
   //============================= For Multiple Delete =============================
-  const [multipleDelete, setMultipleDelete] = useState([])
-  
+  const [multipleDelete, setMultipleDelete] = useState([]);
+  console.log("multipleDelete",multipleDelete);
+  const [selectId, setSelectID] = useState([])
+
+  console.log("selectId",selectId);
   //============================= For LoginUser =============================
   const LoginUser = useSelector(state => state.LoginUser);
 
   //============================= Pagination =============================
   const filePage = useSelector(state => state.filePage);
-
   const [pageNumber, setPageNumber] = useState(1);
 
   //============================= For Loading =============================
@@ -44,7 +46,7 @@ const FileUpload = () => {
       e.preventDefault();
       dispatch(Loading_Toggle());
       const formData = new FormData();
-      for(let i = 0 ; i< 10; i++){
+      for(let i = 0 ; i < 10; i++){
         formData.append('multi-files', files[i]);
       }
       e.target.reset();
@@ -64,6 +66,7 @@ const FileUpload = () => {
 
   //============================= Delete Multi file =============================
   const handleMultiDelete = (e) => {
+    
     if(multipleDelete.length <= 0){
       e.preventDefault();
       toast.error("select File First", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
@@ -78,25 +81,41 @@ const FileUpload = () => {
   }
 
   const handleChange = (id) => {
-    
-    
+    console.log("id", id);
     if (multipleDelete.includes(id)) {
-        const checkedmyArray = multipleDelete.filter((i) => {
-            return i !== id;
-        });
-        setMultipleDelete(checkedmyArray);
+      const checkedmyArray = multipleDelete.filter((i) => {
+        return i !== id;
+      });
+      setMultipleDelete(checkedmyArray);
+      const checkedisChecked = selectId.map((i) => i.id === id ? {id: i.id, isChecked: false} : i);
+      setSelectID(checkedisChecked);
+    }
+    else if(id === "selectAll"){
+      const checkedisChecked = selectId.map((i) => i.isChecked === false ? {id: i.id, isChecked: true} : {id: i.id, isChecked: false});
+      console.log("checkedisChecked",checkedisChecked);
+      setSelectID(checkedisChecked);
+      const idForDelete = checkedisChecked.map((ele) => ele.isChecked === true ? setMultipleDelete([...multipleDelete, ele.id]) : null);
+      console.log("idForDelete", idForDelete);
+      
     }
     else {
-        setMultipleDelete([...multipleDelete, id]);
+      setMultipleDelete([...multipleDelete, id]);
+      const checkedisChecked = selectId.map((i) => i.id === id ? {id: i.id, isChecked: true} : i);
+      setSelectID(checkedisChecked);
     }
-}
-
+  }
 
   //============================= get File =============================
   useEffect(() => {
     dispatch(Get_File(pageNumber));
-
   }, [dispatch, pageNumber, Loading ]);
+
+  useEffect(() => {
+    const SelectItem = Files[0] && Files[0].SortFiles.length > 0 && Files[0].SortFiles.map((file) => {
+      return {id: file.public_id, isChecked: false}
+    });
+    setSelectID(SelectItem);
+  }, [Files])
 
   return (
       <>
@@ -132,20 +151,21 @@ const FileUpload = () => {
                         </form>
                         <form onSubmit={handleMultiDelete}>
                           <div>
-                            <button type='submit' >Delete</button>
-                            
+                            <button type='submit' >Delete </button> 
                           </div>
                         </form>
-                        {/* <input type="checkbox"
+                        
+                        <Checkbox
                           className="form-check-input"
-                          name="allSelect"
-                          value="allSelect"
-                          onChange={() => handleChange()}
-                          />
-                          <label>Select All</label> */}
+                          id='selectAll'
+                          name='selectAll'
+                          onChange={(e) => handleChange(e.target.name)}
+                        />
+                        <label>Select All</label>
                       </>                    
                     )
                 }
+                
               </div>
               <div className='mainContainor'>
                 
@@ -155,93 +175,48 @@ const FileUpload = () => {
                     return(
                       <>
                         <div>
-                          {
-                            file.filetype === ".pdf" ? (
-                              <>
-                                <div className='showFiles'>
-                                  <b>{file.filename}</b>
-                                  <img src='../Images/pdfIcon.png' alt='PDf'/>
-                                  <input
-                                      type="checkbox"
-                                      className="form-check-input"
-                                      value={file.public_id}
-                                      onChange={() => handleChange(file.public_id)}
-                                    />
+                        
+                          <div className='showFiles' key={file.public_id}>
+                            <b>{file.filename}</b>
+                                  {
+                                    file.filetype === ".pdf" ? 
+                                      <img src='../Images/pdfIcon.png' alt='PDf'/> : null
+                                  }
+                                  {
+                                    file.filetype === ".docx" ? 
+                                    <img src='../Images/docIcon.png' alt='Doc'/> : null
+                                  }
+                                  {
+                                    file.filetype === ".txt" ? 
+                                    <img src='../Images/txtIcon.png' alt='txt'/> : null
+                                  }
+                                  {
+                                    file.filetype === ".xml" ? 
+                                    <img src='../Images/xmlIcon.png' alt='xml'/> : null
+                                  }
+                                  {
+                                    file.filetype === ".jpg" || file.filetype === ".png" || file.filetype === ".jpeg" ? 
+                                    <img src={file.filepath} alt='Image' id = "img"/> : null
+                                  }
+                                  {
+                                    selectId && selectId.map(ele => ele.id === file.public_id ? (
+                                      <>
+                                        <Checkbox
+                                        className="form-check-input"
+                                        value={file.public_id}
+                                        checked={ele.isChecked}
+                                        onChange={() => handleChange(file.public_id)}
+                                      />
+                                      </>
+                                    ) : null)
+                                  }
+                                  
                                   <button onClick={() => handleDelete(file.public_id)}>Delete</button>
                                 </div>
-                              </>
-                            ) : null
-                          }
-                          {
-                            file.filetype === ".docx" ? (
-                              <>
-                                <div className='showFiles'>
-                                  <b>{file.filename}</b>
-                                  <img src='../Images/docIcon.png' alt='Doc'/>
-                                  <input
-                                      type="checkbox"
-                                      className="form-check-input"
-                                      value={file.public_id}
-                                      onChange={() => handleChange(file.public_id)}
-                                    />
-                                  <button onClick={() => handleDelete(file.public_id)}>Delete</button>
-                                </div>
-                              </>
-                            ) : null
-                          }
-                          {
-                            file.filetype === ".txt" ? (
-                              <>
-                                <div className='showFiles'>
-                                  <b>{file.filename}</b>
-                                  <img src='../Images/txtIcon.png' alt='txt'/>
-                                  <input
-                                      type="checkbox"
-                                      className="form-check-input"
-                                      value={file.public_id}
-                                      onChange={() => handleChange(file.public_id)}
-                                    />
-                                  <button onClick={() => handleDelete(file.public_id)}>Delete</button>
-                                </div>
-                              </>
-                            ) : null
-                          }
-                          {
-                            file.filetype === ".xml" ? (
-                              <>
-                                <div className='showFiles'>
-                                  <b>{file.filename}</b>
-                                  <img src='../Images/xmlIcon.png' alt='xml'/>
-                                  <input
-                                      type="checkbox"
-                                      className="form-check-input"
-                                      value={file.public_id}
-                                      onChange={() => handleChange(file.public_id)}
-                                    />
-                                  <button onClick={() => handleDelete(file.public_id)}>Delete</button>
-                                </div>
-                              </>
-                            ) : null
-                          }
-                          {  
-                            file.filetype === ".jpg" || file.filetype === ".png" || file.filetype === ".jpeg" ? (
-                              <>
-                                <div className='showFiles'> 
-                                  <b>{file.filename}</b>
-                                  <img src={file.filepath} alt='Image' id = "img"/>
-                                  <input
-                                      type="checkbox"
-                                      className="form-check-input"
-                                      value={file.public_id}
-                                      onChange={() => handleChange(file.public_id)}
-                                    />
-                                  <button onClick={() => handleDelete(file.public_id)}>Delete</button>
-                                </div>
-                              </>
-                            ) : null
-                          }
                             
                         </div>
+                      
+                      
                       </>
                     )
                   })    
@@ -250,7 +225,7 @@ const FileUpload = () => {
 
               <div className="pagination2">
                 <Pagination count={filePage} variant="outlined" color="secondary" onChange={(e, value) =>  {
-                  setPageNumber(value) }}/>  
+                  setPageNumber(value)}}/>  
               </div>
               
           </div>

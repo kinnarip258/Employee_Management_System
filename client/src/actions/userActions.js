@@ -74,6 +74,7 @@ export const Delete_User = (email) =>{
     return (dispatch) => {
         Axios.delete(`/deleteUser/?Email=${email}`)
         .then((res) => {
+            console.log("res.data", res.data);
             toast.success("Deleted Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
             dispatch({type: "Delete_User", payload: res.data})
         })
@@ -140,17 +141,19 @@ export const Upload_File  = (file) => {
     return (dispatch) => {
         Axios.post(`/uploadFile`, file)
         .then((res) => {
-            console.log("res", res.data);
-            if(res.data.length <= 0){
-                toast.success("File Upload Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
+            console.log("res.data", res.data);
+            if(res.data.notValideFiles.length <= 0){
+                toast.success(`${res.data.ValideFiles} Upload Successfully!`, { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
             }
             else{
-                toast.success(`${res.data} not Uploaded!`, { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
+                toast.error(`${res.data.notValideFiles} File Not Supported!`, { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
+                if(res.data.ValideFiles.length > 0){
+                    toast.success(`${res.data.ValideFiles} Upload Successfully!`, { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
+                }
             }
             dispatch({type: "Upload_File"})
         })
-        .catch((err) => {
-            dispatch({type: "Upload_File"});
+        .catch(() => {
 
             toast.error("File Type Not Supported!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
         });
@@ -180,14 +183,11 @@ export const Delete_File  = (id) => {
     return (dispatch) => {
         Axios.delete(`/deleteFiles/?ID=${id}`)
         .then(() => {
+
             toast.success("File Delete Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
+
             dispatch({type: "Delete_File"});
         })
-        .catch(() => {
-            dispatch({type: "DeleteMulti_File"});
-            
-            toast.error("File Not Deleted!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
-        });
     }
 }
 //============================= End =============================

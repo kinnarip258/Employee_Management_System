@@ -27,11 +27,12 @@ router.post(`/uploadFile`,authenticate, upload.array('multi-files'), async (req,
         const files = req.files;
 
         const notValideFiles = [];
+        const ValideFiles = [];
         
         for (const file of files) {
                     
             const type = path.extname(file.originalname)
-            console.log("type", type);
+            
             if(type !== '.jpg' && type !== '.jpeg' && type !== '.png' && type !== '.pdf' && type !== '.doc' && type !== '.txt' && type !== '.docx'){
                 
                 notValideFiles.push(
@@ -50,17 +51,24 @@ router.post(`/uploadFile`,authenticate, upload.array('multi-files'), async (req,
                     public_id: uploadFiles.public_id,
                 
                 }
-            
+
+                ValideFiles.push(
+                    
+                    file.originalname
+                    
+                );
+
                 await User.updateOne({email: req.authenticateUser.email}, { $push: { Files: File} });
             }
         
         };
-        if(notValideFiles){
-            console.log("notValideFiles", notValideFiles);
-            res.send(notValideFiles);
+        
+        if(notValideFiles !== []){
+            
+            res.send({notValideFiles, ValideFiles});
         }
         else{
-            res.json({msg: "File Uploaded Succeessfully!!"});
+            res.json({ValideFiles});
         }
         
 
@@ -123,7 +131,8 @@ router.delete(`/deleteFiles`,authenticate, async (req,res) => {
             { $pull: { Files: { public_id: file } } }
         )
         
-        res.send({msg: "delete successfully!"})
+        res.send({msg: "delete successfully!"});
+        
     } catch(err){
         res.send(err);
     }
