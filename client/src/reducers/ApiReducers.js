@@ -40,16 +40,53 @@ const Reducers = (state = initialState, action) => {
                 ...state,
                 registerToggle: false
             }
+        case "Get_CountryStateCity":
 
-        case "Get_File":
             return {
                 ...state,
-                Files: action.payload.files,
-                filePage: action.payload.totalPage,
-                LoginUser: action.payload.LoginUser,
-                deleteToggle: false,    
+                Country: action.payload.countries,
+                States: action.payload.states,
+                City: action.payload.cities
             }
 
+        case "Login_User":
+
+            return {
+                ...state,
+                LoginState: false,
+                registerToggle: false
+            }
+        
+        case "Get_UserDetails":
+
+            return {
+                ...state,
+                user: action.payload.users,
+                page: action.payload.totalPage,
+                LoginUser: action.payload.LoginUser,
+                updatetoggle: false,
+                deleteToggle: false,
+            }
+    
+        case "Save_Update": 
+        
+            return {
+                ...state,
+                Country: [],
+                States: [],
+                City: [],
+                updatetoggle: true
+            }
+
+        case "Delete_User":
+            
+            return  {
+                ...state,
+                LoginState: action.payload,
+                deleteToggle: true,
+                LoginUser: ''
+            }
+            
         case "Upload_File":
             
             return {
@@ -63,6 +100,16 @@ const Reducers = (state = initialState, action) => {
                 ...state,
                 Loading: true
             }
+
+        case "Get_File":
+            return {
+                ...state,
+                Files: action.payload.files,
+                filePage: action.payload.totalPage,
+                LoginUser: action.payload.LoginUser,
+                deleteToggle: false,    
+            }
+    
         case "Delete_File":
             
             return {
@@ -76,53 +123,7 @@ const Reducers = (state = initialState, action) => {
                 ...state,
                 Loading: false,
             }
-        case "Save_Update": 
         
-            return {
-                ...state,
-                Country: [],
-                States: [],
-                City: [],
-                updatetoggle: true
-            }
-
-        case "Login_User":
-
-            return {
-                ...state,
-                LoginState: false,
-                registerToggle: false
-            }
-
-        case "Delete_User":
-            
-            return  {
-                ...state,
-                LoginState: action.payload,
-                deleteToggle: true,
-                LoginUser: ''
-            }
-
-        case "Get_UserDetails":
-
-            return {
-                ...state,
-                user: action.payload.users,
-                page: action.payload.totalPage,
-                LoginUser: action.payload.LoginUser,
-                updatetoggle: false,
-                deleteToggle: false,
-            }
-
-        case "Get_CountryStateCity":
-
-            return {
-                ...state,
-                Country: action.payload.countries,
-                States: action.payload.states,
-                City: action.payload.cities
-            }
-    
         case "Logout_User":
             
             return {

@@ -32,13 +32,14 @@ const AppRoutes = () => {
                         
                         <Route exact path = '/EditUser/:id' component={Register} />
 
-                        {
-                            Loading ? null : <ProtectedRoute exact path = '/Logout' component={Logout} authStatus={cookie}/>
-                        }
-
                         <ProtectedRoute exact path = '/Files' component={FileUpload} authStatus={cookie}/>
 
                         <ProtectedRoute exact path= '/Dashboard' component={Dashboard} authStatus={cookie}/>
+                        
+                        
+                        {
+                            Loading ? null : <ProtectedRoute exact path = '/Logout' component={Logout} authStatus={cookie}/>
+                        }
                         
                         {
                             LoginUser === "" && cookie === undefined ? (
@@ -50,6 +51,8 @@ const AppRoutes = () => {
                             ) : <Redirect to='/Dashboard' />
                         }
       
+
+                        
                         <Route component={Error404} />  
   
                     </Switch>   

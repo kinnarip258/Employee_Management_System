@@ -35,22 +35,22 @@ export const Register_Toggle = () => {
 //============================= End =============================
 
 
-
-//============================= Save Updated Detils Of Employee Action Start =============================
-export const Save_Update = (id,values, editUser) => {
-
+//============================= Get Country, State, City =============================
+export const Get_CountryStateCity = (Search, CountryID, StateID) => {
+    
     return (dispatch) => {
-        Axios.put(`/updateUser/?ID=${id}&editUser=${editUser}`, values)
-        .then(() => {
-            toast.success("Data Updated Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
-            dispatch({type: "Save_Update"})
+        Axios.get(`/getCountryStateCity/?Search=${Search}&CountryID=${CountryID}&StateID=${StateID}`)
+        .then(res => {
+            const userData = res.data;
+            dispatch({type: "Get_CountryStateCity", payload: userData})
         })
-        .catch(() => {
-            toast.error("Email Already Exist!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
+        .catch(err => {
+            console.log("error: ", err);
         });
-    }     
+    }
 }
 //============================= End =============================
+
 
 //============================= Login User Action Start =============================
 export const Login_User = (values) => {
@@ -68,6 +68,41 @@ export const Login_User = (values) => {
 }
 //============================= End =============================
 
+
+//============================= Get Employees Details Action Start =============================
+export const Get_UserDetails = (Page,Limit, Sort, Search) => {
+    
+    return (dispatch) => {
+        Axios.get(`/getUser/?Page=${Page}&Limit=${Limit}&Sort=${Sort}&Search=${Search}`) 
+        .then(res => {
+            const userData = res.data;
+            dispatch({type: "Get_UserDetails", payload: userData})
+        })
+        .catch(err => {
+            console.log("error: ", err);
+        });
+    }
+}
+//============================= End =============================
+
+
+//============================= Save Updated Detils Of Employee Action Start =============================
+export const Save_Update = (id,values, editUser) => {
+
+    return (dispatch) => {
+        Axios.put(`/updateUser/?ID=${id}&editUser=${editUser}`, values)
+        .then(() => {
+            toast.success("Data Updated Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
+            dispatch({type: "Save_Update"})
+        })
+        .catch(() => {
+            toast.error("Email Already Exist!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
+        });
+    }     
+}
+//============================= End =============================
+
+
 //============================= Delete Employee Action Start =============================
 export const Delete_User = (email) =>{
 
@@ -82,55 +117,6 @@ export const Delete_User = (email) =>{
             console.log("error: ", err);
         });
     }  
-}
-//============================= End =============================
-
-//============================= Get Employees Details Action Start =============================
-export const Get_UserDetails = (Page,Sort, Search) => {
-    
-    return (dispatch) => {
-        Axios.get(`/getUser/?Page=${Page}&Sort=${Sort}&Search=${Search}`) 
-        .then(res => {
-            const userData = res.data;
-            dispatch({type: "Get_UserDetails", payload: userData})
-        })
-        .catch(err => {
-            console.log("error: ", err);
-        });
-    }
-}
-//============================= End =============================
-
-//============================= Logout User Action Start =============================
-export const Logout_User = () => {
-
-    return (dispatch) => {
-        Axios.get(`/logout`)
-        .then(() => {
-            toast.success("Logout Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
-            dispatch({type: "Logout_User"})
-        })
-        .catch(err => {
-            console.log("error: ", err);
-        });
-    }
-}
-//============================= End =============================
-
-
-//============================= Get Country, State, City =============================
-export const Get_CountryStateCity = (Search, CountryID, StateID) => {
-    
-    return (dispatch) => {
-        Axios.get(`/getCountryStateCity/?Search=${Search}&CountryID=${CountryID}&StateID=${StateID}`)
-        .then(res => {
-            const userData = res.data;
-            dispatch({type: "Get_CountryStateCity", payload: userData})
-        })
-        .catch(err => {
-            console.log("error: ", err);
-        });
-    }
 }
 //============================= End =============================
 
@@ -162,11 +148,20 @@ export const Upload_File  = (file) => {
 //============================= End =============================
 
 
+//============================= Upload File Toggle Action Start =============================
+export const Loading_Toggle = () => {
+
+    return (dispatch) => {
+        dispatch({type: "Loading_Toggle"})        
+    }
+}
+//============================= End =============================
+
 //============================= Get File =============================
-export const Get_File  = (page) => {
+export const Get_File  = (page, limit) => {
     
     return (dispatch) => {
-        Axios.get(`/files/?&Page=${page}`)
+        Axios.get(`/files/?&Page=${page}&Limit=${limit}`)
         .then((res) => {
             dispatch({type: "Get_File", payload: res.data})
         })
@@ -192,8 +187,6 @@ export const Delete_File  = (id) => {
 }
 //============================= End =============================
 
-
-
 //============================= Delete Multiple File =============================
 export const DeleteMulti_File  = (files) => {
 
@@ -212,12 +205,20 @@ export const DeleteMulti_File  = (files) => {
 }
 //============================= End =============================
 
-//============================= Upload File Toggle Action Start =============================
-export const Loading_Toggle = () => {
+//============================= Logout User Action Start =============================
+export const Logout_User = () => {
 
     return (dispatch) => {
-        dispatch({type: "Loading_Toggle"})        
+        Axios.get(`/logout`)
+        .then(() => {
+            toast.success("Logout Successfully!", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
+            dispatch({type: "Logout_User"})
+        })
+        .catch(err => {
+            console.log("error: ", err);
+        });
     }
 }
 //============================= End =============================
+
 

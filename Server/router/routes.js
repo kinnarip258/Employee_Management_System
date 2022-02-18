@@ -18,151 +18,6 @@ const path = require('path');
 
 //========================== Load Modules End =============================
 
-//============================= Upload Files =============================
-
-router.post(`/uploadFile`,authenticate, upload.array('multi-files'), async (req,res) => {
-
-    try{
-
-        const files = req.files;
-
-        const notValideFiles = [];
-        const ValideFiles = [];
-        
-        for (const file of files) {
-                    
-            const type = path.extname(file.originalname)
-            
-            if(type !== '.jpg' && type !== '.jpeg' && type !== '.png' && type !== '.pdf' && type !== '.doc' && type !== '.txt' && type !== '.docx'){
-                
-                notValideFiles.push(
-                    
-                    file.originalname
-                    
-                )
-            }
-            else{
-                const uploadFiles = await cloudinary.uploader.upload( file.path, { resource_type: 'raw'});
-
-                const File = {
-                    filename: file.originalname,
-                    filepath: uploadFiles.secure_url,
-                    filetype: type,
-                    public_id: uploadFiles.public_id,
-                
-                }
-
-                ValideFiles.push(
-                    
-                    file.originalname
-                    
-                );
-
-                await User.updateOne({email: req.authenticateUser.email}, { $push: { Files: File} });
-            }
-        
-        };
-        
-        if(notValideFiles !== []){
-            
-            res.send({notValideFiles, ValideFiles});
-        }
-        else{
-            res.json({ValideFiles});
-        }
-        
-
-    } catch(err){
-        res.send(err);
-    }
-})
-
-//============================= Get Files =============================
-
-router.get(`/files`, authenticate, async (req,res) => {
-
-    try{
-        const Page = req.query.Page;
-        let limit = 5;
-        let skip = (Page-1) * limit;
-        const totalfiles = req.authenticateUser.Files;
-        const LoginUser = req.authenticateUser;
-
-        //============================= Count Total Pages of SearchUser =============================
-        let totalPage = Math.ceil(totalfiles.length/limit);
-
-        const aggreagteQuery = [];
-
-        aggreagteQuery.push(
-            {
-                $match: {
-                    Files: req.authenticateUser.Files
-                }
-            },
-            {
-                $project: {
-                    _id: 0, SortFiles: {
-                        $slice: ["$Files", skip, limit],
-                    },
-                }
-            },
-        );
-        const files = await User.aggregate([aggreagteQuery]);
-
-        res.send({files, totalPage, LoginUser})
-
-    } catch(err){
-        res.send(err);
-    }
-})
-
-//============================= Delete Files =============================
-
-router.delete(`/deleteFiles`,authenticate, async (req,res) => {
-
-    try{
-    
-        const file = req.query.ID;
-        
-        await cloudinary.uploader.destroy(file, {invalidate: true, resource_type: "raw"});
-         
-        await User.updateOne(
-            { email: req.authenticateUser.email },
-            { $pull: { Files: { public_id: file } } }
-        )
-        
-        res.send({msg: "delete successfully!"});
-        
-    } catch(err){
-        res.send(err);
-    }
-})
-
-
-//============================= Delete Files =============================
-
-router.put(`/deleteMultiFiles`,authenticate, async (req,res) => {
-
-    try{
-
-        const files = req.body;
-
-        for (const file of files) { 
-
-            await cloudinary.uploader.destroy(file, {invalidate: true, resource_type: "raw"});
-            await User.updateOne(
-                { email: req.authenticateUser.email },
-                { $pull: { Files: { public_id: file } } }
-            ) 
-        }
-
-        res.send({msg: "delete successfully!"})
-        
-    } catch(err){
-        res.send(err);
-    }
-})
-
 //============================= Register =============================
 
 router.post('/signUp', async (req,res) => {
@@ -193,6 +48,50 @@ router.post('/signUp', async (req,res) => {
         //============================= Error Message =============================
         res.send(err)
     }  
+})
+
+//============================= Get Country, State, City =============================
+
+router.get(`/getCountryStateCity`, async (req,res) => {
+    
+    try{
+
+        const {Search, CountryID, StateID} = req.query;
+
+        //============================= Get Countries From Country Collection =============================
+        const countries = await Country.find()
+        
+        if(CountryID || StateID){
+            //============================= Get States From State Collection =============================
+            const states = await State.find({CountryID: CountryID});
+            
+            if(Search === "City"){
+                //============================= Get Cities From City Collection =============================
+                const aggreagteQuery = [];
+
+                aggreagteQuery.push(
+                    {
+                        $match: {
+                            $and: [
+                                {StateID: parseInt(StateID)},
+                            ]
+                        }
+                    },
+                )
+                const cities = await City.aggregate([aggreagteQuery])
+                res.send({countries, states, cities})
+            }
+            else{
+                res.send({countries, states});
+            }
+        }
+        else{
+            res.send({countries}); 
+        }       
+    }
+    catch(err){
+        res.send(err);
+    }
 })
 
 //============================= Login =============================
@@ -237,109 +136,14 @@ router.post('/signIn', async (req,res) => {
    }
 })
 
-
-//============================= Update Employee Details =============================
-
-router.put('/updateUser', authenticate, async (req,res) => {
-    try{
-        
-        if(req.body.email !== req.query.editUser){
-            const emailExist = await User.findOne({email: req.body.email});
-    
-            if(emailExist) {
-                return res.status(400).send({error: "user already exist!"});
-            } 
-            else{
-                //============================= Save Employee Updated Details =============================
-                await User.findByIdAndUpdate(req.query.ID, req.body,
-                    {
-                        new: false
-                    },
-                );
-                
-                //============================= Send Response =============================
-                res.send({msg: "Employee Updated Sucessfully!" })
-            }
-        }
-        else{
-
-            //============================= Save Employee Updated Details =============================
-            await User.findByIdAndUpdate(req.query.ID, req.body,
-                {
-                    new: false
-                },
-            );
-            
-            //============================= Send Response =============================
-            res.json({msg: "Employee Updated Sucessfully!" })
-        }
-            
-    }
-    catch(err) {
-        //============================= Send Error Message =============================
-        res.send(err);
-    };
-});
-
-//============================= Delete Employee =============================
-
-router.delete('/deleteUser', authenticate, async (req,res) => {
-    
-    try{
-
-        if(req.authenticateUser.email === req.query.Email){
-            //============================= Clear Cookie =============================
-            res.clearCookie("jwt");
-            const LoginState = true
-            //============================= Delete Employee =============================
-            await User.findOneAndDelete({email: req.query.Email});
-            //============================= Send Response =============================
-            res.send(LoginState)
-        }
-        else{
-            const LoginState = false
-            //============================= Delete Employee =============================
-            await User.findOneAndDelete({email: req.query.Email});
-            //============================= Send Response =============================
-            res.send(LoginState)
-        } 
-    }
-    catch(err) {
-        res.send("error" + err)
-    };
-});
-
-//============================= Logout =============================
-
-router.get('/logout', authenticate, async (req,res) => {
-    try{
-
-        //============================= Remove Token From Database =============================
-        req.authenticateUser.Tokens = req.authenticateUser.Tokens.filter((ele) => {
-            return ele.token !== req.token
-        })
-        //============================= Clear Cookie =============================
-        res.clearCookie("jwt");
-        //============================= Save Authenticate User =============================
-        await req.authenticateUser.save();
-        //============================= Send Response =============================
-        res.status(200).send("User Logout");
-    }
-    catch(err){
-        //============================= Send Error Message =============================
-        res.status(500).send(err);
-    }
-    
-});
-
 //============================= Get Employees =============================
 
 router.get('/getUser',authenticate, async (req,res) => {
     try{
 
-        let {Page, Sort, Search} = req.query;
-        let limit = 8;
-        let skip = (Page-1) * limit;
+        let {Page, Limit, Sort, Search} = req.query;
+        console.log("Limit", Limit);
+        let skip = (Page-1) * Limit;
         const LoginUser = req.authenticateUser;
 
         //============================= Create Array =============================
@@ -408,7 +212,7 @@ router.get('/getUser',authenticate, async (req,res) => {
             const matchUser = await User.aggregate([aggregateQuery]);
 
             //============================= Count Total Pages of SearchUser =============================
-            let totalPage = Math.ceil(matchUser.length/limit);
+            let totalPage = Math.ceil(matchUser.length/Limit);
             
             aggregateQuery.push(
                 //============================= Sorting =============================
@@ -419,7 +223,7 @@ router.get('/getUser',authenticate, async (req,res) => {
                     $skip: skip
                 },
                 {
-                    $limit: limit  
+                    $limit: parseInt(Limit) 
                 }  
                      
             )
@@ -436,7 +240,7 @@ router.get('/getUser',authenticate, async (req,res) => {
             const total = await User.countDocuments({});
 
             //============================= Count Total Pages =============================
-            let totalPage = Math.ceil(total/limit);
+            let totalPage = Math.ceil(total/Limit);
 
             aggregateQuery.push(
                 
@@ -448,7 +252,7 @@ router.get('/getUser',authenticate, async (req,res) => {
                     $skip: skip
                 },
                 {
-                    $limit: limit  
+                    $limit: parseInt(Limit)  
                 }  
             )
             //============================= Apply AggreagteQuery In User Collection =============================
@@ -465,74 +269,249 @@ router.get('/getUser',authenticate, async (req,res) => {
     }
 });
 
-//============================= Get Country, State, City =============================
 
-router.get(`/getCountryStateCity`, async (req,res) => {
-    
+//============================= Update Employee Details =============================
+
+router.put('/updateUser', authenticate, async (req,res) => {
     try{
-
-        const {Search, CountryID, StateID} = req.query;
-
-        //============================= Get Countries From Country Collection =============================
-        const countries = await Country.find()
         
-        if(CountryID || StateID){
-            //============================= Get States From State Collection =============================
-            const states = await State.find({CountryID: CountryID});
-            
-            if(Search === "City"){
-                //============================= Get Cities From City Collection =============================
-                const aggreagteQuery = [];
-
-                aggreagteQuery.push(
-                    {
-                        $match: {
-                            $and: [
-                                {StateID: parseInt(StateID)},
-                            ]
-                        }
-                    },
-                )
-                const cities = await City.aggregate([aggreagteQuery])
-                res.send({countries, states, cities})
-            }
+        if(req.body.email !== req.query.editUser){
+            const emailExist = await User.findOne({email: req.body.email});
+    
+            if(emailExist) {
+                return res.status(400).send({error: "user already exist!"});
+            } 
             else{
-                res.send({countries, states});
+                //============================= Save Employee Updated Details =============================
+                await User.findByIdAndUpdate(req.query.ID, req.body,
+                    {
+                        new: false
+                    },
+                );
+                
+                //============================= Send Response =============================
+                res.send({msg: "Employee Updated Sucessfully!" })
             }
         }
         else{
-            res.send({countries}); 
-        }       
-    }
-    catch(err){
-        res.send(err);
-    }
-})
 
-//============================= Check Cookie =============================
-
-router.get(`/checkCookie`, async (req,res) => {
-    
-    try{ 
-       
-        if(req.cookies.jwt){
-            //============================= Set LoginState =============================
-            const LoginState = false;
+            //============================= Save Employee Updated Details =============================
+            await User.findByIdAndUpdate(req.query.ID, req.body,
+                {
+                    new: false
+                },
+            );
             
-            res.send({LoginState})
+            //============================= Send Response =============================
+            res.json({msg: "Employee Updated Sucessfully!" })
         }
-        else {
-            //============================= Set LoginState =============================
-            const LoginState = true;
+            
+    }
+    catch(err) {
+        //============================= Send Error Message =============================
+        res.send(err);
+    };
+});
+
+
+//============================= Delete Employee =============================
+
+router.delete('/deleteUser', authenticate, async (req,res) => {
+    
+    try{
+
+        if(req.authenticateUser.email === req.query.Email){
+            //============================= Clear Cookie =============================
+            res.clearCookie("jwt");
+            const LoginState = true
+            //============================= Delete Employee =============================
+            await User.findOneAndDelete({email: req.query.Email});
+            //============================= Send Response =============================
+            res.send(LoginState)
+        }
+        else{
+            const LoginState = false
+            //============================= Delete Employee =============================
+            await User.findOneAndDelete({email: req.query.Email});
+            //============================= Send Response =============================
+            res.send(LoginState)
+        } 
+    }
+    catch(err) {
+        res.send("error" + err)
+    };
+});
+
+
+
+//============================= Upload Files =============================
+
+router.post(`/uploadFile`,authenticate, upload.array('multi-files'), async (req,res) => {
+
+    try{
+
+        const files = req.files;
+
+        const notValideFiles = [];
+        const ValideFiles = [];
         
-            res.send({LoginState})
+        for (const file of files) {
+                    
+            const type = path.extname(file.originalname)
+            
+            if(type !== '.jpg' && type !== '.jpeg' && type !== '.png' && type !== '.pdf' && type !== '.doc' && type !== '.txt' && type !== '.docx'){
+                
+                notValideFiles.push(
+                    
+                    file.originalname
+                    
+                )
+            }
+            else{
+                const uploadFiles = await cloudinary.uploader.upload( file.path, { resource_type: 'raw'});
+
+                const File = {
+                    filename: file.originalname,
+                    filepath: uploadFiles.secure_url,
+                    filetype: type,
+                    public_id: uploadFiles.public_id,
+                
+                }
+
+                ValideFiles.push(
+                    
+                    file.originalname
+                    
+                );
+
+                await User.updateOne({email: req.authenticateUser.email}, { $push: { Files: File} });
+            }
+        
+        };
+        
+        if(notValideFiles !== []){
+            
+            res.send({notValideFiles, ValideFiles});
         }
-    }     
-    catch(err){
+        else{
+            res.json({ValideFiles});
+        }
+        
+
+    } catch(err){
         res.send(err);
     }
 })
 
+//============================= Get Files =============================
+
+router.get(`/files`, authenticate, async (req,res) => {
+
+    try{
+        const Page = req.query.Page;
+        const Limit = req.query.Limit;
+        let skip = (Page-1) * Limit;
+        const totalfiles = req.authenticateUser.Files;
+        const LoginUser = req.authenticateUser;
+
+        //============================= Count Total Pages of SearchUser =============================
+        let totalPage = Math.ceil(totalfiles.length/Limit);
+
+        const aggreagteQuery = [];
+
+        aggreagteQuery.push(
+            {
+                $match: {
+                    Files: req.authenticateUser.Files
+                }
+            },
+            {
+                $project: {
+                    _id: 0, SortFiles: {
+                        $slice: ["$Files", skip, parseInt(Limit)],
+                    },
+                }
+            },
+        );
+        const files = await User.aggregate([aggreagteQuery]);
+
+        res.send({files, totalPage, LoginUser})
+
+    } catch(err){
+        res.send(err);
+    }
+})
+
+//============================= Delete Files =============================
+
+router.delete(`/deleteFiles`,authenticate, async (req,res) => {
+
+    try{
+    
+        const file = req.query.ID;
+        
+        await cloudinary.uploader.destroy(file, {invalidate: true, resource_type: "raw"});
+         
+        await User.updateOne(
+            { email: req.authenticateUser.email },
+            { $pull: { Files: { public_id: file } } }
+        )
+        
+        res.send({msg: "delete successfully!"});
+        
+    } catch(err){
+        res.send(err);
+    }
+})
+
+
+//============================= Delete Multiple Files =============================
+
+router.put(`/deleteMultiFiles`,authenticate, async (req,res) => {
+
+    try{
+
+        const files = req.body;
+
+        for (const file of files) { 
+
+            await cloudinary.uploader.destroy(file, {invalidate: true, resource_type: "raw"});
+            await User.updateOne(
+                { email: req.authenticateUser.email },
+                { $pull: { Files: { public_id: file } } }
+            ) 
+        }
+
+        res.send({msg: "delete successfully!"})
+        
+    } catch(err){
+        res.send(err);
+    }
+})
+
+
+//============================= Logout =============================
+
+router.get('/logout', authenticate, async (req,res) => {
+    try{
+
+        //============================= Remove Token From Database =============================
+        req.authenticateUser.Tokens = req.authenticateUser.Tokens.filter((ele) => {
+            return ele.token !== req.token
+        })
+        //============================= Clear Cookie =============================
+        res.clearCookie("jwt");
+        //============================= Save Authenticate User =============================
+        await req.authenticateUser.save();
+        //============================= Send Response =============================
+        res.status(200).send("User Logout");
+    }
+    catch(err){
+        //============================= Send Error Message =============================
+        res.status(500).send(err);
+    }
+    
+});
 
 //============================= Add Country =============================
 

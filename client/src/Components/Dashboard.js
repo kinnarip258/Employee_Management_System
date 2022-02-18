@@ -26,9 +26,9 @@ const Deshboard = () => {
 
     //============================= Pagination =============================
     const page = useSelector(state => state.page);
-
     const [pageNumber, setPageNumber] = useState(1);
-
+    const [limit, setLimit] = useState(5);
+    console.log("limit", limit);
     //============================= For Different Request =============================
 
     const [Search, setSearch] = useState("");
@@ -56,9 +56,9 @@ const Deshboard = () => {
     
     useEffect(() => {
         //============================= Get Employee Data =============================
-        dispatch(Get_UserDetails(pageNumber, sort, Search));
+        dispatch(Get_UserDetails(pageNumber,limit, sort, Search));
 
-    }, [pageNumber, sort, Search, dispatch, deleteToggle]);
+    }, [pageNumber, sort,limit, Search, dispatch, deleteToggle]);
 
 
     return(
@@ -134,7 +134,7 @@ const Deshboard = () => {
                                                     <td>{ele.StateName.map((ele) => ele.StateName)}</td>
                                                     <td>{ele.CityName.map((ele) => ele.CityName)}</td>
                                                     <td><button class="page-link"><NavLink to={`/EditUser/:?id=${ele._id}`}>Edit</NavLink></button></td>
-                                                    <td><button class="page-link" onClick={() => handleDelete(ele.email)}>Delete</button></td>     
+                                                    {<td><button class="page-link" onClick={() => handleDelete(ele.email)}>Delete</button></td>}     
                                                 </tr>                
                                             )
                                         })
@@ -145,7 +145,18 @@ const Deshboard = () => {
 
                             <Pagination count={page} variant="outlined" color="secondary" onChange={(e, value) =>  {
                                 setPageNumber(value) }}/>  
-
+                            <select onChange={(e) => setLimit(e.target.value)}>
+                                <option value={"5"}>5</option>
+                                <option value={"10"}>10</option>
+                                <option value={"15"}>15</option>
+                                <option value={"20"}>20</option>
+                                <option value={"25"}>25</option>
+                                <option value={"30"}>30</option>
+                                <option value={"35"}>35</option>
+                                <option value={"40"}>40</option>
+                                <option value={"45"}>45</option>
+                                <option value={"50"}>50</option>
+                            </select>
                         </div>
                 
                     ) : (
